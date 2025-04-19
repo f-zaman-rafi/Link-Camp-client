@@ -4,9 +4,10 @@ import Footer from "../Pages/SharedComponants/Footer/Footer";
 import Navbar from "../Pages/SharedComponants/Navbar/Navbar";
 
 const Main = () => {
+  
+  // Hide navbar and footer for login and signup page!
   const location = useLocation();
   const noLayoutRoutes = ["/sign-in", "/sign-up"];
-
   const hideLayout = noLayoutRoutes.includes(location.pathname);
 
   return (

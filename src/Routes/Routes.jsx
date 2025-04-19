@@ -4,23 +4,37 @@ import Homepage from "../Pages/Home/Homepage/Homepage";
 import React from "react";
 import SignIn from "../Pages/Sign-In/SignIn";
 import SignUp from "../Pages/Sign-up/SignUp";
+import AuthGuard from "../Providers/AuthGuard";
+import RequireAuth from "../Providers/RequireAuth";
 
 export const router = createBrowserRouter([
+  {
+    path: "/sign-in",
+    element: (
+      <AuthGuard>
+        <SignIn />
+      </AuthGuard>
+    ),
+  },
+  {
+    path: "/sign-up",
+    element: (
+      <AuthGuard>
+        <SignUp />
+      </AuthGuard>
+    ),
+  },
   {
     path: "/",
     element: <Main />,
     children: [
       {
         path: "/",
-        element: <Homepage />,
-      },
-      {
-        path: "/sign-in",
-        element: <SignIn />,
-      },
-      {
-        path: "/sign-up",
-        element: <SignUp />,
+        element: (
+          <RequireAuth>
+            <Homepage />
+          </RequireAuth>
+        ),
       },
     ],
   },

@@ -1,9 +1,12 @@
-import React, { useState } from "react";
+import React from "react";
 import { useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import useAuth from "../../Hooks/useAuth";
 
 const SignUp = () => {
-  const [userType, setUserType] = useState("");
+  const { signUp, setUserType, setDepartment, setSession, setId, setVerify } =
+    useAuth();
+  const navigate = useNavigate();
 
   // Set up useForm hook
   const {
@@ -15,7 +18,20 @@ const SignUp = () => {
 
   // Handle form submission
   const onSubmit = (data) => {
-    console.log(data); // Send data to backend or authentication logic
+    signUp(data.email, data.password)
+      .then((result) => {
+        const user = result.user;
+        setUserType(data.userType);
+        setId(data.userID);
+        setDepartment(data.department);
+        setSession(data.session);
+        setVerify("Pending");
+        console.log(user);
+        navigate("/");
+      })
+      .catch((error) => {
+        console.error("Login error:", error.message);
+      });
   };
 
   // Watch user type to conditionally render fields
@@ -74,8 +90,6 @@ const SignUp = () => {
                 id="userType"
                 className="input"
                 {...register("userType", { required: "User type is required" })}
-                // defaultValue={userType}
-                // onChange={(e) => setUserType(e.target.value)}
               >
                 <option value="" defaultChecked>
                   Please Select Your User Type
@@ -95,12 +109,12 @@ const SignUp = () => {
               {/* Conditional Fields for Student */}
               {selectedUserType === "student" && (
                 <>
-                  <label className="label" htmlFor="studentId">
+                  <label className="label" htmlFor="userID">
                     Student ID
                   </label>
                   <input
                     type="text"
-                    id="studentId"
+                    id="Student ID"
                     className="input"
                     placeholder="Student ID"
                     {...register("studentId", {
@@ -154,12 +168,12 @@ const SignUp = () => {
               {/* Conditional Fields for Teacher */}
               {selectedUserType === "teacher" && (
                 <>
-                  <label className="label" htmlFor="teacherId">
+                  <label className="label" htmlFor="userID">
                     Teacher ID
                   </label>
                   <input
                     type="text"
-                    id="teacherId"
+                    id="teacher ID"
                     className="input"
                     placeholder="Teacher ID"
                     {...register("teacherId", {
@@ -192,7 +206,7 @@ const SignUp = () => {
                 </>
               )}
 
-              <div className="flex justify-between px-4">
+              <div className="flex justify-between">
                 <Link to="/sign-in" className="link link-hover">
                   Already have an account? Sign In
                 </Link>

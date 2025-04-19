@@ -1,8 +1,10 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
+import useAuth from "../../Hooks/useAuth";
 
 const SignIn = () => {
+  const { signIn } = useAuth();
   const {
     register,
     handleSubmit,
@@ -10,7 +12,16 @@ const SignIn = () => {
   } = useForm();
 
   const onSubmit = (data) => {
-    console.log("Login Data:", data);
+    signIn(data.email, data.password)
+      .then((result) => {
+        const user = result.user;
+        console.log(user);
+      })
+      .catch((error) => {
+        console.error("Login error:", error.message);
+      });
+
+    console.log("Login Data:", data.email, data.password);
   };
 
   return (
@@ -70,9 +81,9 @@ const SignIn = () => {
                 </p>
               )}
 
-              <div className="flex justify-between px-4">
+              <div className="flex justify-between">
                 <a className="link link-hover">Forgot password?</a>
-                <Link to="/sign-up" className="link link-hover">
+                <Link to="/sign-up" className="link link-hover mr-4">
                   New here? Create an account
                 </Link>
               </div>
