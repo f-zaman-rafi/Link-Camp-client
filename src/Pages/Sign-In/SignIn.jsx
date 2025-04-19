@@ -1,32 +1,86 @@
 import React from "react";
+import { useForm } from "react-hook-form";
+import { Link } from "react-router-dom";
 
 const SignIn = () => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+
+  const onSubmit = (data) => {
+    console.log("Login Data:", data);
+  };
+
   return (
     <div className="hero min-h-screen">
       <div className="hero-content flex-col lg:flex-row space-x-28 max-w-4xl">
         <div className="text-center lg:text-left">
           <h1 className="text-5xl font-bold">Sign-In!</h1>
           <p className="py-6">
-            Provident cupiditate voluptatem et in. Quaerat fugiat ut assumenda
-            excepturi exercitationem quasi. In deleniti eaque aut repudiandae et
-            a id nisi.
+            Log in to your account and access the platform.
           </p>
         </div>
+
         <div className="card bg-base-100 w-full max-w-sm shrink-0 shadow-2xl">
-          <form className="card-body">
+          <form onSubmit={handleSubmit(onSubmit)} className="card-body">
             <fieldset className="fieldset">
-              <label className="label">Email</label>
-              <input type="email" className="input" placeholder="Email" />
-              <label className="label">Password</label>
-              <input type="password" className="input" placeholder="Password" />
+              {/* Email */}
+              <label className="label" htmlFor="email">
+                Email
+              </label>
+              <input
+                type="email"
+                id="email"
+                className="input"
+                placeholder="Email"
+                {...register("email", {
+                  required: "Email is required",
+                  pattern: {
+                    value: /^\S+@\S+$/i,
+                    message: "Invalid email address",
+                  },
+                })}
+              />
+              {errors.email && (
+                <p className="text-red-500 text-xs">{errors.email.message}</p>
+              )}
+
+              {/* Password */}
+              <label className="label" htmlFor="password">
+                Password
+              </label>
+              <input
+                type="password"
+                id="password"
+                className="input"
+                placeholder="Password"
+                {...register("password", {
+                  required: "Password is required",
+                  minLength: {
+                    value: 6,
+                    message: "Minimum 6 characters",
+                  },
+                })}
+              />
+              {errors.password && (
+                <p className="text-red-500 text-xs">
+                  {errors.password.message}
+                </p>
+              )}
+
               <div className="flex justify-between px-4">
                 <a className="link link-hover">Forgot password?</a>
-                <a className="link link-hover">New here? Create an account</a>
+                <Link to="/sign-up" className="link link-hover">
+                  New here? Create an account
+                </Link>
               </div>
+
               <input
                 className="btn btn-neutral mt-4"
                 type="submit"
-                value="login"
+                value="Login"
               />
             </fieldset>
           </form>
