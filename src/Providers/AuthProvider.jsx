@@ -14,11 +14,11 @@ const auth = getAuth(app);
 const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [userType, setUserType] = useState(null);
-  const [id, setId] = useState(null);
-  const [department, setDepartment] = useState(null);
-  const [session, setSession] = useState(null);
-  const [verify, setVerify] = useState(null);
+  // const [userType, setUserType] = useState(null);
+  // const [id, setId] = useState(null);
+  // const [department, setDepartment] = useState(null);
+  // const [session, setSession] = useState(null);
+  // const [verify, setVerify] = useState(null);
   //
   //
   // create user
@@ -67,16 +67,16 @@ const AuthProvider = ({ children }) => {
     signUp,
     signIn,
     logOut,
-    setUserType,
-    setDepartment,
-    setSession,
-    userType,
-    department,
-    session,
-    id,
-    setId,
-    verify,
-    setVerify,
+    // setUserType,
+    // setDepartment,
+    // setSession,
+    // userType,
+    // department,
+    // session,
+    // id,
+    // setId,
+    // verify,
+    // setVerify,
   };
 
   return (

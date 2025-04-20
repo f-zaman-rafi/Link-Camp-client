@@ -2,10 +2,11 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import useAuth from "../../Hooks/useAuth";
+import useAxiosCommon from "../../Hooks/useAxiosCommon";
 
 const SignUp = () => {
-  const { signUp, setUserType, setDepartment, setSession, setId, setVerify } =
-    useAuth();
+  const { signUp } = useAuth();
+  const axiosCommon = useAxiosCommon();
   const navigate = useNavigate();
 
   // Set up useForm hook
@@ -16,21 +17,30 @@ const SignUp = () => {
     watch,
   } = useForm();
 
-  // Handle form submission
+  //  Handle form submission
+
   const onSubmit = (data) => {
     signUp(data.email, data.password)
       .then((result) => {
         const user = result.user;
-        setUserType(data.userType);
-        setId(data.userID);
-        setDepartment(data.department);
-        setSession(data.session);
-        setVerify("Pending");
         console.log(user);
-        navigate("/");
+        const userInfo = {
+          email: data.email,
+          id: data.userID,
+          userType: data.userType,
+          department: data.department,
+          session: data.session,
+          verify: "Pending",
+        };
+
+        // save userInfo to Mongodb
+        axiosCommon.post("/users", userInfo).then((res) => {
+          console.log("User saved to DB", res.data);
+          navigate("/");
+        });
       })
       .catch((error) => {
-        console.error("Login error:", error.message);
+        console.error("Signup error:", error.message);
       });
   };
 
