@@ -14,11 +14,7 @@ const auth = getAuth(app);
 const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  // const [userType, setUserType] = useState(null);
-  // const [id, setId] = useState(null);
-  // const [department, setDepartment] = useState(null);
-  // const [session, setSession] = useState(null);
-  // const [verify, setVerify] = useState(null);
+
   //
   //
   // create user

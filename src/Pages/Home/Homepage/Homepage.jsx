@@ -4,10 +4,6 @@ import useAuth from "../../../Hooks/useAuth";
 
 const Homepage = () => {
   const { logOut } = useAuth();
-  const { userType, department, session, id, verify } = useAuth();
-
-  // fetch("http://localhost:5000/userinfo", {});
-  console.log(id);
 
   return (
     <div>
