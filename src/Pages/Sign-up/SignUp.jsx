@@ -30,13 +30,14 @@ const SignUp = () => {
           userType: data.userType,
           department: data.department,
           session: data.session,
-          verify: "Pending",
+          verify: "pending",
+          name: "",
         };
 
         // save userInfo to Mongodb
         axiosCommon.post("/users", userInfo).then((res) => {
           console.log("User saved to DB", res.data);
-          navigate("/");
+          navigate("/pending-request");
         });
       })
       .catch((error) => {

@@ -70,16 +70,7 @@ const AuthProvider = ({ children }) => {
     signUp,
     signIn,
     logOut,
-    // setUserType,
-    // setDepartment,
-    // setSession,
-    // userType,
-    // department,
-    // session,
-    // id,
-    // setId,
-    // verify,
-    // setVerify,
+
   };
 
   return (

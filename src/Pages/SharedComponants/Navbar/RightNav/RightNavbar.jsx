@@ -1,21 +1,20 @@
 import React from "react";
 import { IoPersonCircleSharp } from "react-icons/io5";
 import useAuth from "../../../../Hooks/useAuth";
-import useRole from "../../../../Hooks/useRole";
+import Loading from "../../../Loading/Loading";
+import useUserInfo from "../../../../Hooks/useUserInfo";
 
 const RightNavbar = () => {
   const { logOut } = useAuth();
-  const { userInfo, isLoading } = useRole();
+  const { userInfo, isLoading } = useUserInfo();
   if (isLoading) {
-    return <p>Loading...</p>;
+    return <Loading />;
   }
-
-
 
   return (
     <div className="flex items-center px-5 pt-2">
       <div>
-        {userInfo.userType}
+
       </div>
       <div className="drawer drawer-end flex justify-end text-4xl">
         <input id="my-drawer-4" type="checkbox" className="drawer-toggle" />
@@ -27,10 +26,16 @@ const RightNavbar = () => {
         </div>
         <div className="drawer-side">
           <label htmlFor="my-drawer-4" className="drawer-overlay"></label>
-          <ul className="menu bg-base-200 text-base-content min-h-full w-auto p-4 pr-8">
+          <ul className="menu bg-base-200 text-base-content min-h-full w-auto p-4 pr-8 space-y-2">
             {/* Sidebar content here */}
+            <li className="text-red-500 border-2 rounded-full my-5 mx-auto text-center cursor-default hover:bg-transparent pointer-events-none">
+              <span>{userInfo.userType}</span>
+            </li>
             <li>
-              <a>Sidebar Item 1</a>
+              <p>Users</p>
+            </li>
+            <li>
+              <p>Posts</p>
             </li>
             <li onClick={logOut}>
               <p>Sign Out</p>

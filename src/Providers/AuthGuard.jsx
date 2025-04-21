@@ -1,15 +1,14 @@
 import React from "react";
 import useAuth from "../Hooks/useAuth";
 import { Navigate, useLocation } from "react-router-dom";
+import Loading from "../Pages/Loading/Loading";
 
 const AuthGuard = ({ children }) => {
   const { user, loading } = useAuth();
   const location = useLocation();
   if (loading) {
     return (
-      <p className="max-w-screen max-h-screen text-center items-center">
-        Checking user...
-      </p>
+      <Loading />
     );
   }
   if (user) {

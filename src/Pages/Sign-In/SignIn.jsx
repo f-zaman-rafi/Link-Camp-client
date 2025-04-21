@@ -3,11 +3,13 @@ import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import useAuth from "../../Hooks/useAuth";
 import useAxiosCommon from "../../Hooks/useAxiosCommon";
+import useUserInfo from "../../Hooks/useUserInfo";
 
 const SignIn = () => {
   const { signIn } = useAuth();
   const axiosCommon = useAxiosCommon();
   const navigate = useNavigate();
+  const { refetch } = useUserInfo();
   const {
     register,
     handleSubmit,
@@ -18,17 +20,18 @@ const SignIn = () => {
     signIn(data.email, data.password)
       .then((result) => {
         const email = result.user.email;
-        console.log(email);
-        axiosCommon.post("/login", { email }).then((res) => {
-          console.log(res.data);
-          navigate("/");
+        axiosCommon.post("/login", { email }).then(async () => {
+          const { data: user } = await refetch();
+          if (!user?.name) {
+            navigate("/pending-request");
+          } else {
+            navigate("/");
+          }
         });
       })
       .catch((error) => {
         console.error("Login error:", error.message);
       });
-
-    console.log("Login Data:", data.email, data.password);
   };
 
   return (

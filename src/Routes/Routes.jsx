@@ -8,6 +8,8 @@ import AuthGuard from "../Providers/AuthGuard";
 import RequireAuth from "../Providers/RequireAuth";
 import AddPost from "../Pages/AddPost/AddPost";
 import NoticeFeed from "../Pages/NoticeBoard/NoticeFeed";
+import PendingPage from "../Pages/PendingPage/PendingPage";
+import RequireApproval from "../Providers/RequireApproval";
 
 export const router = createBrowserRouter([
   {
@@ -25,6 +27,10 @@ export const router = createBrowserRouter([
         <SignUp />
       </AuthGuard>
     ),
+  },
+  {
+    path: "/pending-request",
+    element: <RequireApproval><PendingPage /></RequireApproval>
   },
   {
     path: "/",
@@ -45,7 +51,8 @@ export const router = createBrowserRouter([
       {
         path: "/noticeboard",
         element: <NoticeFeed />,
-      },
+      }
+      ,
     ],
   },
 ]);
