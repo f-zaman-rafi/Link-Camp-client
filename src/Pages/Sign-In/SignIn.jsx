@@ -1,10 +1,13 @@
 import React from "react";
 import { useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import useAuth from "../../Hooks/useAuth";
+import useAxiosCommon from "../../Hooks/useAxiosCommon";
 
 const SignIn = () => {
   const { signIn } = useAuth();
+  const axiosCommon = useAxiosCommon();
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
@@ -14,8 +17,12 @@ const SignIn = () => {
   const onSubmit = (data) => {
     signIn(data.email, data.password)
       .then((result) => {
-        const user = result.user;
-        console.log(user);
+        const email = result.user.email;
+        console.log(email);
+        axiosCommon.post("/login", { email }).then((res) => {
+          console.log(res.data);
+          navigate("/");
+        });
       })
       .catch((error) => {
         console.error("Login error:", error.message);

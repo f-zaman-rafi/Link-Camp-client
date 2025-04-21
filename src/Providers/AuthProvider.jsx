@@ -8,10 +8,12 @@ import {
   signOut,
 } from "firebase/auth";
 import { AuthContext } from "./AuthContext";
+import useAxiosCommon from "../Hooks/useAxiosCommon";
 
 const auth = getAuth(app);
 
 const AuthProvider = ({ children }) => {
+  const axiosCommon = useAxiosCommon();
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -38,9 +40,14 @@ const AuthProvider = ({ children }) => {
   // log-out
   //
   //
-  const logOut = () => {
-    setLoading(true);
-    return signOut(auth);
+  const logOut = async () => {
+    try {
+      const res = await axiosCommon.post("/logout");
+      console.log(res.data);
+      await signOut(auth);
+    } catch (err) {
+      console.error("Logout failed", err);
+    }
   };
   //
   //
