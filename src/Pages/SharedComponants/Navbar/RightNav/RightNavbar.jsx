@@ -1,13 +1,23 @@
 import React from "react";
 import { IoPersonCircleSharp } from "react-icons/io5";
 import useAuth from "../../../../Hooks/useAuth";
+import useRole from "../../../../Hooks/useRole";
 
 const RightNavbar = () => {
   const { logOut } = useAuth();
+  const { userInfo, isLoading } = useRole();
+  if (isLoading) {
+    return <p>Loading...</p>;
+  }
+
+
 
   return (
-    <div className="text-4xl px-5 pt-2">
-      <div className="drawer drawer-end flex justify-end">
+    <div className="flex items-center px-5 pt-2">
+      <div>
+        {userInfo.userType}
+      </div>
+      <div className="drawer drawer-end flex justify-end text-4xl">
         <input id="my-drawer-4" type="checkbox" className="drawer-toggle" />
         <div className="drawer-content">
           {/* Page content here */}
