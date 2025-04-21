@@ -2,7 +2,7 @@ import React from 'react';
 import { Redirect } from 'react-router-dom';
 import useAuth from './useAuth';
 
-const AdminRoute = ({ children, requiredRole }) => {
+const RequireRole = ({ children, requiredRole }) => {
     const { userInfo } = useAuth();
 
     if (!userInfo || userInfo.userType !== requiredRole) {
@@ -12,7 +12,7 @@ const AdminRoute = ({ children, requiredRole }) => {
     return children;
 };
 
-export default AdminRoute;
+export default RequireRole;
 
 
 // import { Route } from 'react-router-dom';

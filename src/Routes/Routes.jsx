@@ -4,12 +4,12 @@ import Homepage from "../Pages/Home/Homepage/Homepage";
 import React from "react";
 import SignIn from "../Pages/Sign-In/SignIn";
 import SignUp from "../Pages/Sign-up/SignUp";
-import AuthGuard from "../Providers/AuthGuard";
-import RequireAuth from "../Providers/RequireAuth";
+import RequireAuth from "./Guards/RequireAuth";
 import AddPost from "../Pages/AddPost/AddPost";
 import NoticeFeed from "../Pages/NoticeBoard/NoticeFeed";
 import PendingPage from "../Pages/PendingPage/PendingPage";
-import RequireApproval from "../Providers/RequireApproval";
+import AuthGuard from "./Guards/AuthGuard";
+import RequireApproval from "./Guards/RequireApproval";
 
 export const router = createBrowserRouter([
   {

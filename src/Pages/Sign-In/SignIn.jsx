@@ -22,9 +22,14 @@ const SignIn = () => {
         const email = result.user.email;
         axiosCommon.post("/login", { email }).then(async () => {
           const { data: user } = await refetch();
-          if (!user?.name) {
+          if (user?.verify === "pending") {
+
             navigate("/pending-request");
-          } else {
+          }
+          if (user?.verify === "approved" && user?.name === "") {
+            navigate("/profile-setup")
+          }
+          else {
             navigate("/");
           }
         });

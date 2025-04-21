@@ -1,8 +1,8 @@
 import React from "react";
-import useAuth from "../Hooks/useAuth";
+import useAuth from "../../Hooks/useAuth";
 import { Navigate, useLocation } from "react-router-dom";
-import Loading from "../Pages/Loading/Loading";
-import useUserInfo from "../Hooks/useUserInfo";
+import Loading from "../../Pages/Loading/Loading";
+import useUserInfo from "../../Hooks/useUserInfo";
 
 const RequireAuth = ({ children }) => {
   const { user, loading } = useAuth();

@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import useAuth from "../../Hooks/useAuth";
 import useAxiosCommon from "../../Hooks/useAxiosCommon";
+import toast from "react-hot-toast";
 
 const SignUp = () => {
   const { signUp } = useAuth();
@@ -35,8 +36,8 @@ const SignUp = () => {
         };
 
         // save userInfo to Mongodb
-        axiosCommon.post("/users", userInfo).then((res) => {
-          console.log("User saved to DB", res.data);
+        axiosCommon.post("/users", userInfo).then(() => {
+          toast.success("You're all set! Just hang tight—your account will be approved shortly.");
           navigate("/pending-request");
         });
       })
