@@ -17,7 +17,7 @@ const Navbar = () => {
   };
 
   return (
-    <div className="flex items-center px-5">
+    <div className="flex items-center justify-between px-5">
       <div className="pt-2">
         <Link
           to="/"
@@ -29,9 +29,9 @@ const Navbar = () => {
         </Link>
       </div>
 
-      <div className="tabs flex justify-center w-full">
+      <div className="tabs flex justify-center border-2">
         <label
-          className={`tab flex-1 mx-5 ${
+          className={`tab flex-1 mx-14 ${
             activeTab !== "/"
               ? "hover:bg-gray-200 hover:rounded-full duration-200"
               : ""
@@ -48,7 +48,7 @@ const Navbar = () => {
         </label>
 
         <label
-          className={`tab flex-1 mx-5 ${
+          className={`tab flex-1 mx-14 ${
             activeTab !== "/noticeboard"
               ? "hover:bg-gray-200 hover:rounded-full duration-200"
               : ""
@@ -65,7 +65,7 @@ const Navbar = () => {
         </label>
 
         <label
-          className={`tab flex-1 mx-5 ${
+          className={`tab flex-1 mx-14 ${
             activeTab !== "/add-post"
               ? "hover:bg-gray-200 hover:rounded-full duration-200"
               : ""

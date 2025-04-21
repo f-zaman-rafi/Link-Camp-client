@@ -1,10 +1,11 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import AddPost from "../Componants/AddPost/AddPost";
 
 const Homepage = () => {
   return (
     <div>
-      <p>This is Homepage</p>
+      <AddPost />
     </div>
   );
 };
