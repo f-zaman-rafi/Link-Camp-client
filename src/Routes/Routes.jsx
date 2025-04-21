@@ -10,6 +10,8 @@ import NoticeFeed from "../Pages/NoticeBoard/NoticeFeed";
 import PendingPage from "../Pages/PendingPage/PendingPage";
 import AuthGuard from "./Guards/AuthGuard";
 import RequireApproval from "./Guards/RequireApproval";
+import UserList from "../Pages/Admin/Users/UserList";
+import RequireRole from "./Guards/RequireRole";
 
 export const router = createBrowserRouter([
   {
@@ -51,6 +53,10 @@ export const router = createBrowserRouter([
       {
         path: "/noticeboard",
         element: <NoticeFeed />,
+      },
+      {
+        path: "/user-list",
+        element: <RequireRole requiredRole='admin'><UserList /></RequireRole>
       }
       ,
     ],

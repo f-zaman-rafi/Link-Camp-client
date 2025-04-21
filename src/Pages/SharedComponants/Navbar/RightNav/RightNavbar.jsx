@@ -3,6 +3,7 @@ import { IoPersonCircleSharp } from "react-icons/io5";
 import useAuth from "../../../../Hooks/useAuth";
 import Loading from "../../../Loading/Loading";
 import useUserInfo from "../../../../Hooks/useUserInfo";
+import { Link } from "react-router-dom";
 
 const RightNavbar = () => {
   const { logOut } = useAuth();
@@ -32,7 +33,7 @@ const RightNavbar = () => {
               <span>{userInfo.userType}</span>
             </li>
             <li>
-              <p>Users</p>
+              <Link to='/user-list'><p>Users</p></Link>
             </li>
             <li>
               <p>Posts</p>
