@@ -6,6 +6,8 @@ import SignIn from "../Pages/Sign-In/SignIn";
 import SignUp from "../Pages/Sign-up/SignUp";
 import AuthGuard from "../Providers/AuthGuard";
 import RequireAuth from "../Providers/RequireAuth";
+import AddPost from "../Pages/AddPost/AddPost";
+import NoticeFeed from "../Pages/NoticeBoard/NoticeFeed";
 
 export const router = createBrowserRouter([
   {
@@ -26,15 +28,23 @@ export const router = createBrowserRouter([
   },
   {
     path: "/",
-    element: <Main />,
+    element: (
+      <RequireAuth>
+        <Main />
+      </RequireAuth>
+    ),
     children: [
       {
         path: "/",
-        element: (
-          <RequireAuth>
-            <Homepage />
-          </RequireAuth>
-        ),
+        element: <Homepage />,
+      },
+      {
+        path: "/add-post",
+        element: <AddPost />,
+      },
+      {
+        path: "/noticeboard",
+        element: <NoticeFeed />,
       },
     ],
   },
