@@ -6,9 +6,17 @@ const useUpdateUserStatus = () => {
     const queryClient = useQueryClient();
 
     return useMutation(
-        ({ _id, verify }) => axiosSecure.patch(`/admin/users/${_id}`, { verify }),
+        async ({ id, verify }) => {
+            const res = await axiosSecure.patch(`/admin/users/${id}`, { verify });
+            return res.data;
+        },
         {
-            onSuccess: () => queryClient.invalidateQueries(["adminUsers"]),
+            onSuccess: () => {
+                queryClient.invalidateQueries(["adminUsers"]);
+            },
+            onError: (error) => {
+                console.error("Error updating user status:", error);
+            },
         }
     );
 };

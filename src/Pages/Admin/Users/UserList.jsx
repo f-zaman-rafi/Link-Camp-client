@@ -1,16 +1,22 @@
 import React from 'react';
 import Loading from '../../Loading/Loading';
 import useAdminUsers from '../../../Hooks/Admin/useAdminUsers/useAdminUsers';
+import useUpdateUserStatus from '../../../Hooks/Admin/useUpdateUserStatus/useUpdateUserStatus';
 
 const UserList = () => {
-
     const { users, isLoading, isError } = useAdminUsers();
+    const { mutate: updateUserStatus } = useUpdateUserStatus();
 
-    if (isLoading) return <Loading />
-    if (isError) return <p>getting error...</p>
+    if (isLoading) return <Loading />;
+    if (isError) return <p>Getting error...</p>;
+
+    // Handle change of verification status
+    const handleStatusChange = (id, newStatus) => {
+        updateUserStatus({ id, verify: newStatus });
+    };
 
     return (
-        <div className='py-10'>
+        <div className="py-10">
             <div className="overflow-x-auto">
                 <table className="table">
                     {/* head */}
@@ -23,7 +29,7 @@ const UserList = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {/* row 1 */}
+                        {/* Render each user */}
                         {
                             users.map((user) => (
                                 <tr key={user._id}>
@@ -47,22 +53,29 @@ const UserList = () => {
                                         <br />
                                         <span className="badge badge-ghost badge-sm">{user.department}</span>
                                     </td>
-                                    <td>{user.verify}</td>
+                                    <td>
+                                        {/* Status Dropdown */}
+                                        <select
+                                            className="select select-bordered"
+                                            value={user.verify}
+                                            onChange={(e) => handleStatusChange(user._id, e.target.value)}
+                                        >
+                                            <option value="pending">Pending</option>
+                                            <option value="approved">Approved</option>
+                                            <option value="blocklisted">Blocklisted</option>
+                                        </select>
+                                    </td>
                                     <th>
                                         <button className="btn btn-ghost btn-xs">details</button>
                                     </th>
                                 </tr>
                             ))
                         }
-
                     </tbody>
-
                 </table>
             </div>
-
         </div>
     );
 };
 
 export default UserList;
-
