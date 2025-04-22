@@ -53,7 +53,7 @@ const AdminDashboard = () => {
     };
 
     return (
-        <div className="w-full h-screen bg-gray-100">
+        <div className="w-full h-screen ">
             {/* Main Content */}
             <div className="flex-1 p-4">
                 {/* Dashboard Section */}
@@ -89,7 +89,7 @@ const AdminDashboard = () => {
 
                 {/* Members Section */}
                 <div className="mt-8">
-                    <h1 className="text-xl font-bold mb-4">Members</h1>
+                    <h1 className="text-xl font-bold mb-4">Members<sub className="bg-blue-200 px-2 py-1 mx-2 rounded-full text-sm">{users.filter((user) => user.verify !== "blocklisted").length}</sub></h1>
                     <table className="table w-full">
                         <thead>
                             <tr>
@@ -115,10 +115,10 @@ const AdminDashboard = () => {
                                             <span>{user.email}</span>
                                             <span
                                                 className={`px-2 py-[1px] text-xs rounded w-min ${user?.userType === "student"
-                                                        ? "bg-green-200"
-                                                        : user?.userType === "teacher"
-                                                            ? "bg-red-200"
-                                                            : "bg-gray-300"
+                                                    ? "bg-green-200"
+                                                    : user?.userType === "teacher"
+                                                        ? "bg-red-200"
+                                                        : "bg-gray-300"
                                                     }`}
                                             >
                                                 {user?.userType}

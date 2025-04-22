@@ -5,7 +5,7 @@ import DashNav from '../AdminDashboard/DashNav/DashNav';
 const DashLayout = () => {
     return (
         <>
-            <div className='flex flex-col md:flex-row'>
+            <div className='flex flex-col md:flex-row bg-gray-100'>
                 <DashNav />
                 <Outlet />
             </div>
