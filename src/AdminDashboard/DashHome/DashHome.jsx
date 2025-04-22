@@ -3,7 +3,7 @@ import useAdminUsers from "../../Hooks/Admin/useAdminUsers/useAdminUsers";
 import useUpdateUserStatus from "../../Hooks/Admin/useUpdateUserStatus/useUpdateUserStatus";
 import Loading from "../../Pages/Loading/Loading";
 import toast from "react-hot-toast";
-import { FaEdit } from "react-icons/fa";
+import { FaEdit, FaSort } from "react-icons/fa";
 
 const AdminDashboard = () => {
     const { users: fetchedUsers, isLoading, isError } = useAdminUsers();
@@ -11,6 +11,7 @@ const AdminDashboard = () => {
     const [users, setUsers] = useState([]);
     const [selectedUser, setSelectedUser] = useState(null);
     const [newStatus, setNewStatus] = useState("");
+    const [sortOrder, setSortOrder] = useState("asc"); // Ascending or Descending
 
     useEffect(() => {
         setUsers(fetchedUsers);
@@ -38,6 +39,17 @@ const AdminDashboard = () => {
             toast.error("Failed to update user status.");
             console.error("Error updating user status:", error.response?.data || error.message);
         }
+    };
+
+    const handleSortByStatus = () => {
+        const statusOrder = ["pending", "blocklisted", "approved"];
+        const sortedUsers = [...users].sort((a, b) => {
+            const aIndex = statusOrder.indexOf(a.verify);
+            const bIndex = statusOrder.indexOf(b.verify);
+            return sortOrder === "asc" ? aIndex - bIndex : bIndex - aIndex;
+        });
+        setUsers(sortedUsers);
+        setSortOrder(sortOrder === "asc" ? "desc" : "asc"); // Toggle sort order
     };
 
     return (
@@ -77,30 +89,41 @@ const AdminDashboard = () => {
 
                 {/* Members Section */}
                 <div className="mt-8">
-                    <h1 className="text-xl font-bold mb-4">Members <sub className="bg-blue-200 px-2 py-1 rounded-full text-sm">{users.length}</sub></h1>
-                    <div className="flex flex-col sm:flex-row gap-4 mb-4">
-                        <input
-                            type="text"
-                            placeholder="Enter email"
-                            className="input input-bordered flex-1"
-                        />
-                        <button className="btn btn-primary">Search</button>
-                    </div>
+                    <h1 className="text-xl font-bold mb-4">Members</h1>
                     <table className="table w-full">
                         <thead>
                             <tr>
                                 <th>Email</th>
                                 <th>ID</th>
-                                <th>Status</th>
+                                <th>
+                                    <div className="flex items-center gap-2">
+                                        Status
+                                        <FaSort
+                                            className="cursor-pointer text-gray-500"
+                                            onClick={handleSortByStatus}
+                                        />
+                                    </div>
+                                </th>
                                 <th>Details</th>
                             </tr>
                         </thead>
                         <tbody>
                             {users.map((user) => (
                                 <tr key={user._id}>
-                                    <td className="flex flex-col space-y-5">
-                                        <span>{user.email}</span>
-                                        <span>{user.userType}</span>
+                                    <td>
+                                        <div className="flex flex-col space-y-1">
+                                            <span>{user.email}</span>
+                                            <span
+                                                className={`px-2 py-[1px] text-xs rounded w-min ${user?.userType === "student"
+                                                        ? "bg-green-200"
+                                                        : user?.userType === "teacher"
+                                                            ? "bg-red-200"
+                                                            : "bg-gray-300"
+                                                    }`}
+                                            >
+                                                {user?.userType}
+                                            </span>
+                                        </div>
                                     </td>
                                     <td className="flex flex-col">
                                         <span>{user.user_id}</span>
@@ -112,9 +135,7 @@ const AdminDashboard = () => {
                                             <FaEdit
                                                 className="text-red-600"
                                                 onClick={() => handleEditClick(user)}
-                                            >
-
-                                            </FaEdit>
+                                            />
                                         </div>
                                     </td>
                                     <td>
