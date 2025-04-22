@@ -22,12 +22,10 @@ const SignUp = () => {
 
   const onSubmit = (data) => {
     signUp(data.email, data.password)
-      .then((result) => {
-        const user = result.user;
-        console.log(user);
+      .then(() => {
         const userInfo = {
           email: data.email,
-          id: data.userID,
+          user_id: data.Id,
           userType: data.userType,
           department: data.department,
           session: data.session,
@@ -121,7 +119,7 @@ const SignUp = () => {
               {/* Conditional Fields for Student */}
               {selectedUserType === "student" && (
                 <>
-                  <label className="label" htmlFor="userID">
+                  <label className="label" htmlFor="Student ID">
                     Student ID
                   </label>
                   <input
@@ -129,7 +127,7 @@ const SignUp = () => {
                     id="Student ID"
                     className="input"
                     placeholder="Student ID"
-                    {...register("studentId", {
+                    {...register("Id", {
                       required: "Student ID is required",
                     })}
                   />
@@ -188,7 +186,7 @@ const SignUp = () => {
                     id="teacher ID"
                     className="input"
                     placeholder="Teacher ID"
-                    {...register("teacherId", {
+                    {...register("Id", {
                       required: "Teacher ID is required",
                     })}
                   />
