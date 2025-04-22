@@ -1,24 +1,22 @@
 import useAxiosSecure from "../../useAxiosSecure";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 
 const useUpdateUserStatus = () => {
     const axiosSecure = useAxiosSecure();
     const queryClient = useQueryClient();
 
-    return useMutation(
-        async ({ id, verify }) => {
+    const updateUserStatus = async ({ id, verify }) => {
+        try {
             const res = await axiosSecure.patch(`/admin/users/${id}`, { verify });
+            queryClient.invalidateQueries(["adminUsers"]);
             return res.data;
-        },
-        {
-            onSuccess: () => {
-                queryClient.invalidateQueries(["adminUsers"]);
-            },
-            onError: (error) => {
-                console.error("Error updating user status:", error);
-            },
+        } catch (error) {
+            console.error("Error updating user status:", error);
+            throw error;
         }
-    );
+    };
+
+    return { updateUserStatus };
 };
 
 export default useUpdateUserStatus;

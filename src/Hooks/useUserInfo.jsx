@@ -10,8 +10,7 @@ const useUserInfo = () => {
     const { data: userInfo, isLoading, refetch } = useQuery({
         queryKey: ["user", user?.email],
         queryFn: async () => {
-            // Add a 2-second delay
-            await new Promise((resolve) => setTimeout(resolve, 2000));
+            await new Promise((resolve) => setTimeout(resolve, 1000));
             const res = await axiosSecure.get(`/user/${user.email}`);
             return res.data;
         },

@@ -36,7 +36,7 @@ const RightNavbar = () => {
               <Link to='/user-list'><p>Users</p></Link>
             </li>
             <li>
-              <p>Posts</p>
+              <Link to='/admin-dash'><p>Admin-Panel</p></Link>
             </li>
             <li onClick={logOut}>
               <p>Sign Out</p>
