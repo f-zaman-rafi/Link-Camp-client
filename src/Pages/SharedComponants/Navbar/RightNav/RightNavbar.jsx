@@ -22,7 +22,7 @@ const RightNavbar = () => {
         <div className="drawer-content">
           {/* Page content here */}
           <label htmlFor="my-drawer-4" className="drawer-button">
-            <IoPersonCircleSharp />
+            <img src={userInfo.photo} className="w-10 h-10 rounded-full" alt="User" />
           </label>
         </div>
         <div className="drawer-side">

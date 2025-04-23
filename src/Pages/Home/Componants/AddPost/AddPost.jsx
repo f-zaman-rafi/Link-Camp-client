@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import { FaPhotoVideo, FaSmile, FaUserFriends } from "react-icons/fa";
+import useUserInfo from "../../../../Hooks/useUserInfo";
 
 const AddPost = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-
+  const { userInfo } = useUserInfo();
   const openModal = () => {
     setIsModalOpen(true);
   };
@@ -17,7 +18,7 @@ const AddPost = () => {
       {/* Main Add Post Section */}
       <div className="bg-white p-4 rounded-xl shadow">
         <div className="flex items-center gap-4">
-          <img src="/user.jpg" className="w-10 h-10 rounded-full" alt="User" />
+          <img src={userInfo.photo} className="w-10 h-10 rounded-full" alt="User" />
           <input
             type="text"
             placeholder="What's on your mind?"

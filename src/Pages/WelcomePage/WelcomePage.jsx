@@ -2,10 +2,12 @@ import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import useAxiosSecure from '../../Hooks/useAxiosSecure';
+import Loading from '../Loading/Loading';
 
 const WelcomePage = () => {
     const { register, handleSubmit, formState: { errors } } = useForm();
     const [photo, setPhoto] = useState(null);
+    const [isLoading, setIsLoading] = useState(false); // Loading state
     const navigate = useNavigate();
     const axiosSecure = useAxiosSecure();
 
@@ -13,7 +15,10 @@ const WelcomePage = () => {
         setPhoto(e.target.files[0]);
     };
 
+    if (isLoading) return <Loading />
+
     const onSubmit = async (data) => {
+        setIsLoading(true);
         try {
             let photoUrl = null;
             if (photo) {
@@ -31,10 +36,13 @@ const WelcomePage = () => {
             // Update the user's name
             const response = await axiosSecure.patch('/user/name', { name: data.name });
             console.log(response.data.message);
+
             navigate('/');
         } catch (error) {
             console.error("Error:", error.response?.data?.message || error.message);
             alert(error.response?.data?.message || "Failed to update name or upload photo");
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -63,9 +71,11 @@ const WelcomePage = () => {
                     />
                     <button
                         type="submit"
-                        className="btn bg-red-500 text-white px-6 py-2 rounded-lg text-lg hover:bg-red-600 transition duration-300"
+                        className={`btn text-white px-6 py-2 rounded-lg text-lg transition duration-300 ${isLoading ? 'bg-gray-400 cursor-not-allowed' : 'bg-red-500 hover:bg-red-600'
+                            }`}
+                        disabled={isLoading}
                     >
-                        Next
+                        {isLoading ? 'Loading...' : 'Next'}
                     </button>
                 </form>
             </div>
