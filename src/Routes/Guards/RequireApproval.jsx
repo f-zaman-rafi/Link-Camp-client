@@ -12,7 +12,7 @@ const RequireApproval = ({ children }) => {
 
 
     useEffect(() => {
-        const timer = setTimeout(() => setDelayed(false), 2000);
+        const timer = setTimeout(() => setDelayed(false), 1000);
         return () => clearTimeout(timer);
     }, [])
 

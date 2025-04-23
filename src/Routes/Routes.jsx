@@ -14,6 +14,8 @@ import UserList from "../Pages/Admin/Users/UserList";
 import RequireRole from "./Guards/RequireRole";
 import DashHome from "../AdminDashboard/DashHome/DashHome";
 import DashLayout from "../Layout/DashLayout";
+import WelcomePage from "../Pages/WelcomePage/WelcomePage";
+import RequireAdmin from "./Guards/RequireAdmin";
 
 export const router = createBrowserRouter([
   {
@@ -32,6 +34,7 @@ export const router = createBrowserRouter([
       </AuthGuard>
     ),
   },
+
   {
     path: "/pending-request",
     element: <RequireApproval><PendingPage /></RequireApproval>
@@ -56,12 +59,16 @@ export const router = createBrowserRouter([
         path: "/noticeboard",
         element: <NoticeFeed />,
       },
+      {
+        path: "/welcome",
+        element: <WelcomePage />
+      },
 
     ],
   },
   {
     path: "/admin-dash",
-    element: <DashLayout />,
+    element: <RequireAdmin><DashLayout /></RequireAdmin>,
     children: [
       {
         path: "/admin-dash",

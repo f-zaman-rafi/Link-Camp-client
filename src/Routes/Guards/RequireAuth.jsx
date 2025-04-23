@@ -24,6 +24,9 @@ const RequireAuth = ({ children }) => {
   if (userInfo.verify === "pending") {
     return <Navigate to="/pending-request" state={{ from: location }} replace={true} />;
   }
+  if (userInfo.name === "") {
+    return <Navigate to="/welcome" state={{ from: location }} replace={true} />;
+  }
   return children;
 };
 

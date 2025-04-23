@@ -11,7 +11,8 @@ const AdminDashboard = () => {
     const [users, setUsers] = useState([]);
     const [selectedUser, setSelectedUser] = useState(null);
     const [newStatus, setNewStatus] = useState("");
-    const [sortOrder, setSortOrder] = useState("asc"); // Ascending or Descending
+    const [sortOrder, setSortOrder] = useState("asc");
+
 
     useEffect(() => {
         setUsers(fetchedUsers);

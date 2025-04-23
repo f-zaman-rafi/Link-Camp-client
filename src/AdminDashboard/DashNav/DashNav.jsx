@@ -1,8 +1,11 @@
 import React from 'react';
 import { FaBars, FaPeopleArrows } from "react-icons/fa";
 import { IoLogOutOutline, IoSettingsOutline, IoHelpOutline, IoLockClosedOutline } from "react-icons/io5";
+import useAuth from '../../Hooks/useAuth';
 
 const DashNav = () => {
+
+    const { logOut } = useAuth();
 
     return (
         <div className="w-full md:w-64 bg-blue-400 text-black">
@@ -32,7 +35,7 @@ const DashNav = () => {
                     <IoLockClosedOutline />
                     <span>Password</span>
                 </li>
-                <li className="flex items-center gap-4 p-2 rounded-lg cursor-pointer">
+                <li className="flex items-center gap-4 p-2 rounded-lg cursor-pointer" onClick={logOut}>
                     <IoLogOutOutline />
                     <span>Sign Out</span>
                 </li>
