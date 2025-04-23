@@ -7,7 +7,7 @@ import Loading from '../Loading/Loading';
 const WelcomePage = () => {
     const { register, handleSubmit, formState: { errors } } = useForm();
     const [photo, setPhoto] = useState(null);
-    const [isLoading, setIsLoading] = useState(false); // Loading state
+    const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
     const axiosSecure = useAxiosSecure();
 

@@ -50,12 +50,8 @@ const AddPost = () => {
               </button>
             </div>
             <div className="flex items-center gap-4 mb-4">
-              <img
-                src="/user.jpg"
-                className="w-10 h-10 rounded-full"
-                alt="User"
-              />
-              <p className="font-medium">Your Name</p>
+              <img src={userInfo.photo} className="w-10 h-10 rounded-full" alt="User" />
+              <p className="font-medium">{userInfo.name}</p>
             </div>
             <textarea
               className="w-full p-3 border rounded-lg outline-none"
