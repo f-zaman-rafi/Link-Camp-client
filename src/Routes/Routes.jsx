@@ -16,6 +16,7 @@ import DashHome from "../AdminDashboard/DashHome/DashHome";
 import DashLayout from "../Layout/DashLayout";
 import WelcomePage from "../Pages/WelcomePage/WelcomePage";
 import RequireAdmin from "./Guards/RequireAdmin";
+import RequireNewbie from "./Guards/RequireNewbie";
 
 export const router = createBrowserRouter([
   {
@@ -40,6 +41,10 @@ export const router = createBrowserRouter([
     element: <RequireApproval><PendingPage /></RequireApproval>
   },
   {
+    path: "/welcome",
+    element: <RequireNewbie><WelcomePage /></RequireNewbie>
+  },
+  {
     path: "/",
     element: (
       <RequireAuth>
@@ -59,10 +64,7 @@ export const router = createBrowserRouter([
         path: "/noticeboard",
         element: <NoticeFeed />,
       },
-      {
-        path: "/welcome",
-        element: <WelcomePage />
-      },
+
 
     ],
   },
