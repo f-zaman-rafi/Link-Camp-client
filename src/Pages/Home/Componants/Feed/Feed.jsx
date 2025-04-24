@@ -129,7 +129,7 @@ const Feed = () => {
                     )}
 
                     {/* Post Actions */}
-                    <div className="flex justify-between items-center border-t pt-4">
+                    <div className="flex justify-between items-center border-t border-gray-200 pt-4">
                         <div className="flex items-center gap-4">
                             <button
                                 className={`flex items-center justify-center ${userVotes[post._id] === "upvote"

@@ -1,9 +1,15 @@
 import React from 'react';
+import useUserInfo from '../../../Hooks/useUserInfo';
+import AddNotice from '../Component/AddNotice/AddNotice';
+import NoticeboardFeed from '../Component/NoticeboardFeed/NoticeboardFeed';
 
 const NoticeboardPage = () => {
+    const { userInfo } = useUserInfo();
+
     return (
         <div>
-            <p>This is noticeboard page!</p>
+            <div className={`${userInfo.userType !== "admin" ? "hidden" : ""}`}><AddNotice /></div>
+            <NoticeboardFeed />
         </div>
     );
 };

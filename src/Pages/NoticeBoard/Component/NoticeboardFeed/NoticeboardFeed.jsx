@@ -4,7 +4,7 @@ import useAxiosSecure from "../../../../Hooks/useAxiosSecure";
 import Loading from "../../../Loading/Loading";
 import { FaComment } from "react-icons/fa";
 
-const AnnouncementFeed = () => {
+const NoticeboardFeed = () => {
     const axiosSecure = useAxiosSecure();
 
     // Utility function to calculate relative time
@@ -33,20 +33,20 @@ const AnnouncementFeed = () => {
         }
     };
 
-    // Fetch announcements
-    const { data: announcements = [], isLoading: announcementsLoading } = useQuery({
-        queryKey: ["announcements"],
+    // Fetch notices
+    const { data: notices = [], isLoading: noticesLoading } = useQuery({
+        queryKey: ["notices"],
         queryFn: async () => {
-            const response = await axiosSecure.get("/teacher/announcements");
+            const response = await axiosSecure.get("/admin/notices");
             return response.data;
         },
     });
 
-    if (announcementsLoading) return <Loading />;
+    if (noticesLoading) return <Loading />;
 
     return (
         <div className="space-y-6 py-6">
-            {announcements.map((announcement) => (
+            {notices.map((announcement) => (
                 <div
                     key={announcement._id}
                     className="bg-white shadow-md rounded-lg p-4 max-w-2xl mx-auto"
@@ -95,4 +95,4 @@ const AnnouncementFeed = () => {
     );
 };
 
-export default AnnouncementFeed;
+export default NoticeboardFeed;
