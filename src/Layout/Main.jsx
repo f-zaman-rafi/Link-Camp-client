@@ -20,7 +20,7 @@ const Main = () => {
           </div>
 
           {/* Center Navbar */}
-          <div className="w-full lg:w-1/2 border-x border-gray-200">
+          <div className="w-full lg:w-1/2 border-x border-gray-200 px-2">
             <CenterNavbar type="center" />
             <div className="">
               <Outlet />

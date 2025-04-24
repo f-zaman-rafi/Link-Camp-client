@@ -1,15 +1,17 @@
 import React, { useState } from "react";
-import { FaPhotoVideo, FaSmile, FaUserFriends } from "react-icons/fa";
 import useUserInfo from "../../../../Hooks/useUserInfo";
 import useAxiosSecure from "../../../../Hooks/useAxiosSecure";
+import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 const AddPost = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [content, setContent] = useState(""); // For post content
-  const [photo, setPhoto] = useState(null); // For photo upload
-  const [isLoading, setIsLoading] = useState(false); // Loading state
+  const [content, setContent] = useState("");
+  const [photo, setPhoto] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
   const { userInfo } = useUserInfo();
   const axiosSecure = useAxiosSecure();
+  const navigate = useNavigate();
 
   const openModal = () => {
     setIsModalOpen(true);
@@ -17,12 +19,12 @@ const AddPost = () => {
 
   const closeModal = () => {
     setIsModalOpen(false);
-    setContent(""); // Reset content
-    setPhoto(null); // Reset photo
+    setContent("");
+    setPhoto(null);
   };
 
   const handlePhotoChange = (e) => {
-    setPhoto(e.target.files[0]); // Store the selected photo
+    setPhoto(e.target.files[0]);
   };
 
   const handlePostSubmit = async () => {
@@ -31,7 +33,7 @@ const AddPost = () => {
       return;
     }
 
-    setIsLoading(true); // Start loading
+    setIsLoading(true);
     try {
       const formData = new FormData();
       formData.append("content", content);
@@ -39,18 +41,18 @@ const AddPost = () => {
         formData.append("photo", photo);
       }
 
-      const response = await axiosSecure.post("/user/post", formData, {
+      await axiosSecure.post("/user/post", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
-      console.log("Post created:", response.data);
-      alert("Post created successfully!");
-      closeModal(); // Close modal after successful post
+      toast.success("Post created successfully!");
+      closeModal();
+      navigate("/");
     } catch (error) {
       console.error("Error creating post:", error.response?.data?.message || error.message);
       alert(error.response?.data?.message || "Failed to create post");
     } finally {
-      setIsLoading(false); // Stop loading
+      setIsLoading(false);
     }
   };
 
@@ -64,7 +66,7 @@ const AddPost = () => {
             type="text"
             placeholder="What's on your mind?"
             className="flex-1 bg-gray-100 p-3 rounded-full outline-none"
-            onClick={openModal} // Open modal on click
+            onClick={openModal}
           />
         </div>
         <div className="mt-4 flex justify-between px-5">
@@ -99,30 +101,41 @@ const AddPost = () => {
               rows="4"
               placeholder="What's on your mind?"
               value={content}
-              onChange={(e) => setContent(e.target.value)} // Update content state
+              onChange={(e) => setContent(e.target.value)}
             ></textarea>
             <div className="mt-4">
+              <label
+                htmlFor="photo-upload"
+                className="flex items-center gap-2 px-4 py-2 bg-none text-gray-600 border rounded-lg cursor-pointer hover:bg-blue-200"
+              >
+                📷 Upload Photo
+              </label>
               <input
+                id="photo-upload"
                 type="file"
                 accept="image/*"
-                onChange={handlePhotoChange} // Handle photo upload
-                className="mb-4"
+                onChange={handlePhotoChange}
+                className="hidden"
               />
+              {photo && (
+                <p className="mt-2 text-sm text-gray-600">
+                  Selected file: <span className="font-medium">{photo.name}</span>
+                </p>
+              )}
             </div>
             <div className="mt-4 border-t pt-4">
               <div className="flex justify-end gap-2">
                 <button
                   className="px-4 py-2 bg-gray-300 rounded-lg"
                   onClick={closeModal}
-                  disabled={isLoading} // Disable button while loading
-                >
+                  disabled={isLoading}>
                   Cancel
                 </button>
                 <button
                   className={`px-4 py-2 rounded-lg text-white ${isLoading ? "bg-gray-400 cursor-not-allowed" : "bg-blue-500 hover:bg-blue-600"
                     }`}
                   onClick={handlePostSubmit}
-                  disabled={isLoading} // Disable button while loading
+                  disabled={isLoading}
                 >
                   {isLoading ? "Posting..." : "Post"}
                 </button>

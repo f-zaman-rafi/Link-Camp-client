@@ -91,7 +91,7 @@ const Feed = () => {
     if (postsLoading || votesLoading || voteCountsLoading) return <Loading />;
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-6 py-6">
             {posts.map((post) => (
                 <div
                     key={post._id}

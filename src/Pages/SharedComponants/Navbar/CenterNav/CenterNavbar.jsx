@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { HiHome } from "react-icons/hi";
+import { HiHome, HiSpeakerphone } from "react-icons/hi";
 import { MdAnnouncement } from "react-icons/md";
-import { FaEdit } from "react-icons/fa";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+
 
 const CenterNavbar = () => {
   const navigate = useNavigate();
@@ -19,7 +19,7 @@ const CenterNavbar = () => {
 
 
   return (
-    <div className="tabs flex justify-center">
+    <div className="tabs flex justify-center mt-2">
       <label
         className={`tab flex-1 ${activeTab !== "/"
           ? "hover:bg-gray-200 hover:rounded-full duration-200"
@@ -37,6 +37,22 @@ const CenterNavbar = () => {
       </label>
 
       <label
+        className={`tab flex-1 ${activeTab !== "/announcement"
+          ? "hover:bg-gray-200 hover:rounded-full duration-200"
+          : ""
+          }`}
+      >
+        <input
+          type="radio"
+          name="tabs"
+          className="peer hidden"
+          checked={activeTab === "/announcement"}
+          onChange={() => handleNavigation("/announcement")}
+        />
+        <MdAnnouncement className="text-3xl peer-checked:text-red-600 peer-checked:border-b-2 peer-checked:pb-2 duration-200" />
+      </label>
+
+      <label
         className={`tab flex-1 ${activeTab !== "/noticeboard"
           ? "hover:bg-gray-200 hover:rounded-full duration-200"
           : ""
@@ -49,23 +65,8 @@ const CenterNavbar = () => {
           checked={activeTab === "/noticeboard"}
           onChange={() => handleNavigation("/noticeboard")}
         />
-        <MdAnnouncement className="text-3xl peer-checked:text-red-600 peer-checked:border-b-2 peer-checked:pb-2 duration-200" />
-      </label>
-
-      <label
-        className={`tab flex-1 ${activeTab !== "/add-post"
-          ? "hover:bg-gray-200 hover:rounded-full duration-200"
-          : ""
-          }`}
-      >
-        <input
-          type="radio"
-          name="tabs"
-          className="peer hidden"
-          checked={activeTab === "/add-post"}
-          onChange={() => handleNavigation("/add-post")}
-        />
-        <FaEdit className="text-3xl peer-checked:text-red-600 peer-checked:border-b-2 peer-checked:pb-2 duration-200" />
+        <HiSpeakerphone
+          className="text-3xl peer-checked:text-red-600 peer-checked:border-b-2 peer-checked:pb-2 duration-200" />
       </label>
     </div>
   );

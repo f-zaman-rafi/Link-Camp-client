@@ -5,8 +5,6 @@ import React from "react";
 import SignIn from "../Pages/Sign-In/SignIn";
 import SignUp from "../Pages/Sign-up/SignUp";
 import RequireAuth from "./Guards/RequireAuth";
-import AddPost from "../Pages/AddPost/AddPost";
-import NoticeFeed from "../Pages/NoticeBoard/NoticeFeed";
 import PendingPage from "../Pages/PendingPage/PendingPage";
 import AuthGuard from "./Guards/AuthGuard";
 import RequireApproval from "./Guards/RequireApproval";
@@ -17,6 +15,8 @@ import DashLayout from "../Layout/DashLayout";
 import WelcomePage from "../Pages/WelcomePage/WelcomePage";
 import RequireAdmin from "./Guards/RequireAdmin";
 import RequireNewbie from "./Guards/RequireNewbie";
+import AnnouncementPage from "../Pages/Announcement/AnnouncementPage/AnnouncementPage";
+import NoticeboardPage from "../Pages/NoticeBoard/NoticeboardPage/NoticeboardPage";
 
 export const router = createBrowserRouter([
   {
@@ -57,12 +57,12 @@ export const router = createBrowserRouter([
         element: <Homepage />,
       },
       {
-        path: "/add-post",
-        element: <AddPost />,
+        path: "/noticeboard",
+        element: <NoticeboardPage />,
       },
       {
-        path: "/noticeboard",
-        element: <NoticeFeed />,
+        path: "/announcement",
+        element: <AnnouncementPage />,
       },
 
 

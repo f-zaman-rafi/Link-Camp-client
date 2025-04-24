@@ -31,11 +31,10 @@ const Navbar = () => {
 
       <div className="tabs flex justify-center border-2">
         <label
-          className={`tab flex-1 mx-14 ${
-            activeTab !== "/"
-              ? "hover:bg-gray-200 hover:rounded-full duration-200"
-              : ""
-          }`}
+          className={`tab flex-1 mx-14 ${activeTab !== "/"
+            ? "hover:bg-gray-200 hover:rounded-full duration-200"
+            : ""
+            }`}
         >
           <input
             type="radio"
@@ -48,11 +47,26 @@ const Navbar = () => {
         </label>
 
         <label
-          className={`tab flex-1 mx-14 ${
-            activeTab !== "/noticeboard"
-              ? "hover:bg-gray-200 hover:rounded-full duration-200"
-              : ""
-          }`}
+          className={`tab flex-1 mx-14 ${activeTab !== "/announcement"
+            ? "hover:bg-gray-200 hover:rounded-full duration-200"
+            : ""
+            }`}
+        >
+          <input
+            type="radio"
+            name="tabs"
+            className="peer hidden"
+            checked={activeTab === "/announcement"}
+            onChange={() => handleNavigation("/announcement")}
+          />
+          <MdAnnouncement className="text-3xl peer-checked:text-red-600 peer-checked:border-b-2 peer-checked:pb-2 duration-200" />
+        </label>
+
+        <label
+          className={`tab flex-1 mx-14 ${activeTab !== "/noticeboard"
+            ? "hover:bg-gray-200 hover:rounded-full duration-200"
+            : ""
+            }`}
         >
           <input
             type="radio"
@@ -60,23 +74,6 @@ const Navbar = () => {
             className="peer hidden"
             checked={activeTab === "/noticeboard"}
             onChange={() => handleNavigation("/noticeboard")}
-          />
-          <MdAnnouncement className="text-3xl peer-checked:text-red-600 peer-checked:border-b-2 peer-checked:pb-2 duration-200" />
-        </label>
-
-        <label
-          className={`tab flex-1 mx-14 ${
-            activeTab !== "/add-post"
-              ? "hover:bg-gray-200 hover:rounded-full duration-200"
-              : ""
-          }`}
-        >
-          <input
-            type="radio"
-            name="tabs"
-            className="peer hidden"
-            checked={activeTab === "/add-post"}
-            onChange={() => handleNavigation("/add-post")}
           />
           <FaEdit className="text-3xl peer-checked:text-red-600 peer-checked:border-b-2 peer-checked:pb-2 duration-200" />
         </label>
