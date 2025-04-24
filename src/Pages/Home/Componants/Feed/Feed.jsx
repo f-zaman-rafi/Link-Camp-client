@@ -9,6 +9,32 @@ const Feed = () => {
     const axiosSecure = useAxiosSecure();
     const queryClient = useQueryClient();
 
+    // Utility function to calculate relative time
+    const getRelativeTime = (createdAt) => {
+        const now = new Date();
+        const postDate = new Date(createdAt);
+        const diffInSeconds = Math.floor((now - postDate) / 1000);
+
+        if (diffInSeconds < 60) {
+            return `${diffInSeconds} seconds ago`;
+        } else if (diffInSeconds < 3600) {
+            const minutes = Math.floor(diffInSeconds / 60);
+            return `${minutes} minute${minutes > 1 ? "s" : ""} ago`;
+        } else if (diffInSeconds < 86400) {
+            const hours = Math.floor(diffInSeconds / 3600);
+            return `${hours} hour${hours > 1 ? "s" : ""} ago`;
+        } else if (diffInSeconds < 2592000) {
+            const days = Math.floor(diffInSeconds / 86400);
+            return `${days} day${days > 1 ? "s" : ""} ago`;
+        } else if (diffInSeconds < 31536000) {
+            const months = Math.floor(diffInSeconds / 2592000);
+            return `${months} month${months > 1 ? "s" : ""} ago`;
+        } else {
+            const years = Math.floor(diffInSeconds / 31536000);
+            return `${years} year${years > 1 ? "s" : ""} ago`;
+        }
+    };
+
     // Fetch posts
     const { data: posts = [], isLoading: postsLoading } = useQuery({
         queryKey: ["posts"],
@@ -30,6 +56,21 @@ const Feed = () => {
         },
     });
 
+    // Fetch vote counts
+    const { data: voteCounts = {}, isLoading: voteCountsLoading } = useQuery({
+        queryKey: ["voteCounts"],
+        queryFn: async () => {
+            const response = await axiosSecure.get("/voteCounts");
+            return response.data.reduce((acc, voteCount) => {
+                acc[voteCount._id] = {
+                    upvotes: voteCount.upvotes,
+                    downvotes: voteCount.downvotes,
+                };
+                return acc;
+            }, {});
+        },
+    });
+
     // Mutation for handling votes
     const voteMutation = useMutation({
         mutationFn: async ({ postId, voteType }) => {
@@ -37,8 +78,9 @@ const Feed = () => {
             return response.data;
         },
         onSuccess: () => {
-            // Refetch votes after a successful mutation
+            // Refetch votes and vote counts after a successful mutation
             queryClient.invalidateQueries({ queryKey: ["votes"] });
+            queryClient.invalidateQueries({ queryKey: ["voteCounts"] });
         },
     });
 
@@ -46,7 +88,7 @@ const Feed = () => {
         voteMutation.mutate({ postId, voteType });
     };
 
-    if (postsLoading || votesLoading) return <p><Loading /></p>;
+    if (postsLoading || votesLoading || voteCountsLoading) return <Loading />;
 
     return (
         <div className="space-y-6">
@@ -70,7 +112,7 @@ const Feed = () => {
                                 </span>
                             </p>
                             <p className="text-sm text-gray-500">
-                                {new Date(post.createdAt).toLocaleString()}
+                                {getRelativeTime(post.createdAt)}
                             </p>
                         </div>
                     </div>
@@ -101,6 +143,9 @@ const Feed = () => {
                                 ) : (
                                     <BiUpvote className="text-xl" />
                                 )}
+                                <span className="ml-2 text-sm">
+                                    {voteCounts[post._id]?.upvotes || 0}
+                                </span>
                             </button>
                             <button
                                 className={`flex items-center justify-center ${userVotes[post._id] === "downvote"
@@ -114,6 +159,9 @@ const Feed = () => {
                                 ) : (
                                     <BiDownvote className="text-xl" />
                                 )}
+                                <span className="ml-2 text-sm">
+                                    {voteCounts[post._id]?.downvotes || 0}
+                                </span>
                             </button>
                         </div>
                         <div className="flex items-center gap-4">
