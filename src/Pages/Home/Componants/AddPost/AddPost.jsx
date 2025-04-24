@@ -1,16 +1,57 @@
 import React, { useState } from "react";
 import { FaPhotoVideo, FaSmile, FaUserFriends } from "react-icons/fa";
 import useUserInfo from "../../../../Hooks/useUserInfo";
+import useAxiosSecure from "../../../../Hooks/useAxiosSecure";
 
 const AddPost = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [content, setContent] = useState(""); // For post content
+  const [photo, setPhoto] = useState(null); // For photo upload
+  const [isLoading, setIsLoading] = useState(false); // Loading state
   const { userInfo } = useUserInfo();
+  const axiosSecure = useAxiosSecure();
+
   const openModal = () => {
     setIsModalOpen(true);
   };
 
   const closeModal = () => {
     setIsModalOpen(false);
+    setContent(""); // Reset content
+    setPhoto(null); // Reset photo
+  };
+
+  const handlePhotoChange = (e) => {
+    setPhoto(e.target.files[0]); // Store the selected photo
+  };
+
+  const handlePostSubmit = async () => {
+    if (!content && !photo) {
+      alert("Please add some content or upload a photo!");
+      return;
+    }
+
+    setIsLoading(true); // Start loading
+    try {
+      const formData = new FormData();
+      formData.append("content", content);
+      if (photo) {
+        formData.append("photo", photo);
+      }
+
+      const response = await axiosSecure.post("/user/post", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+
+      console.log("Post created:", response.data);
+      alert("Post created successfully!");
+      closeModal(); // Close modal after successful post
+    } catch (error) {
+      console.error("Error creating post:", error.response?.data?.message || error.message);
+      alert(error.response?.data?.message || "Failed to create post");
+    } finally {
+      setIsLoading(false); // Stop loading
+    }
   };
 
   return (
@@ -57,31 +98,33 @@ const AddPost = () => {
               className="w-full p-3 border rounded-lg outline-none"
               rows="4"
               placeholder="What's on your mind?"
+              value={content}
+              onChange={(e) => setContent(e.target.value)} // Update content state
             ></textarea>
+            <div className="mt-4">
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handlePhotoChange} // Handle photo upload
+                className="mb-4"
+              />
+            </div>
             <div className="mt-4 border-t pt-4">
-              <div className="flex items-center gap-4 mb-4">
-                <button className="flex items-center gap-2 text-blue-500">
-                  <FaPhotoVideo />
-                  Photo/Video
-                </button>
-                <button className="flex items-center gap-2 text-yellow-500">
-                  <FaSmile />
-                  Feeling/Activity
-                </button>
-                <button className="flex items-center gap-2 text-green-500">
-                  <FaUserFriends />
-                  Tag Friends
-                </button>
-              </div>
               <div className="flex justify-end gap-2">
                 <button
                   className="px-4 py-2 bg-gray-300 rounded-lg"
                   onClick={closeModal}
+                  disabled={isLoading} // Disable button while loading
                 >
                   Cancel
                 </button>
-                <button className="px-4 py-2 bg-blue-500 text-white rounded-lg">
-                  Post
+                <button
+                  className={`px-4 py-2 rounded-lg text-white ${isLoading ? "bg-gray-400 cursor-not-allowed" : "bg-blue-500 hover:bg-blue-600"
+                    }`}
+                  onClick={handlePostSubmit}
+                  disabled={isLoading} // Disable button while loading
+                >
+                  {isLoading ? "Posting..." : "Post"}
                 </button>
               </div>
             </div>

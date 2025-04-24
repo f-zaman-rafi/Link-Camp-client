@@ -117,6 +117,7 @@ const SignUp = () => {
               )}
 
               {/* Conditional Fields for Student */}
+              {/* Conditional Fields for Student */}
               {selectedUserType === "student" && (
                 <>
                   <label className="label" htmlFor="Student ID">
@@ -131,46 +132,75 @@ const SignUp = () => {
                       required: "Student ID is required",
                     })}
                   />
-                  {errors.studentId && (
-                    <p className="text-red-500 text-xs mt-1">
-                      {errors.studentId.message}
-                    </p>
+                  {errors.Id && (
+                    <p className="text-red-500 text-xs mt-1">{errors.Id.message}</p>
                   )}
 
                   <label className="label" htmlFor="department">
                     Department
                   </label>
-                  <input
-                    type="text"
+                  <select
                     id="department"
                     className="input"
-                    placeholder="Department"
                     {...register("department", {
                       required: "Department is required",
                     })}
-                  />
+                  >
+                    <option value="">Select Department</option>
+                    {[
+                      "Computer Science",
+                      "Electrical Engineering",
+                      "Mechanical Engineering",
+                      "Civil Engineering",
+                      "Business Administration",
+                      "Economics",
+                      "Accounting & Finance",
+                      "English",
+                      "Law",
+                      "Pharmacy",
+                      "Public Health",
+                      "Architecture",
+                      "Mathematics",
+                      "Physics",
+                      "Chemistry",
+                      "Biology",
+                      "Environmental Science",
+                      "Sociology",
+                      "Political Science",
+                      "Psychology",
+                    ].map((dept) => (
+                      <option key={dept} value={dept}>
+                        {dept}
+                      </option>
+                    ))}
+                  </select>
                   {errors.department && (
-                    <p className="text-red-500 text-xs mt-1">
-                      {errors.department.message}
-                    </p>
+                    <p className="text-red-500 text-xs mt-1">{errors.department.message}</p>
                   )}
 
                   <label className="label" htmlFor="session">
                     Session
                   </label>
-                  <input
-                    type="text"
+                  <select
                     id="session"
                     className="input"
-                    placeholder="Session"
                     {...register("session", {
                       required: "Session is required",
                     })}
-                  />
+                  >
+                    <option value="">Select Session</option>
+                    {Array.from({ length: 24 }, (_, i) => {
+                      const startYear = 2002 + i;
+                      const endYear = startYear + 1;
+                      return (
+                        <option key={startYear} value={`${startYear}-${endYear}`}>
+                          {startYear}-{endYear}
+                        </option>
+                      );
+                    })}
+                  </select>
                   {errors.session && (
-                    <p className="text-red-500 text-xs mt-1">
-                      {errors.session.message}
-                    </p>
+                    <p className="text-red-500 text-xs mt-1">{errors.session.message}</p>
                   )}
                 </>
               )}
@@ -199,15 +229,44 @@ const SignUp = () => {
                   <label className="label" htmlFor="department">
                     Department
                   </label>
-                  <input
-                    type="text"
+                  <select
                     id="department"
                     className="input"
-                    placeholder="Department"
                     {...register("department", {
                       required: "Department is required",
                     })}
-                  />
+                  >
+                    <option value="">Select Department</option>
+                    {[
+                      "Computer Science",
+                      "Electrical Engineering",
+                      "Mechanical Engineering",
+                      "Civil Engineering",
+                      "Business Administration",
+                      "Economics",
+                      "Accounting & Finance",
+                      "English",
+                      "Law",
+                      "Pharmacy",
+                      "Public Health",
+                      "Architecture",
+                      "Mathematics",
+                      "Physics",
+                      "Chemistry",
+                      "Biology",
+                      "Environmental Science",
+                      "Sociology",
+                      "Political Science",
+                      "Psychology",
+                    ].map((dept) => (
+                      <option key={dept} value={dept}>
+                        {dept}
+                      </option>
+                    ))}
+                  </select>
+                  {errors.department && (
+                    <p className="text-red-500 text-xs mt-1">{errors.department.message}</p>
+                  )}
                   {errors.department && (
                     <p className="text-red-500 text-xs mt-1">
                       {errors.department.message}
