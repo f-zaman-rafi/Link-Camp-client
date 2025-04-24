@@ -37,7 +37,7 @@ const CenterNavbar = () => {
       </label>
 
       <label
-        className={`tab flex-1 tooltip tooltip-bottom tooltip-neutral${activeTab !== "/announcement"
+        className={`tab flex-1 tooltip tooltip-bottom tooltip-neutral ${activeTab !== "/announcement"
           ? "hover:bg-gray-200 hover:rounded-full duration-200"
           : ""
           }`} data-tip="Announcements"

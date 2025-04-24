@@ -46,7 +46,6 @@ const AddAnnouncement = () => {
             });
 
             toast.success("Post created successfully!");
-            closeModal();
             window.location.reload();
             navigate("/");
         } catch (error) {

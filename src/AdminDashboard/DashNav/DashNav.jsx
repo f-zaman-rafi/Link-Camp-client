@@ -1,11 +1,14 @@
 import React from 'react';
 import { FaBars, FaPeopleArrows } from "react-icons/fa";
-import { IoLogOutOutline, IoSettingsOutline, IoHelpOutline, IoLockClosedOutline } from "react-icons/io5";
+import { IoHomeOutline, IoLogOutOutline, IoSettingsOutline, IoHelpOutline, IoLockClosedOutline } from "react-icons/io5";
+
 import useAuth from '../../Hooks/useAuth';
+import { useNavigate } from 'react-router-dom';
 
 const DashNav = () => {
 
     const { logOut } = useAuth();
+    const navigate = useNavigate();
 
     return (
         <div className="w-full md:w-64 bg-blue-400 text-black">
@@ -34,6 +37,10 @@ const DashNav = () => {
                 <li className="flex items-center gap-4 p-2 rounded-lg cursor-pointer">
                     <IoLockClosedOutline />
                     <span>Password</span>
+                </li>
+                <li className="flex items-center gap-4 p-2 rounded-lg cursor-pointer" onClick={() => navigate('/')}>
+                    <IoHomeOutline />
+                    <span>Get back to Home</span>
                 </li>
                 <li className="flex items-center gap-4 p-2 rounded-lg cursor-pointer" onClick={logOut}>
                     <IoLogOutOutline />

@@ -2,7 +2,12 @@ import React from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import useAxiosSecure from "../../../../Hooks/useAxiosSecure";
 import { FaComment, FaFlag } from "react-icons/fa";
-import { BiUpvote, BiDownvote, BiSolidDownvote, BiSolidUpvote } from "react-icons/bi";
+import {
+    BiUpvote,
+    BiDownvote,
+    BiSolidDownvote,
+    BiSolidUpvote,
+} from "react-icons/bi";
 import Loading from "../../../Loading/Loading";
 
 const Feed = () => {
@@ -107,7 +112,11 @@ const Feed = () => {
                         <div>
                             <p className="font-medium">
                                 {post.user.name}
-                                <span className="mx-2 text-xs px-1 bg-green-200 rounded-full">
+                                <span
+                                    className={`mx-2 text-xs px-1 rounded-full
+                                        ${post.user.user_type === "student" ? "bg-green-200" : ""}    
+                                        ${post.user.user_type === "teacher" ? "bg-blue-200" : ""}    
+                                        ${post.user.user_type === "admin" ? "bg-red-200" : ""}`}>
                                     {post.user.user_type}
                                 </span>
                             </p>

@@ -2,8 +2,8 @@ import React from "react";
 import { Outlet, useLocation } from "react-router-dom";
 import Footer from "../Pages/SharedComponants/Footer/Footer";
 import CenterNavbar from "../Pages/SharedComponants/Navbar/CenterNav/CenterNavbar";
-import LeftNavbar from "../Pages/SharedComponants/Navbar/LeftNav/LeftNavbar";
-import RightNavbar from "../Pages/SharedComponants/Navbar/RightNav/RightNavbar";
+import LeftNav from "../Pages/SharedComponants/Navbar/LeftNavbar/LeftNav";
+import RightNav from "../Pages/SharedComponants/Navbar/RightNavbar/RightNav";
 
 const Main = () => {
   const location = useLocation();
@@ -13,14 +13,14 @@ const Main = () => {
   return (
     <>
       {!hideLayout && (
-        <div className="flex">
+        <div className="flex border">
           {/* Left Sidebar */}
           <div className="w-1/3 min-h-screen">
-            <LeftNavbar type="side-left" />
+            <LeftNav type="side-left" />
           </div>
 
           {/* Center Navbar */}
-          <div className="w-full lg:w-1/2 border-x border-gray-200 px-2">
+          <div className="w-1/2 border-x border-gray-200 px-2">
             <CenterNavbar type="center" />
             <div className="">
               <Outlet />
@@ -28,8 +28,8 @@ const Main = () => {
           </div>
 
           {/* Right Sidebar */}
-          <div className="w-1/4 min-h-screen">
-            <RightNavbar type="side-right" />
+          <div className="w-1/3 min-h-screen">
+            <RightNav type="side-right" />
           </div>
         </div>
       )}
