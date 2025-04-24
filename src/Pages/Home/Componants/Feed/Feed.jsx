@@ -1,23 +1,52 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import useAxiosSecure from "../../../../Hooks/useAxiosSecure";
-import { FaThumbsUp, FaThumbsDown, FaComment, FaFlag } from "react-icons/fa";
+import { FaComment, FaFlag } from "react-icons/fa";
+import { BiUpvote, BiDownvote, BiSolidDownvote, BiSolidUpvote } from "react-icons/bi";
+import Loading from "../../../Loading/Loading";
 
 const Feed = () => {
-    const [posts, setPosts] = useState([]); // State to store posts
     const axiosSecure = useAxiosSecure();
+    const queryClient = useQueryClient();
 
-    useEffect(() => {
-        const fetchPosts = async () => {
-            try {
-                const response = await axiosSecure.get("/posts");
-                setPosts(response.data); // Set posts data
-            } catch (error) {
-                console.error("Error fetching posts:", error.response?.data?.message || error.message);
-            }
-        };
+    // Fetch posts
+    const { data: posts = [], isLoading: postsLoading } = useQuery({
+        queryKey: ["posts"],
+        queryFn: async () => {
+            const response = await axiosSecure.get("/posts");
+            return response.data;
+        },
+    });
 
-        fetchPosts();
-    }, [axiosSecure]);
+    // Fetch user votes
+    const { data: userVotes = {}, isLoading: votesLoading } = useQuery({
+        queryKey: ["votes"],
+        queryFn: async () => {
+            const response = await axiosSecure.get("/votes");
+            return response.data.reduce((acc, vote) => {
+                acc[vote.postId] = vote.voteType;
+                return acc;
+            }, {});
+        },
+    });
+
+    // Mutation for handling votes
+    const voteMutation = useMutation({
+        mutationFn: async ({ postId, voteType }) => {
+            const response = await axiosSecure.post("/votes", { postId, voteType });
+            return response.data;
+        },
+        onSuccess: () => {
+            // Refetch votes after a successful mutation
+            queryClient.invalidateQueries({ queryKey: ["votes"] });
+        },
+    });
+
+    const handleVote = (postId, voteType) => {
+        voteMutation.mutate({ postId, voteType });
+    };
+
+    if (postsLoading || votesLoading) return <p><Loading /></p>;
 
     return (
         <div className="space-y-6">
@@ -34,7 +63,12 @@ const Feed = () => {
                             className="w-10 h-10 rounded-full"
                         />
                         <div>
-                            <p className="font-medium">{post.user.name}<span className=" mx-2 text-xs px-1 bg-green-200 rounded-full">{post.user.user_type}</span></p>
+                            <p className="font-medium">
+                                {post.user.name}
+                                <span className="mx-2 text-xs px-1 bg-green-200 rounded-full">
+                                    {post.user.user_type}
+                                </span>
+                            </p>
                             <p className="text-sm text-gray-500">
                                 {new Date(post.createdAt).toLocaleString()}
                             </p>
@@ -55,13 +89,31 @@ const Feed = () => {
                     {/* Post Actions */}
                     <div className="flex justify-between items-center border-t pt-4">
                         <div className="flex items-center gap-4">
-                            <button className="flex items-center gap-2 text-gray-600 hover:text-blue-500">
-                                <FaThumbsUp />
-                                <span>Upvote</span>
+                            <button
+                                className={`flex items-center justify-center ${userVotes[post._id] === "upvote"
+                                    ? "text-blue-500"
+                                    : "text-gray-600 hover:text-blue-500"
+                                    }`}
+                                onClick={() => handleVote(post._id, "upvote")}
+                            >
+                                {userVotes[post._id] === "upvote" ? (
+                                    <BiSolidUpvote className="text-xl" />
+                                ) : (
+                                    <BiUpvote className="text-xl" />
+                                )}
                             </button>
-                            <button className="flex items-center gap-2 text-gray-600 hover:text-red-500">
-                                <FaThumbsDown />
-                                <span>Downvote</span>
+                            <button
+                                className={`flex items-center justify-center ${userVotes[post._id] === "downvote"
+                                    ? "text-red-500"
+                                    : "text-gray-600 hover:text-red-500"
+                                    }`}
+                                onClick={() => handleVote(post._id, "downvote")}
+                            >
+                                {userVotes[post._id] === "downvote" ? (
+                                    <BiSolidDownvote className="text-xl" />
+                                ) : (
+                                    <BiDownvote className="text-xl" />
+                                )}
                             </button>
                         </div>
                         <div className="flex items-center gap-4">
