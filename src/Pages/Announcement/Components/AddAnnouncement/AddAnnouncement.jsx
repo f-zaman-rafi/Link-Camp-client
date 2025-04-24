@@ -47,6 +47,7 @@ const AddAnnouncement = () => {
 
             toast.success("Post created successfully!");
             closeModal();
+            window.location.reload();
             navigate("/");
         } catch (error) {
             console.error("Error creating announcement:", error.response?.data?.message || error.message);

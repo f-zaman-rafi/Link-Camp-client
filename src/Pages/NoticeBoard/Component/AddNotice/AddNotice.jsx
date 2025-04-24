@@ -46,8 +46,8 @@ const AddNotice = () => {
             });
 
             toast.success("Notice created successfully!");
-            closeModal();
-            navigate("/noticeboard");
+            window.location.reload();
+            navigate("/");
         } catch (error) {
             console.error("Error creating noticeboard:", error.response?.data?.message || error.message);
             alert(error.response?.data?.message || "Failed to create noticeboard");

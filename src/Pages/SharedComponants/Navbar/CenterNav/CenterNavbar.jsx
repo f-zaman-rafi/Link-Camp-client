@@ -21,10 +21,10 @@ const CenterNavbar = () => {
   return (
     <div className="tabs flex justify-center mt-2">
       <label
-        className={`tab flex-1 ${activeTab !== "/"
+        className={`tab flex-1 tooltip tooltip-bottom tooltip-neutral ${activeTab !== "/"
           ? "hover:bg-gray-200 hover:rounded-full duration-200"
           : ""
-          }`}
+          }`} data-tip="Feed"
       >
         <input
           type="radio"
@@ -37,10 +37,10 @@ const CenterNavbar = () => {
       </label>
 
       <label
-        className={`tab flex-1 ${activeTab !== "/announcement"
+        className={`tab flex-1 tooltip tooltip-bottom tooltip-neutral${activeTab !== "/announcement"
           ? "hover:bg-gray-200 hover:rounded-full duration-200"
           : ""
-          }`}
+          }`} data-tip="Announcements"
       >
         <input
           type="radio"
@@ -53,10 +53,10 @@ const CenterNavbar = () => {
       </label>
 
       <label
-        className={`tab flex-1 ${activeTab !== "/noticeboard"
+        className={`tab flex-1 tooltip tooltip-bottom tooltip-neutral${activeTab !== "/noticeboard"
           ? "hover:bg-gray-200 hover:rounded-full duration-200"
           : ""
-          }`}
+          }`} data-tip="Official Noticeboard"
       >
         <input
           type="radio"
@@ -68,7 +68,8 @@ const CenterNavbar = () => {
         <HiSpeakerphone
           className="text-3xl peer-checked:text-red-600 peer-checked:border-b-2 peer-checked:pb-2 duration-200" />
       </label>
-    </div>
+
+    </div >
   );
 };
 
