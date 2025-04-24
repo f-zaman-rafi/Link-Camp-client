@@ -15,7 +15,7 @@ const Main = () => {
       {!hideLayout && (
         <div className="flex border">
           {/* Left Sidebar */}
-          <div className="w-1/3 min-h-screen">
+          <div className="w-1/3 min-h-screen ">
             <LeftNav type="side-left" />
           </div>
 

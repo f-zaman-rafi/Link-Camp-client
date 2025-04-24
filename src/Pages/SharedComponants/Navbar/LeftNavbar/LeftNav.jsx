@@ -15,7 +15,7 @@ const LeftNav = () => {
     if (isLoading) return <Loading />
 
     return (
-        <div className="w-full text-black">
+        <div className="w-full text-black sticky top-0 scroll-auto">
             <ul className="space-y-4 p-4 ">
                 <li className="text-center pt-10 pb-20">
                     <p className="text-6xl font-bold font-caveat text-red-600">
@@ -33,7 +33,7 @@ const LeftNav = () => {
                         {userInfo.userType}
                     </span>
                 </li>
-                <li className="flex items-center gap-4 p-2 cursor-pointer border-b-[0.5px] border-gray-100 ">
+                <li className="flex items-center gap-4 p-2 cursor-pointer border-b-[0.5px] border-gray-100 " onClick={() => navigate('/admin-dash')}>
                     <FaBars />
                     <span>Admin-Dashboard</span>
                 </li>
