@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 const RightNav = () => {
   return (
     <div className="sticky top-0">
-      <div className="text-center pt-10 pb-20">
+      <div className="pt-14 pb-20">
         <p className="text-6xl font-bold font-caveat">Notifications !</p>
       </div>
     </div>

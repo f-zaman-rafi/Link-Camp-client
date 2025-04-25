@@ -24,7 +24,7 @@ const LeftNav = () => {
                         LinkCamp
                     </p>
                 </li>
-                <li className="flex items-center gap-4 p-2 cursor-pointer border-b-[0.5px] border-gray-100" onClick={() => navigate(`/profile/${userInfo.email}`)}>
+                <li className="flex items-center gap-4 p-2 cursor-pointer border-b-[0.5px] border-gray-100" >
                     <img src={userInfo.photo} className="w-10 h-10 rounded-full" alt="User" />
                     <span className='text-2xl'>{userInfo.name}</span>
                     <span
@@ -36,30 +36,33 @@ const LeftNav = () => {
                     </span>
                 </li>
                 <li
-                    className={`flex items-center gap-4 p-2 cursor-pointer border-b-[0.5px] border-gray-100 ${isActive('/') ? 'bg-gray-200 font-bold' : ''}`}
+                    className={`flex items-center gap-4 p-2 cursor-pointer border-b-[0.5px] border-gray-100 transition-all duration-300 ease-in-out 
+                    ${isActive('/') ? 'text-xl font-bold text-red-600' : 'text-base'}`}
                     onClick={() => navigate('/')}
                 >
                     <IoHomeOutline />
                     <span>Home</span>
                 </li>
                 <li
-                    className={`flex items-center gap-4 p-2 cursor-pointer border-b-[0.5px] border-gray-100 ${isActive('/admin-dash') ? 'bg-gray-200 font-bold' : ''}`}
+                    className={`flex items-center gap-4 p-2 cursor-pointer border-b-[0.5px] border-gray-100 transition-all duration-300 ease-in-out ${userInfo?.userType !== "admin" ? 'hidden' : 'block'} ${isActive('/admin-dash') ? 'text-xl font-bold text-red-600' : 'text-base'}`}
                     onClick={() => navigate('/admin-dash')}
                 >
                     <FaBars />
                     <span>Admin-Dashboard</span>
                 </li>
                 <li
-                    className={`flex items-center gap-4 p-2 cursor-pointer border-b-[0.5px] border-gray-100 ${isActive('/members-info') ? 'bg-gray-200 font-bold' : ''}`}
+                    className={`flex items-center gap-4 p-2 cursor-pointer border-b-[0.5px] border-gray-100 transition-all duration-300 ease-in-out 
+                    ${isActive('/personal-info') ? 'text-xl font-bold text-red-600' : 'text-base'}`}
+                    onClick={() => navigate('/personal-info')}
                 >
                     <FaPeopleArrows />
-                    <span>Members Info</span>
+                    <span>Personal Info</span>
                 </li>
                 <li
-                    className={`flex items-center gap-4 p-2 cursor-pointer border-b-[0.5px] border-gray-100 ${isActive('/settings') ? 'bg-gray-200 font-bold' : ''}`}
-                >
+                    className={`flex items-center gap-4 p-2 cursor-pointer border-b-[0.5px] border-gray-100 transition-all duration-300 ease-in-out ${isActive('/my-posts') ? 'text-xl font-bold text-red-600' : 'text-base'}`}
+                    onClick={() => navigate('/my-posts')} >
                     <IoSettingsOutline />
-                    <span>Settings</span>
+                    <span>My Posts</span>
                 </li>
                 <li
                     className={`flex items-center gap-4 p-2 cursor-pointer border-b-[0.5px] border-gray-100 ${isActive('/help') ? 'bg-gray-200 font-bold' : ''}`}

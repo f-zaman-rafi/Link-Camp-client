@@ -19,7 +19,7 @@ const CenterNavbar = () => {
 
 
   return (
-    <div className="tabs flex justify-center mt-2">
+    <div className="tabs flex justify-center mt-2  max-w-2xl mx-auto ">
       <label
         className={`tab flex-1 tooltip tooltip-bottom tooltip-neutral ${activeTab !== "/"
           ? "hover:bg-gray-200 hover:rounded-full duration-200"

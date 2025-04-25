@@ -1,6 +1,5 @@
 import React from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import useAxiosSecure from "../../../../Hooks/useAxiosSecure";
 import { FaComment, FaFlag } from "react-icons/fa";
 import {
     BiUpvote,
@@ -8,9 +7,11 @@ import {
     BiSolidDownvote,
     BiSolidUpvote,
 } from "react-icons/bi";
-import Loading from "../../../Loading/Loading";
-import useAuth from "../../../../Hooks/useAuth";
-import useUserInfo from "../../../../Hooks/useUserInfo";
+import useAxiosSecure from "../../Hooks/useAxiosSecure";
+import useAuth from "../../Hooks/useAuth";
+import useUserInfo from "../../Hooks/useUserInfo";
+import Loading from "../Loading/Loading";
+
 
 const UserPosts = () => {
     const axiosSecure = useAxiosSecure();
@@ -100,11 +101,11 @@ const UserPosts = () => {
     if (postsLoading || votesLoading || voteCountsLoading) return <Loading />;
 
     return (
-        <div className="space-y-6 py-6">
+        <div className="space-y-6 py-6 max-w-2xl mx-auto">
             {userPosts.map((post) => (
                 <div
                     key={post._id}
-                    className="bg-white shadow-md rounded-lg p-4 mx-auto"
+                    className="bg-white shadow-md rounded-xl p-4 mx-auto"
                 >
                     {/* Post Header */}
                     <div className="flex items-center gap-4 mb-4">

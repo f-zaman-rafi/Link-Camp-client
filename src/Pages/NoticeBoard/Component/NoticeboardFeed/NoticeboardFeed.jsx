@@ -49,7 +49,7 @@ const NoticeboardFeed = () => {
             {notices.map((announcement) => (
                 <div
                     key={announcement._id}
-                    className="bg-white shadow-md rounded-lg p-4 max-w-2xl mx-auto"
+                    className="bg-white shadow-md rounded-xl p-4 max-w-2xl mx-auto"
                 >
                     {/* Announcement Header */}
                     <div className="flex items-center gap-4 mb-4">

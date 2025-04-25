@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { FaEdit, FaTimes } from 'react-icons/fa';
-import useUserInfo from '../../../../Hooks/useUserInfo';
-import Loading from '../../../Loading/Loading';
+import useUserInfo from '../../Hooks/useUserInfo';
+import Loading from '../Loading/Loading';
 
-const UserData = () => {
+
+const PersonalInfo = () => {
     const { userInfo, isLoading } = useUserInfo();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
@@ -142,4 +143,4 @@ const UserData = () => {
     );
 };
 
-export default UserData;
+export default PersonalInfo;

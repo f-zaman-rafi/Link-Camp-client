@@ -100,7 +100,7 @@ const Feed = () => {
             {posts.map((post) => (
                 <div
                     key={post._id}
-                    className="bg-white shadow-md rounded-lg  mx-auto"
+                    className="bg-white shadow-md rounded-xl  p-4 max-w-2xl mx-auto"
                 >
                     {/* Post Header */}
                     <div className="flex items-center gap-4 mb-4">

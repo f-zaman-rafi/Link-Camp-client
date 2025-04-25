@@ -4,10 +4,10 @@ import UserPosts from '../ProfileComponents/UserPosts/UserPosts';
 
 const ProfileHome = () => {
     return (
-        <>
+        <div className=''>
             <UserData />
             <UserPosts />
-        </>
+        </div>
     );
 };
 
