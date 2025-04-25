@@ -9,10 +9,14 @@ import {
     BiSolidUpvote,
 } from "react-icons/bi";
 import Loading from "../../../Loading/Loading";
+import useAuth from "../../../../Hooks/useAuth";
+import useUserInfo from "../../../../Hooks/useUserInfo";
 
-const Feed = () => {
+const UserPosts = () => {
     const axiosSecure = useAxiosSecure();
     const queryClient = useQueryClient();
+    const { user } = useAuth();
+    const { userInfo } = useUserInfo();
 
     // Utility function to calculate relative time
     const getRelativeTime = (createdAt) => {
@@ -41,10 +45,10 @@ const Feed = () => {
     };
 
     // Fetch posts
-    const { data: posts = [], isLoading: postsLoading } = useQuery({
-        queryKey: ["posts"],
+    const { data: userPosts = [], isLoading: postsLoading } = useQuery({
+        queryKey: ['userPosts', user?.email],
         queryFn: async () => {
-            const response = await axiosSecure.get("/posts");
+            const response = await axiosSecure.get(`/user/profile/${user?.email}`);
             return response.data;
         },
     });
@@ -97,27 +101,27 @@ const Feed = () => {
 
     return (
         <div className="space-y-6 py-6">
-            {posts.map((post) => (
+            {userPosts.map((post) => (
                 <div
                     key={post._id}
-                    className="bg-white shadow-md rounded-lg  mx-auto"
+                    className="bg-white shadow-md rounded-lg p-4 mx-auto"
                 >
                     {/* Post Header */}
                     <div className="flex items-center gap-4 mb-4">
                         <img
-                            src={post.user.photo}
+                            src={userInfo.photo}
                             alt="User"
                             className="w-10 h-10 rounded-full"
                         />
                         <div>
                             <p className="font-medium">
-                                {post.user.name}
+                                {userInfo.name}
                                 <span
                                     className={`mx-2 text-xs px-1 rounded-full
-                                        ${post.user.user_type === "student" ? "bg-green-200" : ""}    
-                                        ${post.user.user_type === "teacher" ? "bg-blue-200" : ""}    
-                                        ${post.user.user_type === "admin" ? "bg-red-200" : ""}`}>
-                                    {post.user.user_type}
+                                        ${userInfo.userType === "student" ? "bg-green-200" : ""}    
+                                        ${userInfo.userType === "teacher" ? "bg-blue-200" : ""}    
+                                        ${userInfo.userType === "admin" ? "bg-red-200" : ""}`}>
+                                    {userInfo.userType}
                                 </span>
                             </p>
                             <p className="text-sm text-gray-500">
@@ -190,4 +194,4 @@ const Feed = () => {
     );
 };
 
-export default Feed;
+export default UserPosts;

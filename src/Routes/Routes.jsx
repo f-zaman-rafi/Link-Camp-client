@@ -15,6 +15,7 @@ import RequireAdmin from "./Guards/RequireAdmin";
 import RequireNewbie from "./Guards/RequireNewbie";
 import AnnouncementPage from "../Pages/Announcement/AnnouncementPage/AnnouncementPage";
 import NoticeboardPage from "../Pages/NoticeBoard/NoticeboardPage/NoticeboardPage";
+import ProfileHome from "../Pages/ProfilePage/ProfileHome/ProfileHome";
 
 export const router = createBrowserRouter([
   {
@@ -62,6 +63,10 @@ export const router = createBrowserRouter([
         path: "/announcement",
         element: <AnnouncementPage />,
       },
+      {
+        path: "/profile/:username",
+        element: <ProfileHome />
+      }
 
 
     ],

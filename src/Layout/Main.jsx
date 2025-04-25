@@ -1,6 +1,5 @@
 import React from "react";
 import { Outlet, useLocation } from "react-router-dom";
-import Footer from "../Pages/SharedComponants/Footer/Footer";
 import CenterNavbar from "../Pages/SharedComponants/Navbar/CenterNav/CenterNavbar";
 import LeftNav from "../Pages/SharedComponants/Navbar/LeftNavbar/LeftNav";
 import RightNav from "../Pages/SharedComponants/Navbar/RightNavbar/RightNav";
@@ -13,27 +12,31 @@ const Main = () => {
   return (
     <>
       {!hideLayout && (
-        <div className="flex border">
-          {/* Left Sidebar */}
-          <div className="w-1/3 min-h-screen ">
+        <div className="flex h-screen bg-gray-50">
+          {/* Left Sidebar - only visible on hover */}
+          <div className="w-1/4 overflow-y-auto ">
             <LeftNav type="side-left" />
           </div>
 
-          {/* Center Navbar */}
-          <div className="w-1/2 border-x border-gray-200 px-2">
-            <CenterNavbar type="center" />
-            <div className="">
+          {/* Center Section */}
+          <div className="w-2/4 flex flex-col mx-8">
+            {/* Sticky Navbar */}
+            <div className="h-16 shrink-0 sticky top-0 z-10">
+              <CenterNavbar type="center" />
+            </div>
+
+            {/* Scrollable Feed (hidden scrollbar) */}
+            <div className="w-full overflow-y-auto custom-scrollbar">
               <Outlet />
             </div>
           </div>
 
-          {/* Right Sidebar */}
-          <div className="w-1/3 min-h-screen">
+          {/* Right Sidebar - only visible on hover */}
+          <div className="w-1/4 overflow-y-auto ">
             <RightNav type="side-right" />
           </div>
         </div>
       )}
-      {!hideLayout && <Footer />}
     </>
   );
 };

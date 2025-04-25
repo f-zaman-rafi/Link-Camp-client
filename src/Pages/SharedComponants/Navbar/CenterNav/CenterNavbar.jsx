@@ -53,7 +53,7 @@ const CenterNavbar = () => {
       </label>
 
       <label
-        className={`tab flex-1 tooltip tooltip-bottom tooltip-neutral${activeTab !== "/noticeboard"
+        className={`tab flex-1 tooltip tooltip-bottom tooltip-neutral ${activeTab !== "/noticeboard"
           ? "hover:bg-gray-200 hover:rounded-full duration-200"
           : ""
           }`} data-tip="Official Noticeboard"
