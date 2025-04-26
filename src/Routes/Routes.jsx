@@ -65,11 +65,11 @@ export const router = createBrowserRouter([
         element: <AnnouncementPage />,
       },
       {
-        path: "personal-info",
+        path: "/personal-info",
         element: <PersonalInfo />
       },
       {
-        path: "my-posts",
+        path: "/my-posts",
         element: <UserPosts />
       },
 

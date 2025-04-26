@@ -1,6 +1,6 @@
 import React from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { FaComment, FaFlag } from "react-icons/fa";
+import { FaComment } from "react-icons/fa";
 import {
     BiUpvote,
     BiDownvote,
@@ -11,13 +11,17 @@ import useAxiosSecure from "../../Hooks/useAxiosSecure";
 import useAuth from "../../Hooks/useAuth";
 import useUserInfo from "../../Hooks/useUserInfo";
 import Loading from "../Loading/Loading";
-
+import { MdDeleteForever } from "react-icons/md";
+import withReactContent from "sweetalert2-react-content";
+import Swal from "sweetalert2";
 
 const UserPosts = () => {
     const axiosSecure = useAxiosSecure();
     const queryClient = useQueryClient();
     const { user } = useAuth();
     const { userInfo } = useUserInfo();
+    const MySwal = withReactContent(Swal);
+
 
     // Utility function to calculate relative time
     const getRelativeTime = (createdAt) => {
@@ -94,8 +98,38 @@ const UserPosts = () => {
         },
     });
 
+    // Mutation for deleting a post
+    const deletePostMutation = useMutation({
+        mutationFn: async (postId) => {
+            const response = await axiosSecure.delete(`/posts/${postId}`);
+            return response.data;
+        },
+        onSuccess: () => {
+            // Refetch posts after successful deletion
+            queryClient.invalidateQueries({ queryKey: ['userPosts', user?.email] });
+        },
+    });
+
     const handleVote = (postId, voteType) => {
         voteMutation.mutate({ postId, voteType });
+    };
+
+    const handleDelete = (postId) => {
+        MySwal.fire({
+            title: 'Are you sure?',
+            text: "This action cannot be undone!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: 'No, cancel!',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                deletePostMutation.mutate(postId);
+                MySwal.fire('Deleted!', 'Your post has been deleted.', 'success');
+            } else {
+                MySwal.fire('Cancelled', 'Your post is safe :)', 'error');
+            }
+        });
     };
 
     if (postsLoading || votesLoading || voteCountsLoading) return <Loading />;
@@ -103,10 +137,7 @@ const UserPosts = () => {
     return (
         <div className="space-y-6 py-6 max-w-2xl mx-auto">
             {userPosts.map((post) => (
-                <div
-                    key={post._id}
-                    className="bg-white shadow-md rounded-xl p-4 mx-auto"
-                >
+                <div key={post._id} className="bg-white shadow-md rounded-xl p-4 mx-auto">
                     {/* Post Header */}
                     <div className="flex items-center gap-4 mb-4">
                         <img
@@ -119,15 +150,13 @@ const UserPosts = () => {
                                 {userInfo.name}
                                 <span
                                     className={`mx-2 text-xs px-1 rounded-full
-                                        ${userInfo.userType === "student" ? "bg-green-200" : ""}    
-                                        ${userInfo.userType === "teacher" ? "bg-blue-200" : ""}    
+                                        ${userInfo.userType === "student" ? "bg-green-200" : ""}
+                                        ${userInfo.userType === "teacher" ? "bg-blue-200" : ""}
                                         ${userInfo.userType === "admin" ? "bg-red-200" : ""}`}>
                                     {userInfo.userType}
                                 </span>
                             </p>
-                            <p className="text-sm text-gray-500">
-                                {getRelativeTime(post.createdAt)}
-                            </p>
+                            <p className="text-sm text-gray-500">{getRelativeTime(post.createdAt)}</p>
                         </div>
                     </div>
 
@@ -136,7 +165,7 @@ const UserPosts = () => {
                         <img
                             src={post.photo}
                             alt="Post"
-                            className="w-full h-64 object-cover rounded-lg mb-4"
+                            className="w-full max-h-[300px] object-contain rounded-lg mb-4"
                         />
                     ) : (
                         <p className="text-gray-800 text-lg mb-4">{post.content}</p>
@@ -157,9 +186,7 @@ const UserPosts = () => {
                                 ) : (
                                     <BiUpvote className="text-xl" />
                                 )}
-                                <span className="ml-2 text-sm">
-                                    {voteCounts[post._id]?.upvotes || 0}
-                                </span>
+                                <span className="ml-2 text-sm">{voteCounts[post._id]?.upvotes || 0}</span>
                             </button>
                             <button
                                 className={`flex items-center justify-center ${userVotes[post._id] === "downvote"
@@ -173,9 +200,7 @@ const UserPosts = () => {
                                 ) : (
                                     <BiDownvote className="text-xl" />
                                 )}
-                                <span className="ml-2 text-sm">
-                                    {voteCounts[post._id]?.downvotes || 0}
-                                </span>
+                                <span className="ml-2 text-sm">{voteCounts[post._id]?.downvotes || 0}</span>
                             </button>
                         </div>
                         <div className="flex items-center gap-4">
@@ -183,9 +208,12 @@ const UserPosts = () => {
                                 <FaComment />
                                 <span>Comment</span>
                             </button>
-                            <button className="flex items-center gap-2 text-gray-600 hover:text-yellow-500">
-                                <FaFlag />
-                                <span>Report</span>
+                            <button
+                                onClick={() => handleDelete(post._id)}
+                                className="flex items-center gap-2 text-gray-600 hover:text-red-500"
+                            >
+                                <MdDeleteForever />
+                                <span>Delete</span>
                             </button>
                         </div>
                     </div>
