@@ -14,7 +14,10 @@ import Loading from "../Loading/Loading";
 import { MdDeleteForever } from "react-icons/md";
 import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
-import { IoClose } from "react-icons/io5"; // For modal close button
+import { FaTrash } from "react-icons/fa";
+import useRelativeTime from "../../Hooks/useRelativeTime";
+import useCommentsOperations from "../../Hooks/useCommentOperations";
+import useVotesOperations from "../../Hooks/useVotesOperations";
 
 const UserPosts = () => {
     const axiosSecure = useAxiosSecure();
@@ -24,33 +27,23 @@ const UserPosts = () => {
     const MySwal = withReactContent(Swal);
     const [commentModalOpen, setCommentModalOpen] = useState(false);
     const [selectedPostId, setSelectedPostId] = useState(null);
-    const [commentText, setCommentText] = useState("");
-
-    // Utility function to calculate relative time
-    const getRelativeTime = (createdAt) => {
-        const now = new Date();
-        const postDate = new Date(createdAt);
-        const diffInSeconds = Math.floor((now - postDate) / 1000);
-
-        if (diffInSeconds < 60) {
-            return `${diffInSeconds} seconds ago`;
-        } else if (diffInSeconds < 3600) {
-            const minutes = Math.floor(diffInSeconds / 60);
-            return `${minutes} minute${minutes > 1 ? "s" : ""} ago`;
-        } else if (diffInSeconds < 86400) {
-            const hours = Math.floor(diffInSeconds / 3600);
-            return `${hours} hour${hours > 1 ? "s" : ""} ago`;
-        } else if (diffInSeconds < 2592000) {
-            const days = Math.floor(diffInSeconds / 86400);
-            return `${days} day${days > 1 ? "s" : ""} ago`;
-        } else if (diffInSeconds < 31536000) {
-            const months = Math.floor(diffInSeconds / 2592000);
-            return `${months} month${months > 1 ? "s" : ""} ago`;
-        } else {
-            const years = Math.floor(diffInSeconds / 31536000);
-            return `${years} year${years > 1 ? "s" : ""} ago`;
-        }
-    };
+    const getRelativeTime = useRelativeTime();
+    const {
+        comments,
+        commentsLoading,
+        commentText,
+        setCommentText,
+        handleAddComment,
+        handleDeleteComment,
+        addCommentPending
+    } = useCommentsOperations(selectedPostId);
+    const {
+        userVotes,
+        votesLoading,
+        voteCounts,
+        voteCountsLoading,
+        handleVote,
+    } = useVotesOperations();
 
     // Fetch posts
     const { data: userPosts = [], isLoading: postsLoading } = useQuery({
@@ -61,69 +54,6 @@ const UserPosts = () => {
         },
     });
 
-    // Fetch user votes
-    const { data: userVotes = {}, isLoading: votesLoading } = useQuery({
-        queryKey: ["votes"],
-        queryFn: async () => {
-            const response = await axiosSecure.get("/votes");
-            return response.data.reduce((acc, vote) => {
-                acc[vote.postId] = vote.voteType;
-                return acc;
-            }, {});
-        },
-    });
-
-    // Fetch vote counts
-    const { data: voteCounts = {}, isLoading: voteCountsLoading } = useQuery({
-        queryKey: ["voteCounts"],
-        queryFn: async () => {
-            const response = await axiosSecure.get("/voteCounts");
-            return response.data.reduce((acc, voteCount) => {
-                acc[voteCount._id] = {
-                    upvotes: voteCount.upvotes,
-                    downvotes: voteCount.downvotes,
-                };
-                return acc;
-            }, {});
-        },
-    });
-
-    // Fetch comments for selected post
-    const { data: comments = [], isLoading: commentsLoading } = useQuery({
-        queryKey: ["comments", selectedPostId],
-        queryFn: async () => {
-            if (!selectedPostId) return [];
-            const response = await axiosSecure.get(`/comments/${selectedPostId}`);
-            return response.data;
-        },
-        enabled: !!selectedPostId && commentModalOpen,
-    });
-
-    // Mutation for adding comments
-    const addCommentMutation = useMutation({
-        mutationFn: async ({ postId, content }) => {
-            const response = await axiosSecure.post("/comments", { postId, content });
-            return response.data;
-        },
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["comments", selectedPostId] });
-            setCommentText("");
-        },
-    });
-
-    // Mutation for handling votes
-    const voteMutation = useMutation({
-        mutationFn: async ({ postId, voteType }) => {
-            const response = await axiosSecure.post("/votes", { postId, voteType });
-            return response.data;
-        },
-        onSuccess: () => {
-            // Refetch votes and vote counts after a successful mutation
-            queryClient.invalidateQueries({ queryKey: ["votes"] });
-            queryClient.invalidateQueries({ queryKey: ["voteCounts"] });
-        },
-    });
-
     // Mutation for deleting a post
     const deletePostMutation = useMutation({
         mutationFn: async (postId) => {
@@ -131,14 +61,14 @@ const UserPosts = () => {
             return response.data;
         },
         onSuccess: () => {
-            // Refetch posts after successful deletion
             queryClient.invalidateQueries({ queryKey: ['userPosts', user?.email] });
+            queryClient.invalidateQueries({ queryKey: ['votes'] });
+            queryClient.invalidateQueries({ queryKey: ['voteCounts'] });
+            queryClient.invalidateQueries({ queryKey: ['comments'] });
+            queryClient.invalidateQueries({ queryKey: ['reports'] });
         },
-    });
 
-    const handleVote = (postId, voteType) => {
-        voteMutation.mutate({ postId, voteType });
-    };
+    });
 
     const handleDelete = (postId) => {
         MySwal.fire({
@@ -167,14 +97,6 @@ const UserPosts = () => {
         setSelectedPostId(null);
         setCommentModalOpen(false);
         setCommentText("");
-    };
-
-    const handleAddComment = () => {
-        if (!commentText.trim()) return;
-        addCommentMutation.mutate({
-            postId: selectedPostId,
-            content: commentText,
-        });
     };
 
     if (postsLoading || votesLoading || voteCountsLoading) return <Loading />;
@@ -274,7 +196,7 @@ const UserPosts = () => {
                 ))
             )}
 
-            {/* Comments Modal (Daisy UI) */}
+            {/* Comments Modal */}
             {commentModalOpen && selectedPostId && (
                 <div className="modal modal-open">
                     <div className="modal-box w-full max-w-md max-h-[80vh] flex flex-col">
@@ -290,22 +212,36 @@ const UserPosts = () => {
                             ) : comments.length === 0 ? (
                                 <p className="text-gray-500">No comments yet.</p>
                             ) : (
-                                comments.map((comment) => (
-                                    <div key={comment._id} className="border-b pb-4 last:border-b-0">
-                                        <div className="flex items-start gap-3">
-                                            <div className="avatar">
-                                                <div className="w-8 rounded-full">
-                                                    <img src={comment.user.photo} alt={comment.user.name} />
+                                comments.map((comment) => {
+                                    const isMyComment = user?.email === comment.email;
+                                    return (
+                                        <div key={comment._id} className="border-b pb-4 last:border-b-0">
+                                            <div className="flex items-start gap-3 justify-between">
+                                                <div className="flex items-start gap-3">
+                                                    <div className="avatar">
+                                                        <div className="w-8 rounded-full">
+                                                            <img src={comment.user.photo} alt={comment.user.name} />
+                                                        </div>
+                                                    </div>
+                                                    <div>
+                                                        <p className="font-semibold">{comment.user.name}</p>
+                                                        <p className="text-xs text-gray-400">{getRelativeTime(comment.createdAt)}</p>
+                                                        <p className="mt-1">{comment.content}</p>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <div>
-                                                <p className="font-semibold">{comment.user.name}</p>
-                                                <p className="text-xs text-gray-400">{getRelativeTime(comment.createdAt)}</p>
-                                                <p className="mt-1">{comment.content}</p>
+                                                {isMyComment && (
+                                                    <button
+                                                        onClick={() => handleDeleteComment(comment._id)}
+                                                        className="text-red-500 hover:text-red-700"
+                                                        title="Delete Comment"
+                                                    >
+                                                        <FaTrash />
+                                                    </button>
+                                                )}
                                             </div>
                                         </div>
-                                    </div>
-                                ))
+                                    );
+                                })
                             )}
                         </div>
                         <div className="border-t pt-4">
@@ -316,16 +252,16 @@ const UserPosts = () => {
                                     onChange={(e) => setCommentText(e.target.value)}
                                     placeholder="Write a comment..."
                                     className="input input-bordered w-full"
-                                    onPress={(e) => {
+                                    onKeyDown={(e) => {
                                         if (e.key === 'Enter') handleAddComment();
                                     }}
                                 />
                                 <button
                                     onClick={handleAddComment}
-                                    disabled={!commentText.trim() || addCommentMutation.isPending}
+                                    disabled={!commentText.trim() || addCommentPending}
                                     className="btn btn-primary"
                                 >
-                                    {addCommentMutation.isPending ? 'Posting...' : 'Post'}
+                                    {addCommentPending ? 'Posting...' : 'Post'}
                                 </button>
                             </div>
                         </div>

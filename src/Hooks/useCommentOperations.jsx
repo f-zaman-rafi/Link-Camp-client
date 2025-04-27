@@ -1,14 +1,15 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import useAxiosSecure from "./useAxiosSecure";
+import Swal from "sweetalert2";
+import toast from "react-hot-toast";
 
-const useCommentOperations = () => {
+const useCommentsOperations = (selectedPostId) => {
     const axiosSecure = useAxiosSecure();
     const queryClient = useQueryClient();
-    const [commentModalOpen, setCommentModalOpen] = useState(false);
-    const [selectedPostId, setSelectedPostId] = useState(null);
     const [commentText, setCommentText] = useState("");
 
+    // Fetch comments
     const { data: comments = [], isLoading: commentsLoading } = useQuery({
         queryKey: ["comments", selectedPostId],
         queryFn: async () => {
@@ -16,9 +17,10 @@ const useCommentOperations = () => {
             const response = await axiosSecure.get(`/comments/${selectedPostId}`);
             return response.data;
         },
-        enabled: !!selectedPostId && commentModalOpen,
+        enabled: !!selectedPostId,
     });
 
+    // Add comment
     const addCommentMutation = useMutation({
         mutationFn: async ({ postId, content }) => {
             const response = await axiosSecure.post("/comments", { postId, content });
@@ -27,9 +29,11 @@ const useCommentOperations = () => {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["comments", selectedPostId] });
             setCommentText("");
+            toast.success("Comment added successfully!");
         },
     });
 
+    // Delete comment
     const deleteCommentMutation = useMutation({
         mutationFn: async (commentId) => {
             const response = await axiosSecure.delete(`/comments/${commentId}`);
@@ -37,9 +41,11 @@ const useCommentOperations = () => {
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["comments", selectedPostId] });
+            toast.success("Comment deleted successfully!");
         },
     });
 
+    // Handle add comment
     const handleAddComment = () => {
         if (!commentText.trim()) return;
         addCommentMutation.mutate({
@@ -48,35 +54,32 @@ const useCommentOperations = () => {
         });
     };
 
+    // Handle delete comment with SweetAlert2 confirmation
     const handleDeleteComment = (commentId) => {
-        deleteCommentMutation.mutate(commentId);
-    };
-
-    const openCommentsModal = (postId) => {
-        setSelectedPostId(postId);
-        setCommentModalOpen(true);
-    };
-
-    const closeCommentsModal = () => {
-        setSelectedPostId(null);
-        setCommentModalOpen(false);
-        setCommentText("");
+        Swal.fire({
+            title: "Are you sure?",
+            text: "You won't be able to revert this action!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, delete it!",
+        }).then((result) => {
+            if (result.isConfirmed) {
+                deleteCommentMutation.mutate(commentId);
+            }
+        });
     };
 
     return {
-        commentModalOpen,
-        selectedPostId,
-        commentText,
         comments,
         commentsLoading,
+        commentText,
         setCommentText,
         handleAddComment,
-        handleDeleteComment, // Added delete comment handler
-        openCommentsModal,
-        closeCommentsModal,
-        isAddingComment: addCommentMutation.isPending, // Optional: for UI feedback
-        isDeletingComment: deleteCommentMutation.isPending, // Optional: for UI feedback
+        handleDeleteComment,
+        addCommentPending: addCommentMutation.isPending,
     };
 };
 
-export default useCommentOperations;
+export default useCommentsOperations;

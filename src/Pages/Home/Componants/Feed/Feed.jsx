@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import useAxiosSecure from "../../../../Hooks/useAxiosSecure";
-import { FaComment, FaFlag, FaTimes, FaTrash } from "react-icons/fa"; // Import FaTrash
+import { FaComment, FaFlag, FaTrash } from "react-icons/fa";
 import {
     BiUpvote,
     BiDownvote,
@@ -10,43 +10,35 @@ import {
 } from "react-icons/bi";
 import Loading from "../../../Loading/Loading";
 import useAuth from "../../../../Hooks/useAuth";
+import useRelativeTime from "../../../../Hooks/useRelativeTime";
+import useCommentsOperations from "../../../../Hooks/useCommentOperations";
+import useVotesOperations from "../../../../Hooks/useVotesOperations";
 
 const Feed = () => {
     const axiosSecure = useAxiosSecure();
     const queryClient = useQueryClient();
     const [selectedPostId, setSelectedPostId] = useState(null);
-    const [commentText, setCommentText] = useState("");
     const [reportModalOpen, setReportModalOpen] = useState(false);
     const [reportReason, setReportReason] = useState("");
     const [postToReport, setPostToReport] = useState(null);
     const { user } = useAuth();
-
-
-    // Utility function to calculate relative time
-    const getRelativeTime = (createdAt) => {
-        const now = new Date();
-        const postDate = new Date(createdAt);
-        const diffInSeconds = Math.floor((now - postDate) / 1000);
-
-        if (diffInSeconds < 60) {
-            return `${diffInSeconds} seconds ago`;
-        } else if (diffInSeconds < 3600) {
-            const minutes = Math.floor(diffInSeconds / 60);
-            return `${minutes} minute${minutes > 1 ? "s" : ""} ago`;
-        } else if (diffInSeconds < 86400) {
-            const hours = Math.floor(diffInSeconds / 3600);
-            return `${hours} hour${hours > 1 ? "s" : ""} ago`;
-        } else if (diffInSeconds < 2592000) {
-            const days = Math.floor(diffInSeconds / 86400);
-            return `${days} day${days > 1 ? "s" : ""} ago`;
-        } else if (diffInSeconds < 31536000) {
-            const months = Math.floor(diffInSeconds / 2592000);
-            return `${months} month${months > 1 ? "s" : ""} ago`;
-        } else {
-            const years = Math.floor(diffInSeconds / 31536000);
-            return `${years} year${years > 1 ? "s" : ""} ago`;
-        }
-    };
+    const getRelativeTime = useRelativeTime();
+    const {
+        comments,
+        commentsLoading,
+        commentText,
+        setCommentText,
+        handleAddComment,
+        handleDeleteComment,
+        addCommentPending
+    } = useCommentsOperations(selectedPostId);
+    const {
+        userVotes,
+        votesLoading,
+        voteCounts,
+        voteCountsLoading,
+        handleVote,
+    } = useVotesOperations();
 
     // Fetch posts
     const { data: posts = [], isLoading: postsLoading } = useQuery({
@@ -57,93 +49,7 @@ const Feed = () => {
         },
     });
 
-    // Fetch user votes
-    const { data: userVotes = {}, isLoading: votesLoading } = useQuery({
-        queryKey: ["votes"],
-        queryFn: async () => {
-            const response = await axiosSecure.get("/votes");
-            return response.data.reduce((acc, vote) => {
-                acc[vote.postId] = vote.voteType;
-                return acc;
-            }, {});
-        },
-    });
 
-    // Fetch vote counts
-    const { data: voteCounts = {}, isLoading: voteCountsLoading } = useQuery({
-        queryKey: ["voteCounts"],
-        queryFn: async () => {
-            const response = await axiosSecure.get("/voteCounts");
-            return response.data.reduce((acc, voteCount) => {
-                acc[voteCount._id] = {
-                    upvotes: voteCount.upvotes,
-                    downvotes: voteCount.downvotes,
-                };
-                return acc;
-            }, {});
-        },
-    });
-
-    // Mutation for handling votes
-    const voteMutation = useMutation({
-        mutationFn: async ({ postId, voteType }) => {
-            const response = await axiosSecure.post("/votes", { postId, voteType });
-            return response.data;
-        },
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["votes"] });
-            queryClient.invalidateQueries({ queryKey: ["voteCounts"] });
-        },
-    });
-
-
-    const handleVote = (postId, voteType) => {
-        voteMutation.mutate({ postId, voteType });
-    };
-
-    // Fetch comments for selected post
-    const { data: comments = [], isLoading: commentsLoading } = useQuery({
-        queryKey: ["comments", selectedPostId],
-        queryFn: async () => {
-            if (!selectedPostId) return [];
-            const response = await axiosSecure.get(`/comments/${selectedPostId}`);
-            return response.data;
-        },
-        enabled: !!selectedPostId,
-    });
-
-
-    // Mutation for adding comments
-    const addCommentMutation = useMutation({
-        mutationFn: async ({ postId, content }) => {
-            const response = await axiosSecure.post("/comments", { postId, content });
-            return response.data;
-        },
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["comments", selectedPostId] });
-            setCommentText("");
-        },
-    });
-
-    // Mutation for deleting comments
-    const deleteCommentMutation = useMutation({
-        mutationFn: async (commentId) => {
-            const response = await axiosSecure.delete(`/comments/${commentId}`);
-            return response.data;
-        },
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["comments", selectedPostId] });
-        },
-    });
-
-
-    const handleAddComment = () => {
-        if (!commentText.trim()) return;
-        addCommentMutation.mutate({
-            postId: selectedPostId,
-            content: commentText,
-        });
-    };
 
     const openCommentsModal = (postId) => {
         setSelectedPostId(postId);
@@ -182,10 +88,6 @@ const Feed = () => {
         setReportModalOpen(false);
         setReportReason("");
         setPostToReport(null);
-    };
-
-    const handleDeleteComment = (commentId) => {
-        deleteCommentMutation.mutate(commentId);
     };
 
     if (postsLoading || votesLoading || voteCountsLoading) return <Loading />;
@@ -368,10 +270,10 @@ const Feed = () => {
                                 />
                                 <button
                                     onClick={handleAddComment}
-                                    disabled={!commentText.trim() || addCommentMutation.isPending}
+                                    disabled={!commentText.trim() || addCommentPending}
                                     className="btn btn-primary"
                                 >
-                                    {addCommentMutation.isPending ? 'Posting...' : 'Post'}
+                                    {addCommentPending ? 'Posting...' : 'Post'}
                                 </button>
                             </div>
                         </div>
