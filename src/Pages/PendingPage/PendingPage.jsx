@@ -8,7 +8,7 @@ const PendingPage = () => {
                 <ClockLoader speedMultiplier={.5} color="#ff0000" size={50} className="text-yellow-500 text-6xl mb-4" />
                 <h1 className="text-2xl font-bold mb-2">Registration Pending</h1>
                 <p className="text-gray-600">
-                    You have registered successfully. Please wait for the authority's approval. We will notify you once your account is verified.
+                    You have successfully registered. Please allow up to 2 working hours for the authority's approval. Your account will be activated once verified.
                 </p>
             </div>
         </div>

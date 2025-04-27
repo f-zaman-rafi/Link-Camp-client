@@ -18,6 +18,8 @@ import NoticeboardPage from "../Pages/NoticeBoard/NoticeboardPage/NoticeboardPag
 import PersonalInfo from "../Pages/PersonalInfo/PersonalInfo";
 import UserPosts from "../Pages/UserPosts/UserPosts";
 import ReportedPost from "../AdminDashboard/ReportedPost/ReportedPost";
+import Blacklisted from "../Pages/Blacklisted/Blacklisted";
+import RequireBlocklisted from "./Guards/RequireBlocklisted";
 
 export const router = createBrowserRouter([
   {
@@ -44,6 +46,10 @@ export const router = createBrowserRouter([
   {
     path: "/welcome",
     element: <RequireNewbie><WelcomePage /></RequireNewbie>
+  },
+  {
+    path: "/blocklisted",
+    element: <RequireBlocklisted><Blacklisted /></RequireBlocklisted>
   },
   {
     path: "/",

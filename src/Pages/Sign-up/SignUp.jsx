@@ -55,10 +55,10 @@ const SignUp = () => {
         <div className="text-center lg:text-left">
           <h1 className="text-5xl font-bold">Sign-Up!</h1>
           <div className="space-y-2 pt-5">
-            <p>Welcome to LinkCamp</p>
-            <p>Please provide your details</p>
-            <p>so we can verify your account smoothly</p>
-            <p>and get you started on the platform. We're here to help!</p>
+            <p>Welcome to Link-Camp</p>
+            <p>To help verify your account and get you started</p>
+            <p>on the platform, please provide your details as per your </p>
+            <p>educational documents. We're here to assist you every step of the way!</p>
           </div>
         </div>
 

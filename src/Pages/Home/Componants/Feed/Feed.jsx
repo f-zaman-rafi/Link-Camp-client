@@ -95,7 +95,7 @@ const Feed = () => {
     return (
         <div className="space-y-6 py-6">
             {posts.length === 0 ? (
-                <div className="flex justify-center items-center py-6 min-h-screen">
+                <div className="flex justify-center items-center py-6">
                     <p className="text-gray-600 text-xl">No post available at the moment.</p>
                 </div>
             ) : (

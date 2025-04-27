@@ -6,7 +6,7 @@ import Feed from "../Componants/Feed/Feed";
 const Homepage = () => {
 
   return (
-    <div>
+    <div className="">
       <AddPost />
       <Feed />
     </div>
