@@ -2,13 +2,15 @@ import React, { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import useAxiosSecure from "../../../../Hooks/useAxiosSecure";
 import Loading from "../../../Loading/Loading";
-import { FaComment, FaTimes } from "react-icons/fa";
+import { FaComment, FaTimes, FaTrash } from "react-icons/fa";
+import useAuth from "../../../../Hooks/useAuth";
 
 const NoticeboardFeed = () => {
     const axiosSecure = useAxiosSecure();
     const queryClient = useQueryClient();
     const [selectedPostId, setSelectedPostId] = useState(null); // Using postId as in Feed
     const [commentText, setCommentText] = useState("");
+    const { user } = useAuth();
 
     // Utility function to calculate relative time (same as Feed component)
     const getRelativeTime = (createdAt) => {
@@ -68,12 +70,27 @@ const NoticeboardFeed = () => {
         },
     });
 
+    // Mutation for deleting comments
+    const deleteCommentMutation = useMutation({
+        mutationFn: async (commentId) => {
+            const response = await axiosSecure.delete(`/comments/${commentId}`);
+            return response.data;
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["comments", selectedPostId] });
+        },
+    });
+
     const handleAddComment = () => {
         if (!commentText.trim()) return;
         addCommentMutation.mutate({
             postId: selectedPostId,
             content: commentText,
         });
+    };
+
+    const handleDeleteComment = (commentId) => {
+        deleteCommentMutation.mutate(commentId);
     };
 
     const openCommentsModal = (postId) => {
@@ -131,7 +148,7 @@ const NoticeboardFeed = () => {
                         )}
 
                         {/* Comments Section - Same as Feed */}
-                        <div className="flex justify-start items-center border-t border-gray-200 pt-4">
+                        <div className="flex justify-center items-center border-t border-gray-200 pt-4">
                             <button
                                 className="flex items-center gap-2 text-gray-600 hover:text-green-500"
                                 onClick={() => openCommentsModal(announcement._id)}
@@ -165,26 +182,40 @@ const NoticeboardFeed = () => {
                                     <p className="text-gray-500">No comments yet. Be the first to comment!</p>
                                 </div>
                             ) : (
-                                comments.map((comment) => (
-                                    <div key={comment._id} className="border-b pb-4 last:border-b-0">
-                                        <div className="flex items-start gap-3">
-                                            <div className="avatar">
-                                                <div className="w-8 rounded-full">
-                                                    <img src={comment.user.photo} alt={comment.user.name} />
+                                comments.map((comment) => {
+                                    const isMyComment = user?.email === comment.email;
+                                    return (
+                                        <div key={comment._id} className="border-b pb-4 last:border-b-0">
+                                            <div className="flex items-start gap-3 justify-between">
+                                                <div className="flex items-start gap-3">
+                                                    <div className="avatar">
+                                                        <div className="w-8 rounded-full">
+                                                            <img src={comment.user.photo} alt={comment.user.name} />
+                                                        </div>
+                                                    </div>
+                                                    <div>
+                                                        <div className="flex items-center gap-2">
+                                                            <p className="font-semibold">{comment.user.name}</p>
+                                                            <span className="text-xs text-gray-400">
+                                                                {getRelativeTime(comment.createdAt)}
+                                                            </span>
+                                                        </div>
+                                                        <p className="mt-1">{comment.content}</p>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <div>
-                                                <div className="flex items-center gap-2">
-                                                    <p className="font-semibold">{comment.user.name}</p>
-                                                    <span className="text-xs text-gray-400">
-                                                        {getRelativeTime(comment.createdAt)}
-                                                    </span>
-                                                </div>
-                                                <p className="mt-1">{comment.content}</p>
+                                                {isMyComment && (
+                                                    <button
+                                                        onClick={() => handleDeleteComment(comment._id)}
+                                                        className="text-red-500 hover:text-red-700"
+                                                        title="Delete Comment"
+                                                    >
+                                                        <FaTrash />
+                                                    </button>
+                                                )}
                                             </div>
                                         </div>
-                                    </div>
-                                ))
+                                    );
+                                })
                             )}
                         </div>
 
@@ -196,7 +227,7 @@ const NoticeboardFeed = () => {
                                     onChange={(e) => setCommentText(e.target.value)}
                                     placeholder="Write a comment..."
                                     className="input input-bordered w-full"
-                                    onPress={(e) => {
+                                    onKeyDown={(e) => {
                                         if (e.key === 'Enter') handleAddComment();
                                     }}
                                 />

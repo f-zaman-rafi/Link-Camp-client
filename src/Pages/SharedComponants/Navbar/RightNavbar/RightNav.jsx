@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import React, { useState } from "react";
 import useAxiosSecure from "../../../../Hooks/useAxiosSecure";
 import Loading from "../../../Loading/Loading";
@@ -7,10 +7,14 @@ import { IoClose } from "react-icons/io5"; // For modal close button
 
 const RightNav = () => {
   const axiosSecure = useAxiosSecure();
+  const queryClient = useQueryClient();
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedAnnouncement, setSelectedAnnouncement] = useState(null);
+  const [commentModalOpen, setCommentModalOpen] = useState(false);
+  const [selectedPostId, setSelectedPostId] = useState(null); // Using postId as in Feed
+  const [commentText, setCommentText] = useState("");
 
-  // Utility function to calculate relative time
+  // Utility function to calculate relative time (same as Feed component)
   const getRelativeTime = (createdAt) => {
     const now = new Date();
     const postDate = new Date(createdAt);
@@ -45,7 +49,47 @@ const RightNav = () => {
     },
   });
 
-  if (noticesLoading) return <Loading />;
+  // Fetch comments for selected post
+  const { data: comments = [], isLoading: commentsLoading } = useQuery({
+    queryKey: ["comments", selectedPostId],
+    queryFn: async () => {
+      if (!selectedPostId) return [];
+      const response = await axiosSecure.get(`/comments/${selectedPostId}`);
+      return response.data;
+    },
+    enabled: !!selectedPostId && commentModalOpen, // Only fetch when the comment modal is open
+  });
+
+  // Mutation for adding comments
+  const addCommentMutation = useMutation({
+    mutationFn: async ({ postId, content }) => {
+      const response = await axiosSecure.post("/comments", { postId, content });
+      return response.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["comments", selectedPostId] });
+      setCommentText("");
+    },
+  });
+
+  const handleAddComment = () => {
+    if (!commentText.trim()) return;
+    addCommentMutation.mutate({
+      postId: selectedPostId,
+      content: commentText,
+    });
+  };
+
+  const openCommentsModal = (postId) => {
+    setSelectedPostId(postId);
+    setCommentModalOpen(true);
+  };
+
+  const closeCommentsModal = () => {
+    setSelectedPostId(null);
+    setCommentModalOpen(false);
+    setCommentText("");
+  };
 
   // Handle modal open for full post
   const handleModalOpen = (announcement) => {
@@ -57,6 +101,8 @@ const RightNav = () => {
     setModalOpen(false);
     setSelectedAnnouncement(null);
   };
+
+  if (noticesLoading) return <Loading />;
 
   return (
     <div className="sticky top-0">
@@ -77,7 +123,7 @@ const RightNav = () => {
                 />
                 <div>
                   <p className="text-sm">
-                    {announcement.user.name}{" "} posted an Official Notice!
+                    {announcement.user.name} posted an Official Notice!
                   </p>
                   <p className="text-xs text-gray-500">
                     {getRelativeTime(announcement.createdAt)}
@@ -129,7 +175,7 @@ const RightNav = () => {
               />
               <div>
                 <p className="font-medium">
-                  {selectedAnnouncement.user.name}{" "}
+                  {selectedAnnouncement.user.name}
                 </p>
                 <p className="text-sm text-gray-500">
                   {getRelativeTime(selectedAnnouncement.createdAt)}
@@ -150,10 +196,72 @@ const RightNav = () => {
             </p>
 
             <div className="flex justify-center items-center border-t border-gray-200 pt-4">
-              <button className="flex items-center gap-2 text-gray-600 hover:text-green-500">
+              <button
+                className="flex items-center gap-2 text-gray-600 hover:text-green-500"
+                onClick={() => openCommentsModal(selectedAnnouncement._id)}
+              >
                 <FaComment />
                 <span>Comment</span>
               </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Comments Modal (Daisy UI) */}
+      {commentModalOpen && selectedPostId && (
+        <div className="modal modal-open">
+          <div className="modal-box w-full max-w-md max-h-[80vh] flex flex-col">
+            <button onClick={closeCommentsModal} className="btn btn-sm btn-circle absolute right-2 top-2">
+              ✕
+            </button>
+            <h3 className="font-bold text-lg">Comments</h3>
+            <div className="flex-1 overflow-y-auto py-4 space-y-4">
+              {commentsLoading ? (
+                <div className="flex justify-center items-center h-32">
+                  <span className="loading loading-spinner text-neutral"></span>
+                </div>
+              ) : comments.length === 0 ? (
+                <p className="text-gray-500">No comments yet.</p>
+              ) : (
+                comments.map((comment) => (
+                  <div key={comment._id} className="border-b pb-4 last:border-b-0">
+                    <div className="flex items-start gap-3">
+                      <div className="avatar">
+                        <div className="w-8 rounded-full">
+                          <img src={comment.user.photo} alt={comment.user.name} />
+                        </div>
+                      </div>
+                      <div>
+                        <p className="font-semibold">{comment.user.name}</p>
+                        <p className="text-xs text-gray-400">{getRelativeTime(comment.createdAt)}</p>
+                        <p className="mt-1">{comment.content}</p>
+                      </div>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+            <div className="border-t pt-4">
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  value={commentText}
+                  onChange={(e) => setCommentText(e.target.value)}
+                  placeholder="Write a comment..."
+                  className="input input-bordered w-full"
+                  onKeyPress={(e) => {
+                    if (e.key === 'Enter') handleAddComment();
+                  }}
+                />
+                <button
+                  onClick={handleAddComment}
+                  disabled={!commentText.trim() || addCommentMutation.isPending}
+                  className="btn btn-primary"
+                >
+                  {addCommentMutation.isPending ? 'Post' : 'Post'}
+                </button>
+              </div>
             </div>
           </div>
         </div>

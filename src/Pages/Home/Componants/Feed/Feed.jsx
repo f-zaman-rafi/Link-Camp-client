@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import useAxiosSecure from "../../../../Hooks/useAxiosSecure";
-import { FaComment, FaFlag, FaTimes } from "react-icons/fa";
+import { FaComment, FaFlag, FaTimes, FaTrash } from "react-icons/fa"; // Import FaTrash
 import {
     BiUpvote,
     BiDownvote,
@@ -9,12 +9,18 @@ import {
     BiSolidUpvote,
 } from "react-icons/bi";
 import Loading from "../../../Loading/Loading";
+import useAuth from "../../../../Hooks/useAuth";
 
 const Feed = () => {
     const axiosSecure = useAxiosSecure();
     const queryClient = useQueryClient();
     const [selectedPostId, setSelectedPostId] = useState(null);
     const [commentText, setCommentText] = useState("");
+    const [reportModalOpen, setReportModalOpen] = useState(false);
+    const [reportReason, setReportReason] = useState("");
+    const [postToReport, setPostToReport] = useState(null);
+    const { user } = useAuth();
+
 
     // Utility function to calculate relative time
     const getRelativeTime = (createdAt) => {
@@ -119,6 +125,17 @@ const Feed = () => {
         },
     });
 
+    // Mutation for deleting comments
+    const deleteCommentMutation = useMutation({
+        mutationFn: async (commentId) => {
+            const response = await axiosSecure.delete(`/comments/${commentId}`);
+            return response.data;
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["comments", selectedPostId] });
+        },
+    });
+
 
     const handleAddComment = () => {
         if (!commentText.trim()) return;
@@ -135,6 +152,40 @@ const Feed = () => {
     const closeCommentsModal = () => {
         setSelectedPostId(null);
         setCommentText("");
+    };
+
+    // --- Report Functionality ---
+    const reportMutation = useMutation({
+        mutationFn: async ({ postId, reason }) => {
+            const response = await axiosSecure.post("/reports", { postId, reason });
+            return response.data;
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["reports", postToReport] });
+            setReportReason("");
+            setReportModalOpen(false);
+            setPostToReport(null);
+        },
+    });
+
+    const handleReport = () => {
+        if (!reportReason.trim()) return;
+        reportMutation.mutate({ postId: postToReport, reason: reportReason });
+    };
+
+    const openReportModal = (postId) => {
+        setPostToReport(postId);
+        setReportModalOpen(true);
+    };
+
+    const closeReportModal = () => {
+        setReportModalOpen(false);
+        setReportReason("");
+        setPostToReport(null);
+    };
+
+    const handleDeleteComment = (commentId) => {
+        deleteCommentMutation.mutate(commentId);
     };
 
     if (postsLoading || votesLoading || voteCountsLoading) return <Loading />;
@@ -163,8 +214,8 @@ const Feed = () => {
                                     {post.user.name}
                                     <span
                                         className={`mx-2 text-xs px-1 rounded-full
-                                        ${post.user.user_type === "student" ? "bg-green-200" : ""}    
-                                        ${post.user.user_type === "teacher" ? "bg-blue-200" : ""}    
+                                        ${post.user.user_type === "student" ? "bg-green-200" : ""}
+                                        ${post.user.user_type === "teacher" ? "bg-blue-200" : ""}
                                         ${post.user.user_type === "admin" ? "bg-red-200" : ""}`}
                                     >
                                         {post.user.user_type}
@@ -231,7 +282,10 @@ const Feed = () => {
                                     <FaComment />
                                     <span>Comment</span>
                                 </button>
-                                <button className="flex items-center gap-2 text-gray-600 hover:text-yellow-500">
+                                <button
+                                    className="flex items-center gap-2 text-gray-600 hover:text-yellow-500"
+                                    onClick={() => openReportModal(post._id)}
+                                >
                                     <FaFlag />
                                     <span>Report</span>
                                 </button>
@@ -262,27 +316,42 @@ const Feed = () => {
                                     <p className="text-gray-500">No comments yet. Be the first to comment!</p>
                                 </div>
                             ) : (
-                                comments.map((comment) => (
-                                    <div key={comment._id} className="border-b pb-4 last:border-b-0">
-                                        <div className="flex items-start gap-3">
-                                            <div className="avatar">
-                                                <div className="w-8 rounded-full">
-                                                    <img src={comment.user.photo} alt={comment.user.name} />
+                                comments.map((comment) => {
+                                    const isMyComment = user?.email === comment.email;
+                                    return (
+                                        <div key={comment._id} className="border-b pb-4 last:border-b-0">
+                                            <div className="flex items-start gap-3 justify-between">
+                                                <div className="flex items-start gap-3">
+                                                    <div className="avatar">
+                                                        <div className="w-8 rounded-full">
+                                                            <img src={comment.user.photo} alt={comment.user.name} />
+                                                        </div>
+                                                    </div>
+                                                    <div>
+                                                        <div className="flex items-center gap-2">
+                                                            <p className="font-semibold">{comment.user.name}</p>
+                                                            <span className="text-xs text-gray-400">
+                                                                {getRelativeTime(comment.createdAt)}
+                                                            </span>
+                                                        </div>
+                                                        <p className="mt-1">{comment.content}</p>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <div>
-                                                <div className="flex items-center gap-2">
-                                                    <p className="font-semibold">{comment.user.name}</p>
-                                                    <span className="text-xs text-gray-400">
-                                                        {getRelativeTime(comment.createdAt)}
-                                                    </span>
-                                                </div>
-                                                <p className="mt-1">{comment.content}</p>
+                                                {isMyComment && (
+                                                    <button
+                                                        onClick={() => handleDeleteComment(comment._id)}
+                                                        className="text-red-500 hover:text-red-700"
+                                                        title="Delete Comment"
+                                                    >
+                                                        <FaTrash />
+                                                    </button>
+                                                )}
                                             </div>
                                         </div>
-                                    </div>
-                                ))
-                            )}
+                                    );
+                                }
+                                ))}
+
                         </div>
 
                         <div className="border-t pt-4">
@@ -293,7 +362,7 @@ const Feed = () => {
                                     onChange={(e) => setCommentText(e.target.value)}
                                     placeholder="Write a comment..."
                                     className="input input-bordered w-full"
-                                    onPress={(e) => {
+                                    onKeyDown={(e) => {
                                         if (e.key === 'Enter') handleAddComment();
                                     }}
                                 />
@@ -310,8 +379,39 @@ const Feed = () => {
                 </div>
             )}
 
+            {/* Report Modal */}
+            {reportModalOpen && (
+                <div className="modal modal-open">
+                    <div className="modal-box w-full max-w-md">
+                        <h3 className="text-lg font-bold mb-4">Report Post</h3>
+                        <textarea
+                            value={reportReason}
+                            onChange={(e) => setReportReason(e.target.value)}
+                            placeholder="Enter your reason for reporting this post..."
+                            className="textarea textarea-bordered w-full h-32 mb-4"
+                        />
+                        <div className="flex justify-end gap-4">
+                            <button
+                                className="btn btn-outline"
+                                onClick={closeReportModal}
+                                disabled={reportMutation.isPending}
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                className="btn btn-error"
+                                onClick={handleReport}
+                                disabled={!reportReason.trim() || reportMutation.isPending}
+                            >
+                                {reportMutation.isPending ? "Reporting..." : "Report"}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
 
 export default Feed;
+
