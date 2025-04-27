@@ -130,15 +130,29 @@ const Feed = () => {
                         </div>
 
                         {/* Post Content */}
-                        {post.photo ? (
+                        {post.photo && post.content ? (
+                            <>
+                                <p className="mb-8" style={{ whiteSpace: 'pre-wrap' }}>
+                                    {post.content}
+                                </p>
+                                <img
+                                    src={post.photo}
+                                    alt="Post"
+                                    className="w-full max-h-[300px] object-contain rounded-lg mb-4"
+                                />
+                            </>
+                        ) : post.photo ? (
                             <img
                                 src={post.photo}
                                 alt="Post"
                                 className="w-full max-h-[300px] object-contain rounded-lg mb-4"
                             />
-                        ) : (
-                            <p className="text-gray-800 text-lg mb-4" style={{ whiteSpace: 'pre-wrap' }}>{post.content}</p>
-                        )}
+                        ) : post.content ? (
+                            <p className="mb-8" style={{ whiteSpace: 'pre-wrap' }}>
+                                {post.content}
+                            </p>
+                        ) : null}
+
 
                         {/* Post Actions */}
                         <div className="flex justify-between items-center border-t border-gray-200 pt-4">

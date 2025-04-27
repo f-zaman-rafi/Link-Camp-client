@@ -18,17 +18,17 @@ const LeftNav = () => {
 
     return (
         <div className="w-full text-black">
-            <div className="text-center t-10 mb-20 shrink-0 sticky top-0 z-10">
+            <div className="text-center pt-10 mb-20 shrink-0 sticky top-0 z-10 bg-gray-50">
                 <p className="text-6xl font-bold font-caveat text-red-600">
                     LinkCamp
                 </p>
             </div>
             <ul className="space-y-4 p-4">
-                <li className="flex items-center gap-4 p-2 cursor-pointer border-b-[0.5px] border-gray-100" >
+                <li className="flex items-center gap-2 p-2 cursor-pointer border-b-[0.5px] border-gray-100" >
                     <img src={userInfo.photo} className="w-10 h-10 rounded-full" alt="User" />
-                    <span className='text-2xl'>{userInfo.name}</span>
+                    <span className='font-semibold'>{userInfo.name}</span>
                     <span
-                        className={`mx-2 text-xs px-2 py-0.5 rounded-full
+                        className={`mx-2 text-xs px-1 py-0.5 rounded-full
                             ${userInfo.userType === "student" ? "bg-green-200" : ""}    
                             ${userInfo.userType === "teacher" ? "bg-blue-200" : ""}    
                             ${userInfo.userType === "admin" ? "bg-red-200" : ""}`}>

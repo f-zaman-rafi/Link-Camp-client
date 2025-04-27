@@ -22,22 +22,15 @@ const DashNav = () => {
                     <FaBars />
                     <span>Dashboard</span>
                 </li>
-                <li className="flex items-center gap-4 p-2 rounded-lg cursor-pointer">
+                <li className="flex items-center gap-4 p-2 rounded-lg cursor-pointer" onClick={() => navigate('reported-post')}>
                     <FaPeopleArrows />
-                    <span>Members Info</span>
+                    <span>Reported Posts</span>
                 </li>
                 <li className="flex items-center gap-4 p-2 rounded-lg cursor-pointer">
                     <IoSettingsOutline />
                     <span>Settings</span>
                 </li>
-                <li className="flex items-center gap-4 p-2 rounded-lg cursor-pointer">
-                    <IoHelpOutline />
-                    <span>Help</span>
-                </li>
-                <li className="flex items-center gap-4 p-2 rounded-lg cursor-pointer">
-                    <IoLockClosedOutline />
-                    <span>Password</span>
-                </li>
+
                 <li className="flex items-center gap-4 p-2 rounded-lg cursor-pointer" onClick={() => navigate('/')}>
                     <IoHomeOutline />
                     <span>Get back to Home</span>

@@ -12,7 +12,6 @@ const PersonalInfo = () => {
     if (isLoading) return <Loading />;
 
     const handleEditClick = () => {
-        // Check if the user is an admin, and provide a humorous message
         if (userInfo.userType === "admin") {
             setErrorMessage("You're the admin, dude! Go to the database and change it there, no need to ask me!");
         } else {
@@ -32,10 +31,7 @@ const PersonalInfo = () => {
                         className="w-full h-full object-cover cursor-pointer"
                         onClick={() => setIsModalOpen(true)}
                     />
-                    {/* Edit Icon for Photo */}
-                    <button className="absolute bottom-4 right-4 bg-blue-500 text-white p-2 rounded-full shadow hover:bg-blue-600">
-                        <FaEdit />
-                    </button>
+
                 </div>
             </div>
 
@@ -132,7 +128,7 @@ const PersonalInfo = () => {
                         />
                         <button
                             className="absolute top-4 right-4 text-white p-2 rounded-full shadow hover:border"
-                            onClick={() => setIsModalOpen(false)} // Close modal on click
+                            onClick={() => setIsModalOpen(false)}
                         >
                             <FaTimes />
                         </button>

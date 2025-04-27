@@ -49,47 +49,47 @@ const NoticeboardFeed = () => {
                     <p className="text-gray-600 text-xl">No notice available at the moment.</p>
                 </div>
             ) : (
-                posts.map((announcement) => (
+                posts.map((notice) => (
                     <div
-                        key={announcement._id}
+                        key={notice._id}
                         className="bg-white shadow-md rounded-xl p-4 max-w-2xl mx-auto"
                     >
-                        {/* Announcement Header */}
+                        {/* notice Header */}
                         <div className="flex items-center gap-4 mb-4">
                             <img
-                                src={announcement.user.photo}
+                                src={notice.user.photo}
                                 alt="User"
                                 className="w-10 h-10 rounded-full"
                             />
                             <div>
                                 <p className="font-medium">
-                                    {announcement.user.name}
+                                    {notice.user.name}
                                     <span className="mx-2 text-xs px-1 bg-green-200 rounded-full">
-                                        {announcement.user.user_type}
+                                        {notice.user.user_type}
                                     </span>
                                 </p>
                                 <p className="text-sm text-gray-500">
-                                    {getRelativeTime(announcement.createdAt)}
+                                    {getRelativeTime(notice.createdAt)}
                                 </p>
                             </div>
                         </div>
 
-                        {/* Announcement Content */}
-                        {announcement.photo ? (
+                        {/* notice Content */}
+                        {notice.photo ? (
                             <img
-                                src={announcement.photo}
-                                alt="Announcement"
+                                src={notice.photo}
+                                alt="notice"
                                 className="w-full max-h-[300px] object-contain rounded-lg mb-4"
                             />
                         ) : (
-                            <p className="text-gray-800 text-lg mb-4" style={{ whiteSpace: 'pre-wrap' }}>{announcement.content}</p>
+                            <p className="text-gray-800 text-lg mb-4" style={{ whiteSpace: 'pre-wrap' }}>{notice.content}</p>
                         )}
 
                         {/* Comments Section - Same as Feed */}
                         <div className="flex justify-center items-center border-t border-gray-200 pt-4">
                             <button
                                 className="flex items-center gap-2 text-gray-600 hover:text-green-500"
-                                onClick={() => openCommentsModal(announcement._id)}
+                                onClick={() => openCommentsModal(notice._id)}
                             >
                                 <FaComment />
                                 <span>Comment</span>

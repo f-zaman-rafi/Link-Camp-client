@@ -17,6 +17,7 @@ import AnnouncementPage from "../Pages/Announcement/AnnouncementPage/Announcemen
 import NoticeboardPage from "../Pages/NoticeBoard/NoticeboardPage/NoticeboardPage";
 import PersonalInfo from "../Pages/PersonalInfo/PersonalInfo";
 import UserPosts from "../Pages/UserPosts/UserPosts";
+import ReportedPost from "../AdminDashboard/ReportedPost/ReportedPost";
 
 export const router = createBrowserRouter([
   {
@@ -84,6 +85,10 @@ export const router = createBrowserRouter([
         path: "/admin-dash",
         element: <DashHome />
       },
+      {
+        path: "reported-post",
+        element: <ReportedPost />
+      }
     ]
   },
 

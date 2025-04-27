@@ -74,16 +74,30 @@ const AnnouncementFeed = () => {
                             </div>
                         </div>
 
-                        {/* Announcement Content */}
-                        {announcement.photo ? (
+                        {/* announcement Content */}
+                        {announcement.photo && announcement.content ? (
+                            <>
+                                <p className="mb-8" style={{ whiteSpace: 'pre-wrap' }}>
+                                    {announcement.content}
+                                </p>
+                                <img
+                                    src={announcement.photo}
+                                    alt="announcement"
+                                    className="w-full max-h-[300px] object-contain rounded-lg mb-4"
+                                />
+                            </>
+                        ) : announcement.photo ? (
                             <img
                                 src={announcement.photo}
-                                alt="Announcement"
+                                alt="announcement"
                                 className="w-full max-h-[300px] object-contain rounded-lg mb-4"
                             />
-                        ) : (
-                            <p className="text-gray-800 text-lg mb-4" style={{ whiteSpace: 'pre-wrap' }}>{announcement.content}</p>
-                        )}
+                        ) : announcement.content ? (
+                            <p className="mb-8" style={{ whiteSpace: 'pre-wrap' }}>
+                                {announcement.content}
+                            </p>
+                        ) : null}
+
 
                         {/* Comments Section - Same as Feed */}
                         <div className="flex justify-center items-center border-t border-gray-200 pt-4">

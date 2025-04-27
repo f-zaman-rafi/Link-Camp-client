@@ -44,7 +44,6 @@ const SignUp = () => {
       });
   };
 
-  // Watch user type to conditionally render fields
   const selectedUserType = watch("userType");
 
   return (
