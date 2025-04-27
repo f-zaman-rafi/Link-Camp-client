@@ -41,13 +41,18 @@ const SignIn = () => {
 
   return (
     <div className="hero min-h-screen">
+      <div className="flex justify-center items-center absolute lg:top-[5px] top-[100px] left-[100px] lg:left-1/2 transform -translate-x-1/2 z-10 space-x-4">
+        <img className='w-16 md:w-26' src="../../../public/Logo/linkCampLogo.png" alt="" />
+      </div>
+
       <div className="hero-content flex-col lg:flex-row space-x-28 max-w-4xl">
         <div className="text-center lg:text-left">
-          <h1 className="text-5xl font-bold">Sign-In!</h1>
+          <h1 className="text-3xl font-bold">Welcome to LinkCamp!</h1>
           <p className="py-6">
-            Log in to your account and access the platform.
+            Log in to your LinkCamp account to stay updated on campus news, class announcements, official notices, and engage in discussions. Share ideas, report issues, and connect with your peers.
           </p>
         </div>
+
 
         <div className="card bg-base-100 w-full max-w-sm shrink-0 shadow-2xl">
           <form onSubmit={handleSubmit(onSubmit)} className="card-body">

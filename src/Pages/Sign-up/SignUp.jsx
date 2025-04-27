@@ -48,11 +48,20 @@ const SignUp = () => {
 
   return (
     <div className="hero min-h-screen">
-      <div className="hero-content flex-col w-full gap-32 lg:flex-row">
+      <div className="flex justify-center items-center absolute lg:top-[5px] top-[100px] left-[100px] lg:left-1/2 transform -translate-x-1/2 z-10 space-x-4">
+        <img className='w-16 md:w-26' src="../../../public/Logo/linkCampLogo.png" alt="" />
+      </div>
+      <div className="hero-content flex-col w-full md:gap-10 lg:flex-row">
         <div className="text-center lg:text-left">
           <h1 className="text-5xl font-bold">Sign-Up!</h1>
-          <p className="py-6">Create an account to access the platform.</p>
+          <div className="space-y-2 pt-5">
+            <p>Welcome to LinkCamp</p>
+            <p>Please provide your details</p>
+            <p>so we can verify your account smoothly</p>
+            <p>and get you started on the platform. We're here to help!</p>
+          </div>
         </div>
+
         <div className="card bg-base-100 w-full max-w-sm shrink-0 shadow-2xl">
           {/* React Hook Form Form */}
           <form onSubmit={handleSubmit(onSubmit)} className="card-body">

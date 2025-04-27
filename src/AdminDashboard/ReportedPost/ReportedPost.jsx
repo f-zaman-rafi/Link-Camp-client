@@ -115,8 +115,8 @@ const ReportedPost = () => {
     if (reportsLoading) return <Loading />;
 
     return (
-        <div className="space-y-6 py-6 px-6 min-h-screen">
-            <h1 className="text-2xl font-bold text-center mb-6">Reported Posts</h1>
+        <div className="w-full space-y-6 py-4 px-6 min-h-screen">
+            <h1 className="text-2xl font-bold text-start mb-6">Reported Posts</h1>
 
             {reportedPosts.length === 0 ? (
                 <div className="flex justify-center items-center py-6 min-h-[50vh]">

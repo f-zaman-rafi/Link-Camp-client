@@ -1,44 +1,28 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import React, { useState } from "react";
 import useAxiosSecure from "../../../../Hooks/useAxiosSecure";
 import Loading from "../../../Loading/Loading";
 import { FaComment } from "react-icons/fa";
-import { IoClose } from "react-icons/io5"; // For modal close button
+import { IoClose } from "react-icons/io5";
+import useRelativeTime from "../../../../Hooks/useRelativeTime";
+import useCommentsOperations from "../../../../Hooks/useCommentOperations";
 
 const RightNav = () => {
   const axiosSecure = useAxiosSecure();
-  const queryClient = useQueryClient();
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedAnnouncement, setSelectedAnnouncement] = useState(null);
   const [commentModalOpen, setCommentModalOpen] = useState(false);
-  const [selectedPostId, setSelectedPostId] = useState(null); // Using postId as in Feed
-  const [commentText, setCommentText] = useState("");
+  const [selectedPostId, setSelectedPostId] = useState(null);
+  const getRelativeTime = useRelativeTime();
+  const {
+    comments,
+    commentsLoading,
+    commentText,
+    setCommentText,
+    handleAddComment,
+    addCommentPending
+  } = useCommentsOperations(selectedPostId);
 
-  // Utility function to calculate relative time (same as Feed component)
-  const getRelativeTime = (createdAt) => {
-    const now = new Date();
-    const postDate = new Date(createdAt);
-    const diffInSeconds = Math.floor((now - postDate) / 1000);
-
-    if (diffInSeconds < 60) {
-      return `${diffInSeconds} seconds ago`;
-    } else if (diffInSeconds < 3600) {
-      const minutes = Math.floor(diffInSeconds / 60);
-      return `${minutes} minute${minutes > 1 ? "s" : ""} ago`;
-    } else if (diffInSeconds < 86400) {
-      const hours = Math.floor(diffInSeconds / 3600);
-      return `${hours} hour${hours > 1 ? "s" : ""} ago`;
-    } else if (diffInSeconds < 2592000) {
-      const days = Math.floor(diffInSeconds / 86400);
-      return `${days} day${days > 1 ? "s" : ""} ago`;
-    } else if (diffInSeconds < 31536000) {
-      const months = Math.floor(diffInSeconds / 2592000);
-      return `${months} month${months > 1 ? "s" : ""} ago`;
-    } else {
-      const years = Math.floor(diffInSeconds / 31536000);
-      return `${years} year${years > 1 ? "s" : ""} ago`;
-    }
-  };
 
   // Fetch notices
   const { data: notices = [], isLoading: noticesLoading } = useQuery({
@@ -49,36 +33,6 @@ const RightNav = () => {
     },
   });
 
-  // Fetch comments for selected post
-  const { data: comments = [], isLoading: commentsLoading } = useQuery({
-    queryKey: ["comments", selectedPostId],
-    queryFn: async () => {
-      if (!selectedPostId) return [];
-      const response = await axiosSecure.get(`/comments/${selectedPostId}`);
-      return response.data;
-    },
-    enabled: !!selectedPostId && commentModalOpen, // Only fetch when the comment modal is open
-  });
-
-  // Mutation for adding comments
-  const addCommentMutation = useMutation({
-    mutationFn: async ({ postId, content }) => {
-      const response = await axiosSecure.post("/comments", { postId, content });
-      return response.data;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["comments", selectedPostId] });
-      setCommentText("");
-    },
-  });
-
-  const handleAddComment = () => {
-    if (!commentText.trim()) return;
-    addCommentMutation.mutate({
-      postId: selectedPostId,
-      content: commentText,
-    });
-  };
 
   const openCommentsModal = (postId) => {
     setSelectedPostId(postId);
@@ -105,14 +59,14 @@ const RightNav = () => {
   if (noticesLoading) return <Loading />;
 
   return (
-    <div className="sticky top-0">
-      <div className="pt-14  shrink-0 sticky top-0 z-10 bg-gray-50">
-        <p className="text-6xl font-bold font-caveat pb-[66px]">Notifications !</p>
+    <div className="w-full">
+      <div className="pt-6 ">
+        <div className="flex justify-center"><p className="text-3xl font-bold mb-10">Notifications !</p></div>
         <div className="space-y-6 py-6">
           {notices.map((announcement) => (
             <div
               key={announcement._id}
-              className="bg-white shadow-md rounded-xl p-4 max-w-2xl mx-auto"
+              className="bg-white shadow-md rounded-xl p-4 w-xs mx-auto"
             >
               {/* Notification Header */}
               <div className="flex items-center gap-4 mb-4">
@@ -250,16 +204,16 @@ const RightNav = () => {
                   onChange={(e) => setCommentText(e.target.value)}
                   placeholder="Write a comment..."
                   className="input input-bordered w-full"
-                  onKeyPress={(e) => {
+                  onPress={(e) => {
                     if (e.key === 'Enter') handleAddComment();
                   }}
                 />
                 <button
                   onClick={handleAddComment}
-                  disabled={!commentText.trim() || addCommentMutation.isPending}
+                  disabled={!commentText.trim() || addCommentPending}
                   className="btn btn-primary"
                 >
-                  {addCommentMutation.isPending ? 'Post' : 'Post'}
+                  {addCommentPending ? 'Posting...' : 'Post'}
                 </button>
               </div>
             </div>

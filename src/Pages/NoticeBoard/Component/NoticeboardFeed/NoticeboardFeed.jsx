@@ -74,16 +74,29 @@ const NoticeboardFeed = () => {
                             </div>
                         </div>
 
-                        {/* notice Content */}
-                        {notice.photo ? (
+                        {/* Post Content */}
+                        {notice.photo && notice.content ? (
+                            <>
+                                <p className="mb-8" style={{ whiteSpace: 'pre-wrap' }}>
+                                    {notice.content}
+                                </p>
+                                <img
+                                    src={notice.photo}
+                                    alt="notice"
+                                    className="w-full max-h-[300px] object-contain rounded-lg mb-4"
+                                />
+                            </>
+                        ) : notice.photo ? (
                             <img
                                 src={notice.photo}
                                 alt="notice"
                                 className="w-full max-h-[300px] object-contain rounded-lg mb-4"
                             />
-                        ) : (
-                            <p className="text-gray-800 text-lg mb-4" style={{ whiteSpace: 'pre-wrap' }}>{notice.content}</p>
-                        )}
+                        ) : notice.content ? (
+                            <p className="mb-8" style={{ whiteSpace: 'pre-wrap' }}>
+                                {notice.content}
+                            </p>
+                        ) : null}
 
                         {/* Comments Section - Same as Feed */}
                         <div className="flex justify-center items-center border-t border-gray-200 pt-4">

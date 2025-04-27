@@ -17,11 +17,16 @@ const LeftNav = () => {
     const isActive = (path) => location.pathname === path;
 
     return (
-        <div className="w-full text-black">
-            <div className="text-center pt-10 mb-20 shrink-0 sticky top-0 z-10 bg-gray-50">
-                <p className="text-6xl font-bold font-caveat text-red-600">
+        <div className="lg:w-full text-black w-1/6 md:w-4/6">
+
+            <div className="flex items-center gap-2 mx-4 text-center pt-4 mb-10 md:flex-col md:items-center">
+                <img className='w-16 md:w-12' src="../../../../../public/Logo/linkCampLogo.png" alt="" />
+                <p className="text-4xl font-bold text-red-500 md:text-2xl">
                     LinkCamp
                 </p>
+                <div className="md:hidden mt-2">
+                    <FaBars />
+                </div>
             </div>
             <ul className="space-y-4 p-4">
                 <li className="flex items-center gap-2 p-2 cursor-pointer border-b-[0.5px] border-gray-100" >
@@ -64,7 +69,7 @@ const LeftNav = () => {
                     <IoSettingsOutline />
                     <span>My Posts</span>
                 </li>
-                <li
+                {/* <li
                     className={`flex items-center gap-4 p-2 cursor-pointer border-b-[0.5px] border-gray-100 ${isActive('/help') ? 'bg-gray-200 font-bold' : ''}`}
                 >
                     <IoHelpOutline />
@@ -75,7 +80,7 @@ const LeftNav = () => {
                 >
                     <IoLockClosedOutline />
                     <span>Password</span>
-                </li>
+                </li> */}
                 <li
                     className="flex items-center gap-4 p-2 cursor-pointer border-b-[0.5px] border-gray-100"
                     onClick={logOut}
@@ -84,6 +89,10 @@ const LeftNav = () => {
                     <span>Sign Out</span>
                 </li>
             </ul>
+
+
+
+
         </div>
     );
 };

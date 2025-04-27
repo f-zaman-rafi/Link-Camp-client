@@ -18,7 +18,7 @@ const DashNav = () => {
                         LinkCamp <sub className="text-lg">Dash</sub>
                     </p>
                 </li>
-                <li className="flex items-center gap-4 p-2 rounded-lg cursor-pointer">
+                <li className="flex items-center gap-4 p-2 rounded-lg cursor-pointer" onClick={() => navigate('/admin-dash')}>
                     <FaBars />
                     <span>Dashboard</span>
                 </li>
@@ -26,10 +26,10 @@ const DashNav = () => {
                     <FaPeopleArrows />
                     <span>Reported Posts</span>
                 </li>
-                <li className="flex items-center gap-4 p-2 rounded-lg cursor-pointer">
+                {/* <li className="flex items-center gap-4 p-2 rounded-lg cursor-pointer">
                     <IoSettingsOutline />
                     <span>Settings</span>
-                </li>
+                </li> */}
 
                 <li className="flex items-center gap-4 p-2 rounded-lg cursor-pointer" onClick={() => navigate('/')}>
                     <IoHomeOutline />
