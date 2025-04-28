@@ -20,7 +20,7 @@ const LeftNav = () => {
         <div className="w-full text-black">
 
             <div className="flex gap-2 mx-4 text-center pt-4 mb-10 flex-col items-center">
-                <img className='w-16 md:w-12' src="../../../../../public/Logo/linkCampLogo.png" alt="" />
+                <img className='w-16 md:w-12' src="/Logo/linkCampLogo.png" alt="" />
                 <p className="text-4xl font-bold text-red-500 md:text-2xl">
                     LinkCamp
                 </p>
