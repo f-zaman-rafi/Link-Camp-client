@@ -115,7 +115,7 @@ const ReportedPost = () => {
     if (reportsLoading) return <Loading />;
 
     return (
-        <div className="w-full space-y-6 py-4 px-6 min-h-screen">
+        <div className="lg:w-full w-auto space-y-6 py-4 px-6 min-h-screen">
             <h1 className="text-2xl font-bold text-start mb-6">Reported Posts</h1>
 
             {reportedPosts.length === 0 ? (
@@ -126,7 +126,7 @@ const ReportedPost = () => {
                 reportedPosts.map((post) => (
                     <div
                         key={post._id}
-                        className="bg-white shadow-md rounded-xl p-4 w-lg mx-auto relative"
+                        className="bg-white shadow-md rounded-xl p-4 w-auto lg:w-lg mx-auto relative"
                     >
                         {/* Report badge */}
                         <div className="absolute top-2 right-2 badge badge-error gap-2">

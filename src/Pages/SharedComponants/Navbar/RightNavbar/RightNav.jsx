@@ -59,7 +59,7 @@ const RightNav = () => {
   if (noticesLoading) return <Loading />;
 
   return (
-    <div className="w-full">
+    <div className="w-auto">
       <div className="pt-6 ">
         <div className="flex justify-center"><p className="text-3xl font-bold mb-10">Notifications !</p></div>
         <div className="space-y-6 py-6">

@@ -14,12 +14,12 @@ const Main = () => {
       {!hideLayout && (
         <div className="flex h-screen bg-gray-50">
           {/* Left Sidebar - only visible on hover */}
-          <div className="w-1/4 overflow-y-auto ">
+          <div className="w-1/4 lg:block hidden overflow-y-auto ">
             <LeftNav type="side-left" />
           </div>
 
           {/* Center Section */}
-          <div className="w-2/4 flex flex-col mx-8">
+          <div className="lg:w-2/4 w-full flex flex-col lg:mx-8 mx-2">
             {/* Sticky Navbar */}
             <div className="h-16 shrink-0 sticky top-0 z-10">
               <CenterNavbar type="center" />
@@ -32,7 +32,7 @@ const Main = () => {
           </div>
 
           {/* Right Sidebar - only visible on hover */}
-          <div className="w-1/4 overflow-y-auto ">
+          <div className="w-auto lg:block hidden overflow-y-auto overflow-x-hidden ">
             <RightNav type="side-right" />
           </div>
         </div>
