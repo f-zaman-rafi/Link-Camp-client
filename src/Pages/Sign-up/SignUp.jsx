@@ -48,10 +48,12 @@ const SignUp = () => {
 
   return (
     <div className="hero min-h-screen">
-      <div className="flex justify-center items-center absolute top-[5px] lg:top-[100px]  left-1/2 transform -translate-x-1/2 z-10 space-x-4">
+
+      <div className="flex justify-center items-center absolute top-[5px]  left-1/2 transform -translate-x-1/2 z-10 space-x-4">
         <img className='w-16 md:w-26' src="/Logo/linkCampLogo.png" alt="" />
       </div>
-      <div className="hero-content flex-col w-full md:gap-10 lg:flex-row">
+
+      <div className="hero-content flex-col w-full md:gap-10 lg:flex-row pt-12">
         <div className="text-center lg:text-left pt-10">
           <h1 className="lg:text-5xl text-3xl font-bold">Sign-Up!</h1>
           <div className="lg:space-y-2 pt-5">

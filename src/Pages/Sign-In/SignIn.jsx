@@ -87,11 +87,11 @@ const SignIn = () => {
 
       <div className="hero min-h-screen">
 
-        <div className="flex justify-center items-center absolute top-[5px] lg:top-[100px]  left-1/2 transform -translate-x-1/2 z-10 space-x-4">
-          <img className='w-16 md:w-26' src="../../../public/Logo/linkCampLogo.png" alt="" />
+        <div className="flex justify-center items-center absolute top-[5px]  left-1/2 transform -translate-x-1/2 z-10 space-x-4">
+          <img className='w-16 md:w-26' src="/Logo/linkCampLogo.png" alt="" />
         </div>
 
-        <div className="hero-content flex-col lg:flex-row lg:space-x-28 lg:max-w-4xl">
+        <div className="hero-content flex-col lg:flex-row lg:space-x-28 lg:max-w-4xl pt-12">
           <div className="text-center lg:text-left">
             <h1 className="text-3xl font-bold">Welcome to LinkCamp!</h1>
             <p className="py-6 w-auto">
