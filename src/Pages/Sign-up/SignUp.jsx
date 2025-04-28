@@ -48,13 +48,13 @@ const SignUp = () => {
 
   return (
     <div className="hero min-h-screen">
-      <div className="flex justify-center items-center absolute lg:top-[5px] top-[100px] left-[100px] lg:left-1/2 transform -translate-x-1/2 z-10 space-x-4">
-        <img className='w-16 md:w-26' src="../../../public/Logo/linkCampLogo.png" alt="" />
+      <div className="flex justify-center items-center absolute top-[5px] lg:top-[100px]  left-1/2 transform -translate-x-1/2 z-10 space-x-4">
+        <img className='w-16 md:w-26' src="/Logo/linkCampLogo.png" alt="" />
       </div>
       <div className="hero-content flex-col w-full md:gap-10 lg:flex-row">
-        <div className="text-center lg:text-left">
-          <h1 className="text-5xl font-bold">Sign-Up!</h1>
-          <div className="space-y-2 pt-5">
+        <div className="text-center lg:text-left pt-10">
+          <h1 className="lg:text-5xl text-3xl font-bold">Sign-Up!</h1>
+          <div className="lg:space-y-2 pt-5">
             <p>Welcome to Link-Camp</p>
             <p>To help verify your account and get you started</p>
             <p>on the platform, please provide your details as per your </p>
