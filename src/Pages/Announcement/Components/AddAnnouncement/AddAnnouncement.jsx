@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import useUserInfo from "../../../../Hooks/useUserInfo";
 import useAxiosSecure from "../../../../Hooks/useAxiosSecure";
 import toast from "react-hot-toast";
@@ -12,9 +12,13 @@ const AddAnnouncement = () => {
     const { userInfo } = useUserInfo();
     const axiosSecure = useAxiosSecure();
     const navigate = useNavigate();
+    const textareaRef = useRef(null);
 
     const openModal = () => {
         setIsModalOpen(true);
+        setTimeout(() => {
+            textareaRef.current?.focus();
+        }, 100);
     };
 
     const closeModal = () => {
@@ -97,6 +101,7 @@ const AddAnnouncement = () => {
                             <p className="font-medium">{userInfo.name}</p>
                         </div>
                         <textarea
+                            ref={textareaRef}
                             className="w-full p-3 border rounded-lg outline-none"
                             rows="4"
                             placeholder="Make an Announcement!"

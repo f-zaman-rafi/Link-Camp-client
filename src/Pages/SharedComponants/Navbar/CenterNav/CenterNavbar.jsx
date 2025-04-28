@@ -51,10 +51,13 @@ const CenterNavbar = () => {
       <div className="flex items-center justify-between mt-2 max-w-2xl mx-auto z-30 relative px-2">
 
         {/* Left - Burger Menu */}
-        <div className="flex items-center">
-          <img src="../../../../../public/Logo/linkCampLogo.png" alt="" className="h-10 cursor-pointer lg:hidden"
-            onClick={() => setIsLeftSidebarOpen(true)} />
-        </div>
+        <img
+          src="/Logo/linkCampLogo.png"
+          alt="LinkCamp Logo"
+          className="h-10 cursor-pointer lg:hidden"
+          onClick={() => setIsLeftSidebarOpen(true)}
+        />
+
 
         {/* Center - Tabs */}
         <div className="flex justify-center lg:justify-between items-center gap-6 flex-grow">
