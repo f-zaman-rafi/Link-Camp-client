@@ -70,16 +70,11 @@ const SignIn = () => {
           onMouseLeave={(e) => e.target.start()}
           scrollamount="10"
           loop="infinite"
+
         >
-          Welcome to LinkCamp! For testing purposes, you can sign up or also use these credentials:
-          ----------
-          Admin: admin@admin.admin / admin.admin.admin
-          ----------
-          Student: student@student.student / student@student.student
-          ----------
+          Welcome to LinkCamp! Admin Access: admin@admin.admin / admin.admin.admin —
+          Sign up anytime or test directly! Student: student@student.student / student@student.student —
           Teacher: teacher@teacher.teacher / teacher@teacher.teacher
-          ----------
-          You can <a href="/sign-up" className="text-blue-500">sign up</a> here anytime!
         </marquee>
 
 
