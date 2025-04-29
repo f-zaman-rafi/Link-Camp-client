@@ -42,8 +42,7 @@ const AuthProvider = ({ children }) => {
   //
   const logOut = async () => {
     try {
-      const res = await axiosCommon.post("/logout");
-      console.log(res.data);
+      await axiosCommon.post("/logout");
       await signOut(auth);
     } catch (err) {
       console.error("Logout failed", err);
@@ -57,7 +56,6 @@ const AuthProvider = ({ children }) => {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
-      console.log("current user", currentUser);
       setLoading(false);
     });
 

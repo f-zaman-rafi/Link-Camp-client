@@ -24,13 +24,15 @@ const SignIn = () => {
         const email = result.user.email;
         axiosCommon.post("/login", { email }).then(async () => {
           const { data: user } = await refetch();
-          if (user?.verify === "pending") {
-            navigate("/pending-request");
-          } else if (user?.verify === "approved" && user?.name === "") {
-            navigate("/profile-setup");
-          } else {
-            navigate('/');
-          }
+          setTimeout(() => {
+            if (user?.verify === "pending") {
+              navigate("/pending-request");
+            } else if (user?.verify === "approved" && user?.name === "") {
+              navigate("/profile-setup");
+            } else {
+              navigate('/');
+            }
+          }, 2000);
         });
       })
       .catch((error) => {
@@ -52,8 +54,9 @@ const SignIn = () => {
         setTimeout(() => {
           window.location.reload();
         }, 2100);
-      })
-  }
+      });
+  };
+
 
   return (
     <div>

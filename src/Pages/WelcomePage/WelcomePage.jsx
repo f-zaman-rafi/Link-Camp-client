@@ -34,10 +34,10 @@ const WelcomePage = () => {
             }
 
             // Update the user's name
-            const response = await axiosSecure.patch('/user/name', { name: data.name });
-            console.log(response.data.message);
+            await axiosSecure.patch('/user/name', { name: data.name });
 
             navigate('/');
+
         } catch (error) {
             console.error("Error:", error.response?.data?.message || error.message);
             alert(error.response?.data?.message || "Failed to update name or upload photo");
