@@ -66,6 +66,9 @@ const UserPosts = () => {
             queryClient.invalidateQueries({ queryKey: ['voteCounts'] });
             queryClient.invalidateQueries({ queryKey: ['comments'] });
             queryClient.invalidateQueries({ queryKey: ['reports'] });
+            setTimeout(() => {
+                window.location.reload();
+            }, 2000);
         },
 
     });
@@ -99,6 +102,13 @@ const UserPosts = () => {
         setCommentText("");
     };
 
+    const sortByLatest = (posts) => {
+        return posts
+            .slice()
+            .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    };
+
+
     if (postsLoading || votesLoading || voteCountsLoading) return <Loading />;
 
     return (
@@ -108,7 +118,7 @@ const UserPosts = () => {
                     <p className="text-gray-600 text-xl">No posts created by you yet.</p>
                 </div>
             ) : (
-                userPosts.map((post) => (
+                sortByLatest(userPosts).map((post) => (
                     <div key={post._id} className="bg-white shadow-md rounded-xl p-4 mx-auto">
                         {/* Post Header */}
                         <div className="flex items-center gap-4 mb-4">

@@ -56,6 +56,12 @@ const RightNav = () => {
     setSelectedAnnouncement(null);
   };
 
+  const sortByLatest = (posts) => {
+    return posts
+      .slice()
+      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  };
+
   if (noticesLoading) return <Loading />;
 
   return (
@@ -63,7 +69,7 @@ const RightNav = () => {
       <div className="pt-6 ">
         <div className="flex justify-center"><p className="text-3xl font-bold mb-10">Notifications !</p></div>
         <div className="space-y-6 py-6">
-          {notices.map((announcement) => (
+          {sortByLatest(notices).map((announcement) => (
             <div
               key={announcement._id}
               className="bg-white shadow-md rounded-xl p-4 w-xs mx-auto"

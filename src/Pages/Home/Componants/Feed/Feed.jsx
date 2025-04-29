@@ -90,6 +90,24 @@ const Feed = () => {
         setPostToReport(null);
     };
 
+    const getPostScore = (post) => {
+        const now = new Date();
+        const postTime = new Date(post.createdAt);
+        const hoursSincePost = (now - postTime) / 1000 / 60 / 60;
+
+        const upvotes = voteCounts[post._id]?.upvotes || 0;
+        const downvotes = voteCounts[post._id]?.downvotes || 0;
+        const netVotes = upvotes - downvotes;
+        const commentCount = comments?.filter(c => c.postId === post._id).length || 0;
+
+        return (
+            netVotes * 2 +
+            commentCount * 1.5 -
+            hoursSincePost * 0.4
+        );
+    };
+
+
     if (postsLoading || votesLoading || voteCountsLoading) return <Loading />;
 
     return (
@@ -99,116 +117,120 @@ const Feed = () => {
                     <p className="text-gray-600 text-xl">No post available at the moment.</p>
                 </div>
             ) : (
-                posts.map((post) => (
-                    <div
-                        key={post._id}
-                        className="bg-white shadow-md rounded-xl p-4 max-w-2xl mx-auto"
-                    >
-                        {/* Post Header */}
-                        <div className="flex items-center gap-4 mb-4">
-                            <img
-                                src={post.user.photo}
-                                alt="User"
-                                className="w-10 h-10 rounded-full"
-                            />
-                            <div>
-                                <p className="font-medium">
-                                    {post.user.name}
-                                    <span
-                                        className={`mx-2 text-xs px-1 rounded-full
+                posts
+                    .slice()
+                    .sort((a, b) => getPostScore(b) - getPostScore(a))
+                    .map((post) => (
+
+                        <div
+                            key={post._id}
+                            className="bg-white shadow-md rounded-xl p-4 max-w-2xl mx-auto"
+                        >
+                            {/* Post Header */}
+                            <div className="flex items-center gap-4 mb-4">
+                                <img
+                                    src={post.user.photo}
+                                    alt="User"
+                                    className="w-10 h-10 rounded-full"
+                                />
+                                <div>
+                                    <p className="font-medium">
+                                        {post.user.name}
+                                        <span
+                                            className={`mx-2 text-xs px-1 rounded-full
                                         ${post.user.user_type === "student" ? "bg-green-200" : ""}
                                         ${post.user.user_type === "teacher" ? "bg-blue-200" : ""}
                                         ${post.user.user_type === "admin" ? "bg-red-200" : ""}`}
-                                    >
-                                        {post.user.user_type}
-                                    </span>
-                                </p>
-                                <p className="text-sm text-gray-500">
-                                    {getRelativeTime(post.createdAt)}
-                                </p>
+                                        >
+                                            {post.user.user_type}
+                                        </span>
+                                    </p>
+                                    <p className="text-sm text-gray-500">
+                                        {getRelativeTime(post.createdAt)}
+                                    </p>
+                                </div>
                             </div>
-                        </div>
 
-                        {/* Post Content */}
-                        {post.photo && post.content ? (
-                            <>
-                                <p className="mb-8" style={{ whiteSpace: 'pre-wrap' }}>
-                                    {post.content}
-                                </p>
+                            {/* Post Content */}
+                            {post.photo && post.content ? (
+                                <>
+                                    <p className="mb-8" style={{ whiteSpace: 'pre-wrap' }}>
+                                        {post.content}
+                                    </p>
+                                    <img
+                                        src={post.photo}
+                                        alt="Post"
+                                        className="w-full max-h-[300px] object-contain rounded-lg mb-4"
+                                    />
+                                </>
+                            ) : post.photo ? (
                                 <img
                                     src={post.photo}
                                     alt="Post"
                                     className="w-full max-h-[300px] object-contain rounded-lg mb-4"
                                 />
-                            </>
-                        ) : post.photo ? (
-                            <img
-                                src={post.photo}
-                                alt="Post"
-                                className="w-full max-h-[300px] object-contain rounded-lg mb-4"
-                            />
-                        ) : post.content ? (
-                            <p className="mb-8" style={{ whiteSpace: 'pre-wrap' }}>
-                                {post.content}
-                            </p>
-                        ) : null}
+                            ) : post.content ? (
+                                <p className="mb-8" style={{ whiteSpace: 'pre-wrap' }}>
+                                    {post.content}
+                                </p>
+                            ) : null}
 
 
-                        {/* Post Actions */}
-                        <div className="flex justify-between items-center border-t border-gray-200 pt-4">
-                            <div className="flex items-center gap-4">
-                                <button
-                                    className={`flex items-center justify-center ${userVotes[post._id] === "upvote"
-                                        ? "text-blue-500"
-                                        : "text-gray-600 hover:text-blue-500"
-                                        }`}
-                                    onClick={() => handleVote(post._id, "upvote")}
-                                >
-                                    {userVotes[post._id] === "upvote" ? (
-                                        <BiSolidUpvote className="text-xl" />
-                                    ) : (
-                                        <BiUpvote className="text-xl" />
-                                    )}
-                                    <span className="ml-2 text-sm">
-                                        {voteCounts[post._id]?.upvotes || 0}
-                                    </span>
-                                </button>
-                                <button
-                                    className={`flex items-center justify-center ${userVotes[post._id] === "downvote"
-                                        ? "text-red-500"
-                                        : "text-gray-600 hover:text-red-500"
-                                        }`}
-                                    onClick={() => handleVote(post._id, "downvote")}
-                                >
-                                    {userVotes[post._id] === "downvote" ? (
-                                        <BiSolidDownvote className="text-xl" />
-                                    ) : (
-                                        <BiDownvote className="text-xl" />
-                                    )}
-                                    <span className="ml-2 text-sm">
-                                        {voteCounts[post._id]?.downvotes || 0}
-                                    </span>
-                                </button>
-                            </div>
-                            <div className="flex items-center gap-4">
-                                <button
-                                    className="flex items-center gap-2 text-gray-600 hover:text-green-500"
-                                    onClick={() => openCommentsModal(post._id)}
-                                >
-                                    <FaComment />
-                                    <span>Comment</span>
-                                </button>
-                                <button
-                                    className="flex items-center gap-2 text-gray-600 hover:text-yellow-500"
-                                    onClick={() => openReportModal(post._id)}
-                                >
-                                    <FaFlag />
-                                    <span>Report</span>
-                                </button>
+                            {/* Post Actions */}
+                            <div className="flex justify-between items-center border-t border-gray-200 pt-4">
+                                <div className="flex items-center gap-4">
+                                    <button
+                                        className={`flex items-center justify-center ${userVotes[post._id] === "upvote"
+                                            ? "text-blue-500"
+                                            : "text-gray-600 hover:text-blue-500"
+                                            }`}
+                                        onClick={() => handleVote(post._id, "upvote")}
+                                    >
+                                        {userVotes[post._id] === "upvote" ? (
+                                            <BiSolidUpvote className="text-xl" />
+                                        ) : (
+                                            <BiUpvote className="text-xl" />
+                                        )}
+                                        <span className="ml-2 text-sm">
+                                            {voteCounts[post._id]?.upvotes || 0}
+                                        </span>
+                                    </button>
+                                    <button
+                                        className={`flex items-center justify-center ${userVotes[post._id] === "downvote"
+                                            ? "text-red-500"
+                                            : "text-gray-600 hover:text-red-500"
+                                            }`}
+                                        onClick={() => handleVote(post._id, "downvote")}
+                                    >
+                                        {userVotes[post._id] === "downvote" ? (
+                                            <BiSolidDownvote className="text-xl" />
+                                        ) : (
+                                            <BiDownvote className="text-xl" />
+                                        )}
+                                        <span className="ml-2 text-sm">
+                                            {voteCounts[post._id]?.downvotes || 0}
+                                        </span>
+                                    </button>
+                                </div>
+                                <div className="flex items-center gap-4">
+                                    <button
+                                        className="flex items-center gap-2 text-gray-600 hover:text-green-500"
+                                        onClick={() => openCommentsModal(post._id)}
+                                    >
+                                        <FaComment />
+                                        <span>Comment</span>
+                                    </button>
+                                    <button
+                                        className="flex items-center gap-2 text-gray-600 hover:text-yellow-500"
+                                        onClick={() => openReportModal(post._id)}
+                                    >
+                                        <FaFlag />
+                                        <span>Report</span>
+                                    </button>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                ))
+                    ))
             )}
 
             {/* Comments Modal */}

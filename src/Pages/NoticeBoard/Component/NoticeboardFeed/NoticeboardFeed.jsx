@@ -40,6 +40,13 @@ const NoticeboardFeed = () => {
         setCommentText("");
     };
 
+    const sortByLatest = (posts) => {
+        return posts
+            .slice()
+            .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    };
+
+
     if (postsLoading) return <Loading />;
 
     return (
@@ -49,7 +56,7 @@ const NoticeboardFeed = () => {
                     <p className="text-gray-600 text-xl">No notice available at the moment.</p>
                 </div>
             ) : (
-                posts.map((notice) => (
+                sortByLatest(posts).map((notice) => (
                     <div
                         key={notice._id}
                         className="bg-white shadow-md rounded-xl p-4 max-w-2xl mx-auto"

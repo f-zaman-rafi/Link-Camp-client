@@ -40,6 +40,12 @@ const AnnouncementFeed = () => {
         setCommentText("");
     };
 
+    const sortByLatest = (posts) => {
+        return posts
+            .slice()
+            .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    };
+
     if (postsLoading) return <Loading />;
 
     return (
@@ -49,7 +55,7 @@ const AnnouncementFeed = () => {
                     <p className="text-gray-600 text-xl">No announcement available at the moment.</p>
                 </div>
             ) : (
-                posts.map((announcement) => (
+                sortByLatest(posts).map((announcement) => (
                     <div
                         key={announcement._id}
                         className="bg-white shadow-md rounded-xl p-4 max-w-2xl mx-auto"
