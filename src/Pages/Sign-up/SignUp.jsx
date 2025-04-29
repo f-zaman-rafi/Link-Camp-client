@@ -33,16 +33,38 @@ const SignUp = () => {
           name: "",
         };
 
-        // save userInfo to Mongodb
+        // Save userInfo to MongoDB
         axiosCommon.post("/users", userInfo).then(() => {
           toast.success("You're all set! Just hang tight—your account will be approved shortly.");
           navigate("/pending-request");
         });
       })
       .catch((error) => {
-        console.error("Signup error:", error.message);
+        console.error("Signup error:", error);
+
+        const firebaseErrorMessages = {
+          'auth/email-already-in-use': "This email is already registered. Try signing in instead.",
+          'auth/invalid-email': "The email address you entered is not valid. Please check and try again.",
+          'auth/weak-password': "Your password is too weak. Try using at least 6 characters.",
+          'auth/operation-not-allowed': "Email/password sign-up is currently disabled. Please contact support.",
+          'auth/network-request-failed': "Network error. Please check your connection and try again.",
+        };
+
+        const errorMessage = firebaseErrorMessages[error.code] || `Sign up failed: ${error.message}`;
+
+        // Show toast
+        toast.error(errorMessage, {
+          autoClose: 2000,
+          position: "top-center",
+          pauseOnHover: true,
+        });
+
+        setTimeout(() => {
+          window.location.reload();
+        }, 2100);
       });
   };
+
 
   const selectedUserType = watch("userType");
 
@@ -77,7 +99,13 @@ const SignUp = () => {
                 id="email"
                 className="input"
                 placeholder="Email"
-                {...register("email", { required: "Email is required" })}
+                {...register("email", {
+                  required: "Email is required",
+                  pattern: {
+                    value: /^[a-zA-Z0-9._%+-]{3,}@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                    message: "Enter a valid email address",
+                  },
+                })}
               />
               {errors.email && (
                 <p className="text-red-500 text-xs mt-1">

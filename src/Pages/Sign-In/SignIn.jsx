@@ -5,6 +5,7 @@ import useAuth from "../../Hooks/useAuth";
 import useAxiosCommon from "../../Hooks/useAxiosCommon";
 import useUserInfo from "../../Hooks/useUserInfo";
 import Swal from "sweetalert2";
+import toast from "react-hot-toast";
 
 const SignIn = () => {
   const { signIn } = useAuth();
@@ -25,8 +26,7 @@ const SignIn = () => {
           const { data: user } = await refetch();
           if (user?.verify === "pending") {
             navigate("/pending-request");
-          }
-          if (user?.verify === "approved" && user?.name === "") {
+          } else if (user?.verify === "approved" && user?.name === "") {
             navigate("/profile-setup");
           } else {
             navigate('/');
@@ -34,30 +34,26 @@ const SignIn = () => {
         });
       })
       .catch((error) => {
-        if (error.code === 'auth/invalid-credential') {
-          Swal.fire({
-            icon: 'error',
-            title: 'Sign In Failed',
-            text: 'You are not registered yet. Please register first.',
-            confirmButtonText: 'Go to Sign Up',
-          }).then(() => {
-            navigate('/sign-up');
-            window.location.reload();
-          });
-        } else {
-          Swal.fire({
-            icon: 'error',
-            title: 'Sign In Failed',
-            text: error.message,
-            confirmButtonText: 'Go back to Sign In',
+        console.error("Error Code:", error.code);
+        console.error("Error Message:", error.message);
 
-          }).then(() => {
-            navigate('/sign-in');
-            window.location.reload();
-          });
+        let errorMessage = "Something went wrong. Please try again.";
+
+        if (error.code === 'auth/invalid-credential') {
+          errorMessage = "We couldn't sign you in. Please double-check your email and password.";
         }
-      });
-  };
+
+        toast.error(errorMessage, {
+          autoClose: 2000,
+          position: "top-center",
+          pauseOnHover: true,
+        });
+
+        setTimeout(() => {
+          window.location.reload();
+        }, 2100);
+      })
+  }
 
   return (
     <div>
@@ -110,11 +106,12 @@ const SignIn = () => {
                   {...register("email", {
                     required: "Email is required",
                     pattern: {
-                      value: /^\S+@\S+$/i,
-                      message: "Invalid email address",
+                      value: /^[a-zA-Z0-9._%+-]{3,}@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                      message: "Enter a valid email address",
                     },
                   })}
                 />
+
                 {errors.email && (
                   <p className="text-red-500 text-xs">{errors.email.message}</p>
                 )}
