@@ -96,63 +96,75 @@ const AdminDashboard = () => {
 
                 {/* Members Section */}
                 <div className="mt-8">
-                    <h1 className="text-xl font-bold mb-4">Members<sub className="bg-blue-200 px-2 py-1 mx-2 rounded-full text-sm">{users.filter((user) => user.verify !== "blocklisted").length}</sub></h1>
-                    <table className="table w-full">
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Email</th>
-                                <th>ID</th>
-                                <th>
-                                    <div className="flex items-center gap-2">
-                                        Status
-                                        <FaSort
-                                            className="cursor-pointer text-gray-500"
-                                            onClick={handleSortByStatus}
-                                        />
-                                    </div>
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {users.map((user) => (
-                                <tr key={user._id}>
-                                    <td>
-                                        <p className="font-medium">{user.name}</p>
-                                    </td>
-                                    <td>
-                                        <div className="flex flex-col space-y-1">
-                                            <span>{user.email}</span>
-                                            <span
-                                                className={`px-2 py-[1px] text-xs rounded w-min ${user?.userType === "student"
-                                                    ? "bg-green-200"
-                                                    : user?.userType === "teacher"
-                                                        ? "bg-red-200"
-                                                        : "bg-gray-300"
-                                                    }`}
-                                            >
-                                                {user?.userType}
-                                            </span>
-                                        </div>
-                                    </td>
-                                    <td className="flex flex-col">
-                                        <span>{user.user_id}</span>
-                                        <span>{user.department}</span>
-                                    </td>
-                                    <td>
+                    <h1 className="text-xl font-bold mb-4">
+                        Members
+                        <sub className="bg-blue-200 px-2 py-1 mx-2 rounded-full text-sm">
+                            {users.filter((user) => user.verify !== "blocklisted").length}
+                        </sub>
+                    </h1>
+
+                    {/* Responsive wrapper */}
+                    <div className="overflow-x-auto">
+                        <table className="table w-full min-w-[700px]">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>ID</th>
+                                    <th>
                                         <div className="flex items-center gap-2">
-                                            <span className="w-2/5">{user.verify}</span>
-                                            <FaEdit
-                                                className="text-red-600"
-                                                onClick={() => handleEditClick(user)}
+                                            Status
+                                            <FaSort
+                                                className="cursor-pointer text-gray-500"
+                                                onClick={handleSortByStatus}
                                             />
                                         </div>
-                                    </td>
+                                    </th>
                                 </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                {users.map((user) => (
+                                    <tr key={user._id}>
+                                        <td className="whitespace-nowrap">
+                                            <p className="font-medium">{user.name}</p>
+                                        </td>
+                                        <td className="whitespace-nowrap">
+                                            <div className="flex flex-col space-y-1">
+                                                <span>{user.email}</span>
+                                                <span
+                                                    className={`px-2 py-[1px] text-xs rounded w-min ${user?.userType === "student"
+                                                        ? "bg-green-200"
+                                                        : user?.userType === "teacher"
+                                                            ? "bg-red-200"
+                                                            : "bg-gray-300"
+                                                        }`}
+                                                >
+                                                    {user?.userType}
+                                                </span>
+                                            </div>
+                                        </td>
+                                        <td className="whitespace-nowrap">
+                                            <div className="flex flex-col">
+                                                <span>{user.user_id}</span>
+                                                <span>{user.department}</span>
+                                            </div>
+                                        </td>
+                                        <td className="whitespace-nowrap">
+                                            <div className="flex items-center justify-between gap-2">
+                                                <span className="text-sm">{user.verify}</span>
+                                                <FaEdit
+                                                    className="text-red-600 cursor-pointer"
+                                                    onClick={() => handleEditClick(user)}
+                                                />
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
+
             </div>
 
             {/* Modal */}

@@ -11,7 +11,7 @@ const DashNav = () => {
     const navigate = useNavigate();
 
     return (
-        <div className="w-full md:w-64 bg-blue-400 text-black">
+        <div className="w-full md:w-64 bg-blue-400 text-black md:h-screen">
             <ul className="space-y-4 p-4">
                 <li className="text-center pb-10 pt-5">
                     <p className="text-4xl font-bold font-caveat">
