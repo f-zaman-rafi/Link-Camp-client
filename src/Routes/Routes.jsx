@@ -2,7 +2,6 @@ import { createBrowserRouter } from "react-router-dom";
 import Main from "../Layout/Main";
 import Homepage from "../Pages/Home/Homepage/Homepage";
 import React from "react";
-import SignIn from "../Pages/Sign-In/SignIn";
 import SignUp from "../Pages/Sign-up/SignUp";
 import RequireAuth from "./Guards/RequireAuth";
 import PendingPage from "../Pages/PendingPage/PendingPage";
@@ -20,6 +19,7 @@ import UserPosts from "../Pages/UserPosts/UserPosts";
 import ReportedPost from "../AdminDashboard/ReportedPost/ReportedPost";
 import Blacklisted from "../Pages/Blacklisted/Blacklisted";
 import RequireBlocklisted from "./Guards/RequireBlocklisted";
+import SignIn from "../Pages/Sign-in/SignIn";
 
 export const router = createBrowserRouter([
   {

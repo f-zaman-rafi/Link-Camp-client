@@ -72,45 +72,49 @@ const RightNav = () => {
           {sortByLatest(notices).map((announcement) => (
             <div
               key={announcement._id}
-              className="bg-white shadow-md rounded-xl p-4 w-xs mx-auto"
+              className="bg-white shadow-md rounded-xl p-4 w-xs lg:mr-20 mx-auto"
             >
-              {/* Notification Header */}
-              <div className="flex items-center gap-4 mb-4">
-                <img
-                  src={announcement.user.photo}
-                  alt="User"
-                  className="w-8 h-8 rounded-full"
-                />
-                <div>
-                  <p className="text-sm">
-                    {announcement.user.name} posted an Official Notice!
+              <div className="mx-4 md:mx-0">
+                {/* Notification Header */}
+                <div className="flex items-center gap-4 mb-4">
+                  <img
+                    src={announcement.user.photo}
+                    alt="User"
+                    className="w-8 h-8 rounded-full"
+                  />
+                  <div>
+                    <p className="text-sm">
+                      {announcement.user.name} posted an Official Notice!
+                    </p>
+                    <p className="text-xs text-gray-500">
+                      {getRelativeTime(announcement.createdAt)}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Notification Content */}
+                <div className="mb-4">
+                  <p className="text-sm text-gray-700" style={{ whiteSpace: 'pre-wrap' }}>
+                    {announcement.content
+                      ? announcement.content.length > 50
+                        ? `${announcement.content.slice(0, 50)}...`
+                        : announcement.content
+                      : "Added a photo."}
                   </p>
-                  <p className="text-xs text-gray-500">
-                    {getRelativeTime(announcement.createdAt)}
-                  </p>
+                </div>
+
+                {/* View Full Post Button */}
+                <div className="mt-4 text-center">
+                  <button
+                    className="text-blue-600 hover:underline"
+                    onClick={() => handleModalOpen(announcement)}
+                  >
+                    View Full Post
+                  </button>
                 </div>
               </div>
 
-              {/* Notification Content */}
-              <div className="mb-4">
-                <p className="text-sm text-gray-700" style={{ whiteSpace: 'pre-wrap' }}>
-                  {announcement.content
-                    ? announcement.content.length > 50
-                      ? `${announcement.content.slice(0, 50)}...`
-                      : announcement.content
-                    : "Added a photo."}
-                </p>
-              </div>
 
-              {/* View Full Post Button */}
-              <div className="mt-4 text-center">
-                <button
-                  className="text-blue-600 hover:underline"
-                  onClick={() => handleModalOpen(announcement)}
-                >
-                  View Full Post
-                </button>
-              </div>
             </div>
           ))}
         </div>

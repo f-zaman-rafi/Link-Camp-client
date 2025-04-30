@@ -32,9 +32,10 @@ const Main = () => {
           </div>
 
           {/* Right Sidebar - only visible on hover */}
-          <div className="w-auto lg:block hidden overflow-y-auto overflow-x-hidden ">
+          <div className="w-auto lg:block hidden overflow-y-auto overflow-x-hidden scroll-on-hover">
             <RightNav type="side-right" />
           </div>
+
         </div>
       )}
     </>

@@ -27,14 +27,29 @@ const CenterNavbar = () => {
   return (
     <div className="relative">
       {/* Left Sidebar */}
-      <div className={`fixed top-0 left-0 h-full z-50 bg-white shadow-lg transform transition-transform duration-300 ease-in-out ${isLeftSidebarOpen ? 'translate-x-0' : '-translate-x-full'} w-72`}>
+      <div className={`fixed top-0 left-0 h-full z-50 bg-white shadow-lg transform transition-transform duration-1000 ease-in-out ${isLeftSidebarOpen ? 'translate-x-0' : '-translate-x-full'} w-72`}>
         <LeftNav />
       </div>
 
       {/* Right Sidebar */}
-      <div className={`fixed top-0 right-0 h-full z-50 bg-white shadow-lg transform transition-transform duration-300 ease-in-out ${isRightSidebarOpen ? 'translate-x-0' : 'translate-x-full'} w-72`}>
+      <div
+        className={`fixed top-0 right-0 z-50 bg-white shadow-lg transform transition-transform duration-1000 ease-in-out
+    ${isRightSidebarOpen ? 'translate-x-0' : 'translate-x-full'}
+    w-full h-full`}
+      >
+        {/* Close Button - Visible on small devices */}
+        <div className="flex justify-end p-4">
+          <button
+            onClick={() => setIsRightSidebarOpen(false)}
+            className="text-2xl font-bold text-gray-700 hover:text-red-500"
+          >
+            ✕
+          </button>
+        </div>
+
         <RightNav />
       </div>
+
 
       {/* Overlay */}
       {(isLeftSidebarOpen || isRightSidebarOpen) && (
