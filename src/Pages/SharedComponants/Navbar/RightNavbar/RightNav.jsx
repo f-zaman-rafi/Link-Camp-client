@@ -66,8 +66,12 @@ const RightNav = () => {
 
   return (
     <div className="w-auto">
-      <div className="pt-6 ">
-        <div className="flex justify-center"><p className="text-3xl font-bold mb-10">Notifications !</p></div>
+      <div className=" h-screen overflow-y-auto">
+        <div className="sticky top-0 z-10 lg:bg-gray-50 bg-white pb-4">
+          <div className="flex justify-center">
+            <p className="text-3xl font-bold">Notifications!</p>
+          </div>
+        </div>
         <div className="space-y-6 py-6">
           {sortByLatest(notices).map((announcement) => (
             <div

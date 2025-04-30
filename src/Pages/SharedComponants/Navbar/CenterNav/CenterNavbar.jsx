@@ -38,7 +38,7 @@ const CenterNavbar = () => {
     w-full h-full overflow-y-auto`}
       >
         {/* Close Button - Visible on small devices */}
-        <div className="flex justify-end p-4">
+        <div className="sticky top-0 z-10 bg-white flex justify-end p-4">
           <button
             onClick={() => setIsRightSidebarOpen(false)}
             className="text-2xl font-bold text-gray-700 hover:text-red-500"
