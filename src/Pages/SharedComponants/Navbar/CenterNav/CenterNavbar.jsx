@@ -35,7 +35,7 @@ const CenterNavbar = () => {
       <div
         className={`fixed top-0 right-0 z-50 bg-white shadow-lg transform transition-transform duration-1000 ease-in-out
     ${isRightSidebarOpen ? 'translate-x-0' : 'translate-x-full'}
-    w-full h-full`}
+    w-full h-full overflow-y-auto`}
       >
         {/* Close Button - Visible on small devices */}
         <div className="flex justify-end p-4">
