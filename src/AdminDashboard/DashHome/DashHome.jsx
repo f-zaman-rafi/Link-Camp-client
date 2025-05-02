@@ -6,8 +6,8 @@ import toast from "react-hot-toast";
 import { FaEdit, FaSort } from "react-icons/fa";
 
 const AdminDashboard = () => {
-    const { users: fetchedUsers, isLoading, isError } = useAdminUsers();
-    const { updateUserStatus } = useUpdateUserStatus();
+    const { users: fetchedUsers, isLoading, isError } = useAdminUsers(); // Custom hook to fetch all users for admin
+    const { updateUserStatus } = useUpdateUserStatus(); // Custom hook to update user's approval status
     const [users, setUsers] = useState([]);
     const [selectedUser, setSelectedUser] = useState(null);
     const [newStatus, setNewStatus] = useState("");
@@ -15,7 +15,7 @@ const AdminDashboard = () => {
 
     useEffect(() => {
         setUsers(fetchedUsers);
-    }, [fetchedUsers]);
+    }, [fetchedUsers]); // Update local state whenever fetched users change
 
     if (isLoading) return <Loading />;
     if (isError) return <p>Getting error...</p>;
@@ -31,7 +31,7 @@ const AdminDashboard = () => {
             toast.error("You cannot change the approval status of an admin.");
             setSelectedUser(null);
             return;
-        }
+        }// Prevent changing status of admin users
 
         try {
             await updateUserStatus({ id: selectedUser._id, verify: newStatus });
@@ -50,6 +50,7 @@ const AdminDashboard = () => {
 
     const handleSortByStatus = () => {
         const statusOrder = ["pending", "blocklisted", "approved"];
+        // Define custom order for sorting statuses
         const sortedUsers = [...users].sort((a, b) => {
             const aIndex = statusOrder.indexOf(a.verify);
             const bIndex = statusOrder.indexOf(b.verify);
@@ -116,7 +117,7 @@ const AdminDashboard = () => {
                                             Status
                                             <FaSort
                                                 className="cursor-pointer text-gray-500"
-                                                onClick={handleSortByStatus}
+                                                onClick={handleSortByStatus} // Click to toggle sort order of user status
                                             />
                                         </div>
                                     </th>
@@ -168,6 +169,7 @@ const AdminDashboard = () => {
             </div>
 
             {/* Modal */}
+
             {selectedUser && (
                 <div className="modal modal-open">
                     <div className="modal-box">
@@ -192,6 +194,7 @@ const AdminDashboard = () => {
                     </div>
                 </div>
             )}
+            {/* Conditional rendering of the status update modal */}
         </div>
     );
 };

@@ -8,14 +8,21 @@ import useRelativeTime from "../../Hooks/useRelativeTime";
 import useAxiosSecure from "../../Hooks/useAxiosSecure";
 import Loading from "../../Pages/Loading/Loading";
 
+// Set up SweetAlert2 instance with React support
 const MySwal = withReactContent(Swal);
 
 const ReportedPost = () => {
+    // Custom secure Axios instance
     const axiosSecure = useAxiosSecure();
+
+    // React Query client for cache manipulation
     const queryClient = useQueryClient();
+
+    // Utility hook to format time relative to now (e.g., "3 hours ago")
     const getRelativeTime = useRelativeTime();
 
-    // Fetch reported posts
+
+    // Fetch reported posts from server
     const { data: reportedPosts = [], isLoading: reportsLoading } = useQuery({
         queryKey: ["reported-posts"],
         queryFn: async () => {
@@ -24,7 +31,7 @@ const ReportedPost = () => {
         },
     });
 
-    // Delete post mutation
+    // Mutation to delete a reported post
     const deletePostMutation = useMutation({
         mutationFn: async (postId) => {
             const response = await axiosSecure.delete(`/admin/reported-posts/${postId}`);
@@ -35,7 +42,7 @@ const ReportedPost = () => {
         },
     });
 
-    // Dismiss reports mutation
+    // Mutation to dismiss all reports for a post
     const dismissReportsMutation = useMutation({
         mutationFn: async (postId) => {
             const response = await axiosSecure.delete(`/admin/reported-posts/${postId}/dismiss`);
@@ -46,6 +53,7 @@ const ReportedPost = () => {
         },
     });
 
+    // Handle deletion confirmation and mutation
     const handleDeletePost = (postId) => {
         MySwal.fire({
             title: "Delete Post?",
@@ -112,6 +120,7 @@ const ReportedPost = () => {
         });
     };
 
+    // Show loading spinner while fetching reported posts
     if (reportsLoading) return <Loading />;
 
     return (

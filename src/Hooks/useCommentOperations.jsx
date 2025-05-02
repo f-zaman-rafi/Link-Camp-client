@@ -9,7 +9,7 @@ const useCommentsOperations = (selectedPostId) => {
     const queryClient = useQueryClient();
     const [commentText, setCommentText] = useState("");
 
-    // Fetch comments
+    // Fetch comments for a selected post
     const { data: comments = [], isLoading: commentsLoading } = useQuery({
         queryKey: ["comments", selectedPostId],
         queryFn: async () => {
@@ -17,10 +17,10 @@ const useCommentsOperations = (selectedPostId) => {
             const response = await axiosSecure.get(`/comments/${selectedPostId}`);
             return response.data;
         },
-        enabled: !!selectedPostId,
+        enabled: !!selectedPostId,   // Only run the query when selectedPostId is valid
     });
 
-    // Add comment
+    // Mutation to add a new comment
     const addCommentMutation = useMutation({
         mutationFn: async ({ postId, content }) => {
             const response = await axiosSecure.post("/comments", { postId, content });
@@ -33,7 +33,16 @@ const useCommentsOperations = (selectedPostId) => {
         },
     });
 
-    // Delete comment
+    // Handle add comment
+    const handleAddComment = () => {
+        if (!commentText.trim()) return;
+        addCommentMutation.mutate({
+            postId: selectedPostId,
+            content: commentText,
+        });
+    };
+
+    // Mutation to delete a comment
     const deleteCommentMutation = useMutation({
         mutationFn: async (commentId) => {
             const response = await axiosSecure.delete(`/comments/${commentId}`);
@@ -45,16 +54,7 @@ const useCommentsOperations = (selectedPostId) => {
         },
     });
 
-    // Handle add comment
-    const handleAddComment = () => {
-        if (!commentText.trim()) return;
-        addCommentMutation.mutate({
-            postId: selectedPostId,
-            content: commentText,
-        });
-    };
-
-    // Handle delete comment with SweetAlert2 confirmation
+    // SweetAlert2 confirmation for deleting a comment
     const handleDeleteComment = (commentId) => {
         Swal.fire({
             title: "Are you sure?",
@@ -70,6 +70,8 @@ const useCommentsOperations = (selectedPostId) => {
             }
         });
     };
+
+
 
     return {
         comments,

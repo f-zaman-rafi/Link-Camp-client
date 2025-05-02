@@ -1,47 +1,52 @@
 import React from "react";
-import { useForm } from "react-hook-form";
-import { Link, useNavigate } from "react-router-dom";
-import useAuth from "../../Hooks/useAuth";
-import useAxiosCommon from "../../Hooks/useAxiosCommon";
-import toast from "react-hot-toast";
+import { useForm } from "react-hook-form"; // Hook for handling form state and validation.
+import { Link, useNavigate } from "react-router-dom"; // Components for navigation.
+import useAuth from "../../Hooks/useAuth"; // Custom hook for authentication (sign up).
+import useAxiosCommon from "../../Hooks/useAxiosCommon"; // Custom hook for making general API requests.
+import toast from "react-hot-toast"; // Library for displaying user-friendly notifications.
 
 const SignUp = () => {
-  const { signUp } = useAuth();
-  const axiosCommon = useAxiosCommon();
-  const navigate = useNavigate();
+  const { signUp } = useAuth(); // Function to sign up a new user.
+  const axiosCommon = useAxiosCommon(); // Instance for making API calls.
+  const navigate = useNavigate(); // Function to navigate to different routes.
 
   // Set up useForm hook
   const {
     register,
     handleSubmit,
     formState: { errors },
-    watch,
+    watch, // Function to watch the value of a specific input field.
   } = useForm();
 
   //  Handle form submission
-
   const onSubmit = (data) => {
+    // Sign up the user with the provided email and password.
     signUp(data.email, data.password)
       .then(() => {
+        // Prepare user information to be saved in the database.
         const userInfo = {
           email: data.email,
-          user_id: data.Id,
+          user_id: data.Id, // Using 'Id' as the key for both student and teacher IDs.
           userType: data.userType,
           department: data.department,
-          session: data.session,
-          verify: "pending",
-          name: "",
+          session: data.session, // Only applicable to students.
+          verify: "pending", // Initial verification status.
+          name: "", // Name is initially empty, to be updated in profile setup.
         };
 
-        // Save userInfo to MongoDB
+        // Save userInfo to MongoDB via a POST request to the '/users' endpoint.
         axiosCommon.post("/users", userInfo).then(() => {
+          // Display a success toast notification.
           toast.success("You're all set! Just hang tight—your account will be approved shortly.");
+          // Navigate the user to the pending request page.
           navigate("/pending-request");
         });
       })
       .catch((error) => {
+        // Log any sign-up errors.
         console.error("Signup error:", error);
 
+        // Define an object to map Firebase error codes to user-friendly messages.
         const firebaseErrorMessages = {
           'auth/email-already-in-use': "This email is already registered. Try signing in instead.",
           'auth/invalid-email': "The email address you entered is not valid. Please check and try again.",
@@ -50,32 +55,36 @@ const SignUp = () => {
           'auth/network-request-failed': "Network error. Please check your connection and try again.",
         };
 
+        // Get the specific error message based on the Firebase error code, or a generic message if the code is not found.
         const errorMessage = firebaseErrorMessages[error.code] || `Sign up failed: ${error.message}`;
 
-        // Show toast
+        // Show an error toast notification.
         toast.error(errorMessage, {
           autoClose: 2000,
           position: "top-center",
           pauseOnHover: true,
         });
 
+        // Reload the page after a short delay to clear any potential UI issues.
         setTimeout(() => {
           window.location.reload();
         }, 2100);
       });
   };
 
-
+  // Watch the 'userType' field to conditionally render form fields.
   const selectedUserType = watch("userType");
 
   return (
     <div className="hero min-h-screen">
 
+      {/* Logo at the top center */}
       <div className="flex justify-center items-center absolute top-[5px]  left-1/2 transform -translate-x-1/2 z-10 space-x-4">
-        <img className='w-16 md:w-26' src="/Logo/linkCampLogo.png" alt="" />
+        <img className='w-16 md:w-26' src="/Logo/linkCampLogo.png" alt="LinkCamp Logo" />
       </div>
 
       <div className="hero-content flex-col w-full md:gap-10 lg:flex-row pt-12">
+        {/* Left side with sign-up information */}
         <div className="text-center lg:text-left pt-10">
           <h1 className="lg:text-5xl text-3xl font-bold">Sign-Up!</h1>
           <div className="lg:space-y-2 pt-5">
@@ -86,11 +95,12 @@ const SignUp = () => {
           </div>
         </div>
 
+        {/* Sign-up form */}
         <div className="card bg-base-100 w-full max-w-sm shrink-0 shadow-2xl">
           {/* React Hook Form Form */}
           <form onSubmit={handleSubmit(onSubmit)} className="card-body">
             <fieldset className="fieldset">
-              {/* Email */}
+              {/* Email Input */}
               <label className="label" htmlFor="email">
                 Email
               </label>
@@ -113,7 +123,7 @@ const SignUp = () => {
                 </p>
               )}
 
-              {/* Password */}
+              {/* Password Input */}
               <label className="label" htmlFor="password">
                 Password
               </label>
@@ -139,7 +149,7 @@ const SignUp = () => {
                 className="input"
                 {...register("userType", { required: "User type is required" })}
               >
-                <option value="" defaultChecked>
+                <option value="" defaultValue>
                   Please Select Your User Type
                 </option>
                 <option value="admin" disabled>
@@ -155,15 +165,14 @@ const SignUp = () => {
               )}
 
               {/* Conditional Fields for Student */}
-              {/* Conditional Fields for Student */}
               {selectedUserType === "student" && (
                 <>
-                  <label className="label" htmlFor="Student ID">
+                  <label className="label" htmlFor="studentId">
                     Student ID
                   </label>
                   <input
                     type="text"
-                    id="Student ID"
+                    id="studentId"
                     className="input"
                     placeholder="Student ID"
                     {...register("Id", {
@@ -246,21 +255,21 @@ const SignUp = () => {
               {/* Conditional Fields for Teacher */}
               {selectedUserType === "teacher" && (
                 <>
-                  <label className="label" htmlFor="userID">
+                  <label className="label" htmlFor="teacherId">
                     Teacher ID
                   </label>
                   <input
                     type="text"
-                    id="teacher ID"
+                    id="teacherId"
                     className="input"
                     placeholder="Teacher ID"
                     {...register("Id", {
                       required: "Teacher ID is required",
                     })}
                   />
-                  {errors.teacherId && (
+                  {errors.Id && (
                     <p className="text-red-500 text-xs mt-1">
-                      {errors.teacherId.message}
+                      {errors.Id.message}
                     </p>
                   )}
 
@@ -305,20 +314,17 @@ const SignUp = () => {
                   {errors.department && (
                     <p className="text-red-500 text-xs mt-1">{errors.department.message}</p>
                   )}
-                  {errors.department && (
-                    <p className="text-red-500 text-xs mt-1">
-                      {errors.department.message}
-                    </p>
-                  )}
                 </>
               )}
 
+              {/* Link to Sign In page */}
               <div className="flex justify-between">
                 <Link to="/sign-in" className="link link-hover">
                   Already have an account? Sign In
                 </Link>
               </div>
 
+              {/* Sign Up Button */}
               <input
                 className="btn btn-neutral mt-4"
                 type="submit"

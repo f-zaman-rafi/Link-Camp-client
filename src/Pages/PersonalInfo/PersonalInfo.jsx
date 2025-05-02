@@ -1,22 +1,24 @@
 import React, { useState } from 'react';
-import { FaEdit, FaTimes } from 'react-icons/fa';
-import useUserInfo from '../../Hooks/useUserInfo';
-import Loading from '../Loading/Loading';
-
+import { FaEdit, FaTimes } from 'react-icons/fa'; // Importing icons for edit and close.
+import useUserInfo from '../../Hooks/useUserInfo'; // Custom hook to get user information.
+import Loading from '../Loading/Loading'; // Component for displaying a loading state.
 
 const PersonalInfo = () => {
-    const { userInfo, isLoading } = useUserInfo();
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [errorMessage, setErrorMessage] = useState('');
+    const { userInfo, isLoading } = useUserInfo(); // Getting user information and loading state.
+    const [isModalOpen, setIsModalOpen] = useState(false); // State to control the visibility of a modal (currently not used).
+    const [errorMessage, setErrorMessage] = useState(''); // State to store and display error messages.
 
-    if (isLoading) return <Loading />;
+    if (isLoading) return <Loading />; // Display loading indicator while user info is being fetched.
 
     const handleEditClick = () => {
-        if (userInfo.userType === "admin") {
+        // Logic to determine the error message based on the user's role.
+        if (userInfo?.userType === "admin") {
             setErrorMessage("You're the admin, dude! Go to the database and change it there, no need to ask me!");
         } else {
             setErrorMessage("Please contact administration to edit personal information.");
         }
+        // While the modal state is being managed, it's not actually opened in this version of the code.
+        setIsModalOpen(true);
     };
 
     return (

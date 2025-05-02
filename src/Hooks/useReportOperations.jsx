@@ -9,6 +9,7 @@ const useReportOperations = () => {
     const [selectedPostId, setSelectedPostId] = useState(null);
     const [reportReason, setReportReason] = useState("");
 
+    // Handles reporting of a post with the given reason
     const reportMutation = useMutation({
         mutationFn: async ({ postId, reason }) => {
             const response = await axiosSecure.post("/reports", { postId, reason });
@@ -16,9 +17,9 @@ const useReportOperations = () => {
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["reports", selectedPostId] });
-            setReportReason("");
-            setReportModalOpen(false);
-            setSelectedPostId(null);
+            setReportReason(""); // Clear report reason
+            setReportModalOpen(false); // Close the report modal
+            setSelectedPostId(null); // Reset selected post ID
         },
     });
 

@@ -3,6 +3,7 @@ import useAuth from "./useAuth";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 
+// Create an Axios instance with secure configuration
 const axiosSecure = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
   withCredentials: true,
@@ -13,6 +14,7 @@ const useAxiosSecure = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    // Add interceptor to handle unauthorized or forbidden responses
     const interceptor = axiosSecure.interceptors.response.use(
       (res) => res,
       async (error) => {
@@ -24,7 +26,7 @@ const useAxiosSecure = () => {
         return Promise.reject(error);
       }
     );
-
+    // Clean up interceptor on component unmount
     return () => {
       axiosSecure.interceptors.response.eject(interceptor);
     };

@@ -1,29 +1,33 @@
 import React from "react";
-import { useForm } from "react-hook-form";
-import { Link, useNavigate } from "react-router-dom";
-import useAuth from "../../Hooks/useAuth";
-import useAxiosCommon from "../../Hooks/useAxiosCommon";
-import useUserInfo from "../../Hooks/useUserInfo";
-import Swal from "sweetalert2";
-import toast from "react-hot-toast";
+import { useForm } from "react-hook-form"; // Hook for handling form state and validation.
+import { Link, useNavigate } from "react-router-dom"; // Components for navigation.
+import useAuth from "../../Hooks/useAuth"; // Custom hook for authentication (sign in).
+import useAxiosCommon from "../../Hooks/useAxiosCommon"; // Custom hook for making general API requests.
+import useUserInfo from "../../Hooks/useUserInfo"; // Custom hook to get and refetch user information.
+import Swal from "sweetalert2"; // Library for displaying elegant alerts (not directly used in this version).
+import toast from "react-hot-toast"; // Library for displaying user-friendly notifications.
 
 const SignIn = () => {
-  const { signIn } = useAuth();
-  const axiosCommon = useAxiosCommon();
-  const navigate = useNavigate();
-  const { refetch } = useUserInfo();
+  const { signIn } = useAuth(); // Function to sign in the user.
+  const axiosCommon = useAxiosCommon(); // Instance for making API calls.
+  const navigate = useNavigate(); // Function to navigate to different routes.
+  const { refetch } = useUserInfo(); // Function to refetch user information.
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm();
+  } = useForm(); // Form handling utilities.
 
   const onSubmit = (data) => {
+    // Sign in the user with the provided email and password.
     signIn(data.email, data.password)
       .then((result) => {
         const email = result.user.email;
+        // Send the user's email to the server for session management.
         axiosCommon.post("/login", { email }).then(async () => {
+          // Refetch user information to get the latest data.
           const { data: user } = await refetch();
+          // Redirect the user based on their verification status and profile completion.
           setTimeout(() => {
             if (user?.verify === "pending") {
               navigate("/pending-request");
@@ -36,21 +40,25 @@ const SignIn = () => {
         });
       })
       .catch((error) => {
+        // Log any sign-in errors.
         console.error("Error Code:", error.code);
         console.error("Error Message:", error.message);
 
         let errorMessage = "Something went wrong. Please try again.";
 
+        // Customize the error message for invalid credentials.
         if (error.code === 'auth/invalid-credential') {
           errorMessage = "We couldn't sign you in. Please double-check your email and password.";
         }
 
+        // Display an error toast notification.
         toast.error(errorMessage, {
           autoClose: 2000,
           position: "top-center",
           pauseOnHover: true,
         });
 
+        // Reload the page after a short delay to clear any potential UI issues.
         setTimeout(() => {
           window.location.reload();
         }, 2100);
@@ -61,6 +69,7 @@ const SignIn = () => {
   return (
     <div>
       <>
+        {/* Marquee for displaying informational messages. */}
         <marquee
           behavior="scroll"
           direction="left"
@@ -75,17 +84,17 @@ const SignIn = () => {
           Sign up anytime or test directly! Student: student@student.student / student@student.student —
           Teacher: teacher@teacher.teacher / teacher@teacher.teacher
         </marquee>
-
-
       </>
 
       <div className="hero min-h-screen">
 
+        {/* Logo at the top center */}
         <div className="flex justify-center items-center absolute top-[5px]  left-1/2 transform -translate-x-1/2 z-10 space-x-4">
-          <img className='w-16 md:w-26' src="/Logo/linkCampLogo.png" alt="" />
+          <img className='w-16 md:w-26' src="/Logo/linkCampLogo.png" alt="LinkCamp Logo" />
         </div>
 
         <div className="hero-content flex-col lg:flex-row lg:space-x-28 lg:max-w-4xl pt-12">
+          {/* Left side with welcome text */}
           <div className="text-center lg:text-left">
             <h1 className="text-3xl font-bold">Welcome to LinkCamp!</h1>
             <p className="py-6 w-auto">
@@ -93,11 +102,11 @@ const SignIn = () => {
             </p>
           </div>
 
-
+          {/* Sign-in form */}
           <div className="card bg-base-100 w-full max-w-sm shrink-0 shadow-2xl">
             <form onSubmit={handleSubmit(onSubmit)} className="card-body">
               <fieldset className="fieldset">
-                {/* Email */}
+                {/* Email Input */}
                 <label className="label" htmlFor="email">
                   Email
                 </label>
@@ -114,12 +123,11 @@ const SignIn = () => {
                     },
                   })}
                 />
-
                 {errors.email && (
                   <p className="text-red-500 text-xs">{errors.email.message}</p>
                 )}
 
-                {/* Password */}
+                {/* Password Input */}
                 <label className="label" htmlFor="password">
                   Password
                 </label>
@@ -142,6 +150,7 @@ const SignIn = () => {
                   </p>
                 )}
 
+                {/* Forgot Password and Sign Up Links */}
                 <div className="flex justify-between">
                   <a className="link link-hover">Forgot password?</a>
                   <Link to="/sign-up" className="link link-hover mr-4">
@@ -149,6 +158,7 @@ const SignIn = () => {
                   </Link>
                 </div>
 
+                {/* Login Button */}
                 <input
                   className="btn btn-neutral mt-4"
                   type="submit"

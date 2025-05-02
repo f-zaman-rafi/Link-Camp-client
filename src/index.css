@@ -1,45 +1,54 @@
 @import "tailwindcss";
 @plugin "daisyui";
 
-
+/* Custom font family */
 .font-caveat {
     font-family: 'Caveat', cursive;
 }
 
+/* Base styles for the body */
 @layer base {
     body {
         font-family: 'Lato', sans-serif;
     }
 }
 
+/* Hide scrollbar for WebKit browsers (Chrome, Safari) */
 .custom-scrollbar::-webkit-scrollbar {
     display: none;
 }
 
+/* Hide scrollbar for IE and Edge */
 .custom-scrollbar {
     -ms-overflow-style: none;
     scrollbar-width: none;
 }
 
+/* Initially hide scrollbar */
 .scroll-on-hover {
     scrollbar-width: none;
     -ms-overflow-style: none;
 }
 
+/* Hide scrollbar for WebKit browsers */
 .scroll-on-hover::-webkit-scrollbar {
     width: 0;
     height: 0;
 }
 
+/* Show scrollbar on hover (this part might not work as intended with width/height 0) */
 .scroll-on-hover:hover {
     scrollbar-width: none;
+    /* Keep it hidden on hover in Gecko-based browsers */
 }
 
+/* Keep scrollbar hidden on hover for WebKit browsers */
 .scroll-on-hover:hover::-webkit-scrollbar {
     width: 0px;
     height: 0px;
 }
 
+/* Style for the scrollbar thumb on hover (this won't be visible if the scrollbar width/height is 0) */
 .scroll-on-hover:hover::-webkit-scrollbar-thumb {
     background-color: rgba(0, 0, 0, 0.3);
     border-radius: 0px;

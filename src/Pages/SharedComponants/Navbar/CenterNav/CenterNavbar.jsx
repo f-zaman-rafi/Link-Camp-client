@@ -1,27 +1,27 @@
 import React, { useEffect, useState } from "react";
-import { HiHome, HiSpeakerphone } from "react-icons/hi";
-import { MdAnnouncement } from "react-icons/md";
-import { useLocation, useNavigate } from "react-router-dom";
-import { GiHamburgerMenu } from "react-icons/gi";
-import { IoMdNotifications } from "react-icons/io";
-import LeftNav from "../LeftNavbar/LeftNav";
-import RightNav from "../RightNavbar/RightNav"; // 👈 Import RightNav
+import { HiHome, HiSpeakerphone } from "react-icons/hi"; // Importing icons for Home and Announcement.
+import { MdAnnouncement } from "react-icons/md"; // Importing the Announcement icon.
+import { useLocation, useNavigate } from "react-router-dom"; // Hooks for navigation and getting the current location.
+import { GiHamburgerMenu } from "react-icons/gi"; // Hamburger menu icon.
+import { IoMdNotifications } from "react-icons/io"; // Notification icon.
+import LeftNav from "../LeftNavbar/LeftNav"; // Left sidebar component.
+import RightNav from "../RightNavbar/RightNav"; // Right sidebar component.
 
 const CenterNavbar = () => {
-  const navigate = useNavigate();
-  const location = useLocation();
-  const [activeTab, setActiveTab] = useState(location.pathname);
+  const navigate = useNavigate(); // Function to navigate to different routes.
+  const location = useLocation(); // Object containing information about the current URL.
+  const [activeTab, setActiveTab] = useState(location.pathname); // State to track the active navigation tab based on the current path.
 
-  const [isLeftSidebarOpen, setIsLeftSidebarOpen] = useState(false);
-  const [isRightSidebarOpen, setIsRightSidebarOpen] = useState(false);
+  const [isLeftSidebarOpen, setIsLeftSidebarOpen] = useState(false); // State to control the visibility of the left sidebar.
+  const [isRightSidebarOpen, setIsRightSidebarOpen] = useState(false); // State to control the visibility of the right sidebar.
 
   const handleNavigation = (path) => {
-    setActiveTab(path);
-    navigate(path);
+    setActiveTab(path); // Update the active tab state.
+    navigate(path); // Navigate to the specified path.
   };
 
   useEffect(() => {
-    setActiveTab(location.pathname);
+    setActiveTab(location.pathname); // Update activeTab whenever the location changes.
   }, [location.pathname]);
 
   return (
@@ -34,8 +34,8 @@ const CenterNavbar = () => {
       {/* Right Sidebar */}
       <div
         className={`fixed top-0 right-0 z-50 bg-white shadow-lg transform transition-transform duration-1000 ease-in-out
-    ${isRightSidebarOpen ? 'translate-x-0' : 'translate-x-full'}
-    w-full h-full overflow-y-auto`}
+        ${isRightSidebarOpen ? 'translate-x-0' : 'translate-x-full'}
+        w-full h-full overflow-y-auto`}
       >
         {/* Close Button - Visible on small devices */}
         <div className="sticky top-0 z-10 bg-white flex justify-end p-4">

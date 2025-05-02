@@ -1,28 +1,28 @@
 import React, { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import useAxiosSecure from "../../../../Hooks/useAxiosSecure";
-import { FaComment, FaFlag, FaTrash } from "react-icons/fa";
+import useAxiosSecure from "../../../../Hooks/useAxiosSecure"; // Custom hook for making authenticated API requests.
+import { FaComment, FaFlag, FaTrash } from "react-icons/fa"; // Importing icons for comments, flags, and trash.
 import {
     BiUpvote,
     BiDownvote,
     BiSolidDownvote,
     BiSolidUpvote,
-} from "react-icons/bi";
-import Loading from "../../../Loading/Loading";
-import useAuth from "../../../../Hooks/useAuth";
-import useRelativeTime from "../../../../Hooks/useRelativeTime";
-import useCommentsOperations from "../../../../Hooks/useCommentOperations";
-import useVotesOperations from "../../../../Hooks/useVotesOperations";
+} from "react-icons/bi"; // Importing icons for upvotes and downvotes.
+import Loading from "../../../Loading/Loading"; // Component to display a loading state.
+import useAuth from "../../../../Hooks/useAuth"; // Custom hook to manage user authentication state.
+import useRelativeTime from "../../../../Hooks/useRelativeTime"; // Custom hook to format dates as relative time (e.g., "5 minutes ago").
+import useCommentsOperations from "../../../../Hooks/useCommentOperations"; // Custom hook to handle comment-related operations.
+import useVotesOperations from "../../../../Hooks/useVotesOperations"; // Custom hook to handle voting operations.
 
 const Feed = () => {
     const axiosSecure = useAxiosSecure();
     const queryClient = useQueryClient();
-    const [selectedPostId, setSelectedPostId] = useState(null);
-    const [reportModalOpen, setReportModalOpen] = useState(false);
-    const [reportReason, setReportReason] = useState("");
-    const [postToReport, setPostToReport] = useState(null);
-    const { user } = useAuth();
-    const getRelativeTime = useRelativeTime();
+    const [selectedPostId, setSelectedPostId] = useState(null); // State to store the ID of the selected post for comments.
+    const [reportModalOpen, setReportModalOpen] = useState(false); // State to control the visibility of the report modal.
+    const [reportReason, setReportReason] = useState(""); // State to store the reason for reporting a post.
+    const [postToReport, setPostToReport] = useState(null); // State to store the ID of the post being reported.
+    const { user } = useAuth(); // Getting user information.
+    const getRelativeTime = useRelativeTime(); // Function to format dates as relative time.
     const {
         comments,
         commentsLoading,
@@ -31,14 +31,14 @@ const Feed = () => {
         handleAddComment,
         handleDeleteComment,
         addCommentPending
-    } = useCommentsOperations(selectedPostId);
+    } = useCommentsOperations(selectedPostId); // Custom hook for managing comments.
     const {
         userVotes,
         votesLoading,
         voteCounts,
         voteCountsLoading,
         handleVote,
-    } = useVotesOperations();
+    } = useVotesOperations(); // Custom hook for managing votes.
 
     // Fetch posts
     const { data: posts = [], isLoading: postsLoading } = useQuery({
@@ -49,15 +49,13 @@ const Feed = () => {
         },
     });
 
-
-
     const openCommentsModal = (postId) => {
-        setSelectedPostId(postId);
+        setSelectedPostId(postId); // Sets the selected post ID and opens the comments modal.
     };
 
     const closeCommentsModal = () => {
-        setSelectedPostId(null);
-        setCommentText("");
+        setSelectedPostId(null); // Clears the selected post ID and closes the comments modal.
+        setCommentText(""); // Clears the comment text.
     };
 
     // --- Report Functionality ---
@@ -67,39 +65,40 @@ const Feed = () => {
             return response.data;
         },
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["reports", postToReport] });
-            setReportReason("");
-            setReportModalOpen(false);
-            setPostToReport(null);
+            queryClient.invalidateQueries({ queryKey: ["reports", postToReport] }); // Invalidates the report query to refresh data.
+            setReportReason(""); // Clears the report reason.
+            setReportModalOpen(false); // Closes the report modal.
+            setPostToReport(null); // Clears the post to report.
         },
     });
 
     const handleReport = () => {
-        if (!reportReason.trim()) return;
-        reportMutation.mutate({ postId: postToReport, reason: reportReason });
+        if (!reportReason.trim()) return; // Prevents reporting if the reason is empty.
+        reportMutation.mutate({ postId: postToReport, reason: reportReason }); // Triggers the report mutation.
     };
 
     const openReportModal = (postId) => {
-        setPostToReport(postId);
-        setReportModalOpen(true);
+        setPostToReport(postId); // Sets the post to report.
+        setReportModalOpen(true); // Opens the report modal.
     };
 
     const closeReportModal = () => {
-        setReportModalOpen(false);
-        setReportReason("");
-        setPostToReport(null);
+        setReportModalOpen(false); // Closes the report modal.
+        setReportReason(""); // Clears the report reason.
+        setPostToReport(null); // Clears the post to report.
     };
 
     const getPostScore = (post) => {
-        const now = new Date();
-        const postTime = new Date(post.createdAt);
-        const hoursSincePost = (now - postTime) / 1000 / 60 / 60;
+        const now = new Date(); // Gets the current date and time.
+        const postTime = new Date(post.createdAt); // Converts the post creation time to a Date object.
+        const hoursSincePost = (now - postTime) / 1000 / 60 / 60; // Calculates the hours since the post was created.
 
-        const upvotes = voteCounts[post._id]?.upvotes || 0;
-        const downvotes = voteCounts[post._id]?.downvotes || 0;
-        const netVotes = upvotes - downvotes;
-        const commentCount = comments?.filter(c => c.postId === post._id).length || 0;
+        const upvotes = voteCounts[post._id]?.upvotes || 0; // Gets the number of upvotes for the post.
+        const downvotes = voteCounts[post._id]?.downvotes || 0; // Gets the number of downvotes for the post.
+        const netVotes = upvotes - downvotes; // Calculates the net votes.
+        const commentCount = comments?.filter(c => c.postId === post._id).length || 0; // Gets the number of comments for the post.
 
+        // Calculates a score for the post based on net votes, comment count, and time since creation.
         return (
             netVotes * 2 +
             commentCount * 1.5 -
@@ -107,8 +106,7 @@ const Feed = () => {
         );
     };
 
-
-    if (postsLoading || votesLoading || voteCountsLoading) return <Loading />;
+    if (postsLoading || votesLoading || voteCountsLoading) return <Loading />; // Displays a loading indicator while data is being fetched.
 
     return (
         <div className="space-y-6 py-6">
@@ -119,7 +117,7 @@ const Feed = () => {
             ) : (
                 posts
                     .slice()
-                    .sort((a, b) => getPostScore(b) - getPostScore(a))
+                    .sort((a, b) => getPostScore(b) - getPostScore(a)) // Sorts the posts based on their calculated score.
                     .map((post) => (
 
                         <div

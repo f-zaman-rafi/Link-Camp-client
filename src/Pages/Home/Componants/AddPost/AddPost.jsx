@@ -1,62 +1,65 @@
 import React, { useRef, useState } from "react";
-import useUserInfo from "../../../../Hooks/useUserInfo";
-import useAxiosSecure from "../../../../Hooks/useAxiosSecure";
-import { useNavigate } from "react-router-dom";
-import toast from "react-hot-toast";
+import useUserInfo from "../../../../Hooks/useUserInfo"; // Custom hook to get user information.
+import useAxiosSecure from "../../../../Hooks/useAxiosSecure"; // Custom hook for making authenticated API requests.
+import { useNavigate } from "react-router-dom"; // Hook for navigating between routes.
+import toast from "react-hot-toast"; // Library for displaying user-friendly notifications.
 
 const AddPost = () => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [content, setContent] = useState("");
-  const [photo, setPhoto] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const { userInfo } = useUserInfo();
-  const axiosSecure = useAxiosSecure();
-  const navigate = useNavigate();
-  const textareaRef = useRef(null);
+  const [isModalOpen, setIsModalOpen] = useState(false); // State to control the visibility of the create post modal.
+  const [content, setContent] = useState(""); // State to store the text content of the post.
+  const [photo, setPhoto] = useState(null); // State to store the selected photo file for the post.
+  const [isLoading, setIsLoading] = useState(false); // State to track if the post is being submitted.
+  const { userInfo } = useUserInfo(); // Get user information, including photo and name.
+  const axiosSecure = useAxiosSecure(); // Instance for making secure API calls.
+  const navigate = useNavigate(); // Function to navigate to different routes.
+  const textareaRef = useRef(null); // Ref to the textarea element for focusing.
 
   const openModal = () => {
-    setIsModalOpen(true);
+    setIsModalOpen(true); // Open the create post modal.
     setTimeout(() => {
-      textareaRef.current?.focus();
+      textareaRef.current?.focus(); // Focus on the textarea after the modal opens.
     }, 100);
   };
 
   const closeModal = () => {
-    setIsModalOpen(false);
-    setContent("");
-    setPhoto(null);
+    setIsModalOpen(false); // Close the create post modal.
+    setContent(""); // Clear the content state.
+    setPhoto(null); // Clear the selected photo state.
   };
 
   const handlePhotoChange = (e) => {
-    setPhoto(e.target.files[0]);
+    setPhoto(e.target.files[0]); // Update the photo state with the selected file.
   };
 
   const handlePostSubmit = async () => {
+    // Prevent posting if neither content nor a photo is provided.
     if (!content && !photo) {
       alert("Please add some content or upload a photo!");
       return;
     }
 
-    setIsLoading(true);
+    setIsLoading(true); // Set loading state to true during the API call.
     try {
-      const formData = new FormData();
-      formData.append("content", content);
+      const formData = new FormData(); // Create FormData to handle file uploads.
+      formData.append("content", content); // Append the text content to the FormData.
       if (photo) {
-        formData.append("photo", photo);
+        formData.append("photo", photo); // Append the photo file to the FormData if one is selected.
       }
 
+      // Post the user's post data to the server.
       await axiosSecure.post("/user/post", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
+        headers: { "Content-Type": "multipart/form-data" }, // Set the correct content type for file uploads.
       });
 
-      toast.success("Post created successfully!");
-      window.location.reload();
-      navigate("/");
+      toast.success("Post created successfully!"); // Show a success notification.
+      window.location.reload(); // Force a page reload to update the post feed.
+      navigate("/"); // Optionally navigate to the home page after posting.
     } catch (error) {
+      // Log and display an error message if the post creation fails.
       console.error("Error creating post:", error.response?.data?.message || error.message);
       alert(error.response?.data?.message || "Failed to create post");
     } finally {
-      setIsLoading(false);
+      setIsLoading(false); // Set loading state back to false after the API call completes.
     }
   };
 

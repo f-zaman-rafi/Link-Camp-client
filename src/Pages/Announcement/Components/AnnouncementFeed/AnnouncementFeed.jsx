@@ -1,17 +1,17 @@
 import React, { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import useAxiosSecure from "../../../../Hooks/useAxiosSecure";
-import Loading from "../../../Loading/Loading";
-import { FaComment, FaTimes, FaTrash } from "react-icons/fa";
-import useAuth from "../../../../Hooks/useAuth";
-import useRelativeTime from "../../../../Hooks/useRelativeTime";
-import useCommentsOperations from "../../../../Hooks/useCommentOperations";
+import useAxiosSecure from "../../../../Hooks/useAxiosSecure"; // Custom hook for making authenticated API requests.
+import Loading from "../../../Loading/Loading"; // Component to display a loading state.
+import { FaComment, FaTimes, FaTrash } from "react-icons/fa"; // Icons for comment, close, and delete actions.
+import useAuth from "../../../../Hooks/useAuth"; // Custom hook to get authentication information.
+import useRelativeTime from "../../../../Hooks/useRelativeTime"; // Custom hook to format timestamps into relative time (e.g., "2 hours ago").
+import useCommentsOperations from "../../../../Hooks/useCommentOperations"; // Custom hook for handling comment-related operations.
 
 const AnnouncementFeed = () => {
-    const axiosSecure = useAxiosSecure();
-    const [selectedPostId, setSelectedPostId] = useState(null);
-    const { user } = useAuth();
-    const getRelativeTime = useRelativeTime();
+    const axiosSecure = useAxiosSecure(); // Instance for making secure API calls.
+    const [selectedPostId, setSelectedPostId] = useState(null); // State to track the ID of the post whose comments are being viewed.
+    const { user } = useAuth(); // Get user information.
+    const getRelativeTime = useRelativeTime(); // Function to format timestamps.
     const {
         comments,
         commentsLoading,
@@ -20,32 +20,36 @@ const AnnouncementFeed = () => {
         handleAddComment,
         handleDeleteComment,
         addCommentPending
-    } = useCommentsOperations(selectedPostId);
+    } = useCommentsOperations(selectedPostId); // Custom hook providing comment data and operations for the selected post.
 
-    // Fetch announcements
+    // Fetch announcements from the server.
     const { data: posts = [], isLoading: postsLoading } = useQuery({
-        queryKey: ["posts"],
+        queryKey: ["posts"], // Key used to identify and manage this query in the cache.
         queryFn: async () => {
-            const response = await axiosSecure.get("/teacher/announcements");
-            return response.data;
+            const response = await axiosSecure.get("/teacher/announcements"); // API endpoint to fetch announcements.
+            return response.data; // Return the fetched announcement data.
         },
     });
 
+    // Function to open the comments modal for a specific post.
     const openCommentsModal = (postId) => {
         setSelectedPostId(postId);
     };
 
+    // Function to close the comments modal.
     const closeCommentsModal = () => {
         setSelectedPostId(null);
-        setCommentText("");
+        setCommentText(""); // Clear the comment input field when the modal is closed.
     };
 
+    // Function to sort announcements by the latest creation date.
     const sortByLatest = (posts) => {
         return posts
             .slice()
             .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
     };
 
+    // Show loading indicator while fetching announcements.
     if (postsLoading) return <Loading />;
 
     return (

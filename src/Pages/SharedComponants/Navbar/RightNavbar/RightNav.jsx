@@ -1,19 +1,19 @@
 import { useQuery } from "@tanstack/react-query";
 import React, { useState } from "react";
-import useAxiosSecure from "../../../../Hooks/useAxiosSecure";
-import Loading from "../../../Loading/Loading";
-import { FaComment } from "react-icons/fa";
-import { IoClose } from "react-icons/io5";
-import useRelativeTime from "../../../../Hooks/useRelativeTime";
-import useCommentsOperations from "../../../../Hooks/useCommentOperations";
+import useAxiosSecure from "../../../../Hooks/useAxiosSecure"; // Custom hook for making authenticated API requests.
+import Loading from "../../../Loading/Loading"; // Component to display a loading state.
+import { FaComment } from "react-icons/fa"; // Importing the comment icon.
+import { IoClose } from "react-icons/io5"; // Importing the close icon.
+import useRelativeTime from "../../../../Hooks/useRelativeTime"; // Custom hook to format dates as relative time.
+import useCommentsOperations from "../../../../Hooks/useCommentOperations"; // Custom hook for handling comment-related operations.
 
 const RightNav = () => {
   const axiosSecure = useAxiosSecure();
-  const [modalOpen, setModalOpen] = useState(false);
-  const [selectedAnnouncement, setSelectedAnnouncement] = useState(null);
-  const [commentModalOpen, setCommentModalOpen] = useState(false);
-  const [selectedPostId, setSelectedPostId] = useState(null);
-  const getRelativeTime = useRelativeTime();
+  const [modalOpen, setModalOpen] = useState(false); // State to control the visibility of the full announcement modal.
+  const [selectedAnnouncement, setSelectedAnnouncement] = useState(null); // State to store the announcement to be displayed in the modal.
+  const [commentModalOpen, setCommentModalOpen] = useState(false); // State to control the visibility of the comments modal.
+  const [selectedPostId, setSelectedPostId] = useState(null); // State to store the ID of the announcement for which comments are being viewed.
+  const getRelativeTime = useRelativeTime(); // Function to format dates as relative time.
   const {
     comments,
     commentsLoading,
@@ -21,54 +21,54 @@ const RightNav = () => {
     setCommentText,
     handleAddComment,
     addCommentPending
-  } = useCommentsOperations(selectedPostId);
+  } = useCommentsOperations(selectedPostId); // Custom hook for managing comments.
 
 
   // Fetch notices
   const { data: notices = [], isLoading: noticesLoading } = useQuery({
     queryKey: ["notices"],
     queryFn: async () => {
-      const response = await axiosSecure.get("/admin/notices");
+      const response = await axiosSecure.get("/admin/notices"); // API endpoint to fetch admin notices.
       return response.data;
     },
   });
 
 
   const openCommentsModal = (postId) => {
-    setSelectedPostId(postId);
-    setCommentModalOpen(true);
+    setSelectedPostId(postId); // Sets the selected announcement ID.
+    setCommentModalOpen(true); // Opens the comments modal.
   };
 
   const closeCommentsModal = () => {
-    setSelectedPostId(null);
-    setCommentModalOpen(false);
-    setCommentText("");
+    setSelectedPostId(null); // Clears the selected announcement ID.
+    setCommentModalOpen(false); // Closes the comments modal.
+    setCommentText(""); // Clears the comment input field.
   };
 
   // Handle modal open for full post
   const handleModalOpen = (announcement) => {
-    setSelectedAnnouncement(announcement);
-    setModalOpen(true);
+    setSelectedAnnouncement(announcement); // Sets the announcement to be displayed.
+    setModalOpen(true); // Opens the full announcement modal.
   };
 
   const handleModalClose = () => {
-    setModalOpen(false);
-    setSelectedAnnouncement(null);
+    setModalOpen(false); // Closes the full announcement modal.
+    setSelectedAnnouncement(null); // Clears the selected announcement.
   };
 
   const sortByLatest = (posts) => {
     return posts
-      .slice()
-      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      .slice() // Creates a copy of the posts array.
+      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)); // Sorts the announcements by creation date in descending order (latest first).
   };
 
-  if (noticesLoading) return <Loading />;
+  if (noticesLoading) return <Loading />; // Displays a loading indicator while notices are being fetched.
 
   return (
     <div className="w-auto">
       <div className=" h-screen overflow-y-auto">
         <div className="sticky top-0 z-10 lg:bg-gray-50 bg-white pb-4">
-          <div className="flex justify-center">
+          <div className="flex justify-center lg:py-7">
             <p className="text-3xl font-bold">Notifications!</p>
           </div>
         </div>

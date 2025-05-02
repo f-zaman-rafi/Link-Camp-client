@@ -1,17 +1,17 @@
 import React, { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import useAxiosSecure from "../../../../Hooks/useAxiosSecure";
-import Loading from "../../../Loading/Loading";
-import { FaComment, FaTimes, FaTrash } from "react-icons/fa";
-import useAuth from "../../../../Hooks/useAuth";
-import useRelativeTime from "../../../../Hooks/useRelativeTime";
-import useCommentsOperations from "../../../../Hooks/useCommentOperations";
+import useAxiosSecure from "../../../../Hooks/useAxiosSecure"; // Custom hook for making authenticated API requests.
+import Loading from "../../../Loading/Loading"; // Component to display a loading state.
+import { FaComment, FaTimes, FaTrash } from "react-icons/fa"; // Importing icons for comments, times (close), and trash.
+import useAuth from "../../../../Hooks/useAuth"; // Custom hook to manage user authentication state.
+import useRelativeTime from "../../../../Hooks/useRelativeTime"; // Custom hook to format dates as relative time (e.g., "5 minutes ago").
+import useCommentsOperations from "../../../../Hooks/useCommentOperations"; // Custom hook to handle comment-related operations.
 
 const NoticeboardFeed = () => {
     const axiosSecure = useAxiosSecure();
-    const [selectedPostId, setSelectedPostId] = useState(null);
-    const { user } = useAuth();
-    const getRelativeTime = useRelativeTime();
+    const [selectedPostId, setSelectedPostId] = useState(null); // State to store the ID of the selected notice for comments.
+    const { user } = useAuth(); // Getting user information.
+    const getRelativeTime = useRelativeTime(); // Function to format dates as relative time.
     const {
         comments,
         commentsLoading,
@@ -20,34 +20,33 @@ const NoticeboardFeed = () => {
         handleAddComment,
         handleDeleteComment,
         addCommentPending
-    } = useCommentsOperations(selectedPostId);
+    } = useCommentsOperations(selectedPostId); // Custom hook for managing comments.
 
     // Fetch notices
     const { data: posts = [], isLoading: postsLoading } = useQuery({
         queryKey: ["posts"],
         queryFn: async () => {
-            const response = await axiosSecure.get("/admin/notices");
+            const response = await axiosSecure.get("/admin/notices"); // API endpoint to fetch admin notices.
             return response.data;
         },
     });
 
     const openCommentsModal = (postId) => {
-        setSelectedPostId(postId);
+        setSelectedPostId(postId); // Sets the selected notice ID and opens the comments modal.
     };
 
     const closeCommentsModal = () => {
-        setSelectedPostId(null);
-        setCommentText("");
+        setSelectedPostId(null); // Clears the selected notice ID and closes the comments modal.
+        setCommentText(""); // Clears the comment text.
     };
 
     const sortByLatest = (posts) => {
         return posts
-            .slice()
-            .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+            .slice() // Creates a copy of the posts array.
+            .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)); // Sorts the notices by creation date in descending order (latest first).
     };
 
-
-    if (postsLoading) return <Loading />;
+    if (postsLoading) return <Loading />; // Displays a loading indicator while notices are being fetched.
 
     return (
         <div className="space-y-6 py-6">
