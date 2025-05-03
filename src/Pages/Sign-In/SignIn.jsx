@@ -4,14 +4,16 @@ import { Link, useNavigate } from "react-router-dom"; // Components for navigati
 import useAuth from "../../Hooks/useAuth"; // Custom hook for authentication (sign in).
 import useAxiosCommon from "../../Hooks/useAxiosCommon"; // Custom hook for making general API requests.
 import useUserInfo from "../../Hooks/useUserInfo"; // Custom hook to get and refetch user information.
-import Swal from "sweetalert2"; // Library for displaying elegant alerts (not directly used in this version).
 import toast from "react-hot-toast"; // Library for displaying user-friendly notifications.
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 const SignIn = () => {
   const { signIn } = useAuth(); // Function to sign in the user.
   const axiosCommon = useAxiosCommon(); // Instance for making API calls.
   const navigate = useNavigate(); // Function to navigate to different routes.
   const { refetch } = useUserInfo(); // Function to refetch user information.
+  const [showPassword, setShowPassword] = React.useState(false); // Track password visibility
+
   const {
     register,
     handleSubmit,
@@ -113,7 +115,7 @@ const SignIn = () => {
                 <input
                   type="email"
                   id="email"
-                  className="input"
+                  className="input w-full pr-12"
                   placeholder="Email"
                   {...register("email", {
                     required: "Email is required",
@@ -123,32 +125,46 @@ const SignIn = () => {
                     },
                   })}
                 />
+
                 {errors.email && (
                   <p className="text-red-500 text-xs">{errors.email.message}</p>
                 )}
 
-                {/* Password Input */}
+                {/* Password Input with Show/Hide Icon Always Visible */}
                 <label className="label" htmlFor="password">
                   Password
                 </label>
-                <input
-                  type="password"
-                  id="password"
-                  className="input"
-                  placeholder="Password"
-                  {...register("password", {
-                    required: "Password is required",
-                    minLength: {
-                      value: 6,
-                      message: "Minimum 6 characters",
-                    },
-                  })}
-                />
+
+                <div className="relative w-full">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    id="password"
+                    className="input w-full pr-12"
+                    placeholder="Password"
+                    {...register("password", {
+                      required: "Password is required",
+                      minLength: {
+                        value: 6,
+                        message: "Minimum 6 characters",
+                      },
+                    })}
+                  />
+
+                  {/* Always visible icon - correctly aligned */}
+                  <div
+                    className="absolute inset-y-0 right-3 flex items-center cursor-pointer text-gray-500 z-10"
+                    onClick={() => setShowPassword((prev) => !prev)}
+                    aria-label={showPassword ? "Hide password" : "Show password"}
+                  >
+                    {showPassword ? <FaEyeSlash size={18} /> : <FaEye size={18} />}
+                  </div>
+
+                </div>
+
                 {errors.password && (
-                  <p className="text-red-500 text-xs">
-                    {errors.password.message}
-                  </p>
+                  <p className="text-red-500 text-xs mt-1">{errors.password.message}</p>
                 )}
+
 
                 {/* Forgot Password and Sign Up Links */}
                 <div className="flex justify-between">
