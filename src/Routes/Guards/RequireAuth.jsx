@@ -11,9 +11,7 @@ const RequireAuth = ({ children }) => {
 
   // Show loading if authentication or user info is loading
   if (loading || isLoading) {
-    return (
-      <Loading />
-    );
+    return <Loading />;
   }
 
   // Redirect to sign-in if the user is not authenticated
@@ -23,12 +21,20 @@ const RequireAuth = ({ children }) => {
 
   // Redirect to pending-request page if user verification is pending
   if (userInfo?.verify === "pending") {
-    return <Navigate to="/pending-request" state={{ from: location }} replace={true} />;
+    return (
+      <Navigate
+        to="/pending-request"
+        state={{ from: location }}
+        replace={true}
+      />
+    );
   }
 
   // Redirect to blocklisted page if user is blocklisted
   if (userInfo?.verify === "blocklisted") {
-    return <Navigate to="/blocklisted" state={{ from: location }} replace={true} />;
+    return (
+      <Navigate to="/blocklisted" state={{ from: location }} replace={true} />
+    );
   }
 
   // Redirect to welcome page if the user's name is empty (indicating incomplete profile)

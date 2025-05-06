@@ -17,7 +17,6 @@ const useUserInfo = () => {
       // Simulate an API delay for demonstration purposes. In a real application, this wouldn't be needed.
       await new Promise((resolve) => setTimeout(resolve, 1000));
       const res = await axiosSecure.get(`/user/${user?.email}`); // Fetch user data based on the logged-in user's email.
-      console.log(res.data.email);
       return res.data;
     },
     enabled: !!user?.email, // Only enable the query if the user's email is available (user is logged in).

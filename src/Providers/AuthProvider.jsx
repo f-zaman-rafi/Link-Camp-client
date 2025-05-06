@@ -22,9 +22,9 @@ const AuthProvider = ({ children }) => {
 
   /**
    * Creates a new user with the given email and password.
-   * @param {string} email The user's email address.
-   * @param {string} password The user's password.
-   * @returns {Promise<import("firebase/auth").UserCredential>} A Promise that resolves with the user credential upon successful creation.
+   * The user's email address.
+   * The user's password.
+   * A Promise that resolves with the user credential upon successful creation.
    */
   const signUp = (email, password) => {
     setLoading(true);
@@ -33,9 +33,9 @@ const AuthProvider = ({ children }) => {
 
   /**
    * Signs in an existing user with the given email and password.
-   * @param {string} email The user's email address.
-   * @param {string} password The user's password.
-   * @returns {Promise<import("firebase/auth").UserCredential>} A Promise that resolves with the user credential upon successful sign-in.
+   * The user's email address.
+   * The user's password.
+   * A Promise that resolves with the user credential upon successful sign-in.
    */
   const signIn = (email, password) => {
     setLoading(true);
@@ -45,7 +45,7 @@ const AuthProvider = ({ children }) => {
   /**
    * Logs out the current user.
    * It first attempts to invalidate the session on the server and then signs out from Firebase.
-   * @returns {Promise<void>} A Promise that resolves when the user is successfully logged out.
+   * A Promise that resolves when the user is successfully logged out.
    */
   const logOut = async () => {
     try {

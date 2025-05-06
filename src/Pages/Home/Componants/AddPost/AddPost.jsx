@@ -3,13 +3,14 @@ import useUserInfo from "../../../../Hooks/useUserInfo"; // Custom hook to get u
 import useAxiosSecure from "../../../../Hooks/useAxiosSecure"; // Custom hook for making authenticated API requests.
 import { useNavigate } from "react-router-dom"; // Hook for navigating between routes.
 import toast from "react-hot-toast"; // Library for displaying user-friendly notifications.
+import Loading from "../../../Loading/Loading";
 
 const AddPost = () => {
   const [isModalOpen, setIsModalOpen] = useState(false); // State to control the visibility of the create post modal.
   const [content, setContent] = useState(""); // State to store the text content of the post.
   const [photo, setPhoto] = useState(null); // State to store the selected photo file for the post.
   const [isLoading, setIsLoading] = useState(false); // State to track if the post is being submitted.
-  const { userInfo } = useUserInfo(); // Get user information, including photo and name.
+  const { userInfo, isLoading: userLoading } = useUserInfo(); // Get user information, including photo and name.
   const axiosSecure = useAxiosSecure(); // Instance for making secure API calls.
   const navigate = useNavigate(); // Function to navigate to different routes.
   const textareaRef = useRef(null); // Ref to the textarea element for focusing.
@@ -56,19 +57,28 @@ const AddPost = () => {
       navigate("/"); // Optionally navigate to the home page after posting.
     } catch (error) {
       // Log and display an error message if the post creation fails.
-      console.error("Error creating post:", error.response?.data?.message || error.message);
+      console.error(
+        "Error creating post:",
+        error.response?.data?.message || error.message
+      );
       alert(error.response?.data?.message || "Failed to create post");
     } finally {
       setIsLoading(false); // Set loading state back to false after the API call completes.
     }
   };
 
+  if (userLoading) return <Loading />;
+
   return (
     <div>
       {/* Main Add Post Section */}
       <div className="bg-white p-4 max-w-2xl mx-auto rounded-xl shadow">
         <div className="flex items-center gap-4">
-          <img src={userInfo.photo} className="w-10 h-10 rounded-full" alt="User" />
+          <img
+            src={userInfo.photo}
+            className="w-10 h-10 rounded-full"
+            alt="User"
+          />
           <input
             type="text"
             placeholder="What's on your mind?"
@@ -100,7 +110,11 @@ const AddPost = () => {
               </button>
             </div>
             <div className="flex items-center gap-4 mb-4">
-              <img src={userInfo.photo} className="w-10 h-10 rounded-full" alt="User" />
+              <img
+                src={userInfo.photo}
+                className="w-10 h-10 rounded-full"
+                alt="User"
+              />
               <p className="font-medium">{userInfo.name}</p>
             </div>
             <textarea
@@ -127,7 +141,8 @@ const AddPost = () => {
               />
               {photo && (
                 <p className="mt-2 text-sm text-gray-600">
-                  Selected file: <span className="font-medium">{photo.name}</span>
+                  Selected file:{" "}
+                  <span className="font-medium">{photo.name}</span>
                 </p>
               )}
             </div>
@@ -136,12 +151,16 @@ const AddPost = () => {
                 <button
                   className="px-4 py-2 bg-gray-300 rounded-lg"
                   onClick={closeModal}
-                  disabled={isLoading}>
+                  disabled={isLoading}
+                >
                   Cancel
                 </button>
                 <button
-                  className={`px-4 py-2 rounded-lg text-white ${isLoading ? "bg-gray-400 cursor-not-allowed" : "bg-blue-500 hover:bg-blue-600"
-                    }`}
+                  className={`px-4 py-2 rounded-lg text-white ${
+                    isLoading
+                      ? "bg-gray-400 cursor-not-allowed"
+                      : "bg-blue-500 hover:bg-blue-600"
+                  }`}
                   onClick={handlePostSubmit}
                   disabled={isLoading}
                 >

@@ -6,14 +6,14 @@ import useAxiosCommon from "../../Hooks/useAxiosCommon"; // Custom hook for maki
 import useUserInfo from "../../Hooks/useUserInfo"; // Custom hook to get and refetch user information.
 import toast from "react-hot-toast"; // Library for displaying user-friendly notifications.
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import Loading from "../Loading/Loading";
 
 const SignIn = () => {
   const { signIn } = useAuth(); // Function to sign in the user.
   const axiosCommon = useAxiosCommon(); // Instance for making API calls.
   const navigate = useNavigate(); // Function to navigate to different routes.
-  const { refetch } = useUserInfo(); // Function to refetch user information.
+  const { isLoading, refetch } = useUserInfo(); // Function to refetch user information.
   const [showPassword, setShowPassword] = React.useState(false); // Track password visibility
-  const [autoFill, setAutoFill] = React.useState({ email: "", password: "" }); // Autofill function for testing purpose
 
   const {
     register,
@@ -40,7 +40,7 @@ const SignIn = () => {
             } else {
               navigate("/");
             }
-          }, 2000);
+          }, 20);
         });
       })
       .catch((error) => {
@@ -69,6 +69,8 @@ const SignIn = () => {
         }, 2100);
       });
   };
+
+  if (isLoading) return <Loading />;
 
   return (
     <div>
@@ -122,7 +124,6 @@ const SignIn = () => {
                   id="email"
                   className="input w-full pr-12"
                   placeholder="Email"
-                  defaultValue={autoFill.email}
                   {...register("email", {
                     required: "Email is required",
                     pattern: {
@@ -148,7 +149,6 @@ const SignIn = () => {
                     id="password"
                     className="input w-full pr-12"
                     placeholder="Password"
-                    defaultValue={autoFill.password}
                     {...register("password", {
                       required: "Password is required",
                       minLength: {

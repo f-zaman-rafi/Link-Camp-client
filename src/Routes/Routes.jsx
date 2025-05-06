@@ -24,16 +24,13 @@ import SignIn from "../Pages/Sign-in/SignIn"; // Sign-in page component
 export const router = createBrowserRouter([
   {
     path: "/sign-in",
-    element: (
-      <AuthGuard> {/* Apply AuthGuard to prevent logged-in users from accessing */}
-        <SignIn />
-      </AuthGuard>
-    ),
+    element: <SignIn />,
   },
   {
     path: "/sign-up",
     element: (
-      <AuthGuard> {/* Apply AuthGuard to prevent logged-in users from accessing */}
+      <AuthGuard>
+        {/* Apply AuthGuard to prevent logged-in users from accessing */}
         <SignUp />
       </AuthGuard>
     ),
@@ -41,20 +38,34 @@ export const router = createBrowserRouter([
 
   {
     path: "/pending-request",
-    element: <RequireApproval><PendingPage /></RequireApproval> //Requires approved user to access
+    element: (
+      <RequireApproval>
+        <PendingPage />
+      </RequireApproval>
+    ), //Requires approved user to access
   },
   {
     path: "/welcome",
-    element: <RequireNewbie><WelcomePage /></RequireNewbie> //Requires new user status to access
+    element: (
+      <RequireNewbie>
+        <WelcomePage />
+      </RequireNewbie>
+    ), //Requires new user status to access
   },
   {
     path: "/blocklisted",
-    element: <RequireBlocklisted><Blacklisted /></RequireBlocklisted> //Requires blocklisted user status to access
+    element: (
+      <RequireBlocklisted>
+        <Blacklisted />
+      </RequireBlocklisted>
+    ), //Requires blocklisted user status to access
   },
   {
     path: "/",
     element: (
-      <RequireAuth> {/* Requires authenticated user to access */}
+      <RequireAuth>
+        {" "}
+        {/* Requires authenticated user to access */}
         <Main />
       </RequireAuth>
     ),
@@ -73,29 +84,30 @@ export const router = createBrowserRouter([
       },
       {
         path: "/personal-info",
-        element: <PersonalInfo /> // Personal info page for authenticated users
+        element: <PersonalInfo />, // Personal info page for authenticated users
       },
       {
         path: "/my-posts",
-        element: <UserPosts /> // User's posts page for authenticated users
+        element: <UserPosts />, // User's posts page for authenticated users
       },
-
-
     ],
   },
   {
     path: "/admin-dash",
-    element: <RequireAdmin><DashLayout /></RequireAdmin>, // Requires admin user to access
+    element: (
+      <RequireAdmin>
+        <DashLayout />
+      </RequireAdmin>
+    ), // Requires admin user to access
     children: [
       {
         path: "/admin-dash",
-        element: <DashHome /> // Admin dashboard homepage
+        element: <DashHome />, // Admin dashboard homepage
       },
       {
         path: "reported-post",
-        element: <ReportedPost /> // Reported posts page for admin
-      }
-    ]
+        element: <ReportedPost />, // Reported posts page for admin
+      },
+    ],
   },
-
 ]);
