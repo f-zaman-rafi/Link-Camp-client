@@ -30,7 +30,6 @@ export const router = createBrowserRouter([
     path: "/sign-up",
     element: (
       <AuthGuard>
-        {/* Apply AuthGuard to prevent logged-in users from accessing */}
         <SignUp />
       </AuthGuard>
     ),
@@ -64,7 +63,6 @@ export const router = createBrowserRouter([
     path: "/",
     element: (
       <RequireAuth>
-        {" "}
         {/* Requires authenticated user to access */}
         <Main />
       </RequireAuth>
