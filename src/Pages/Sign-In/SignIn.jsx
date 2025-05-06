@@ -13,10 +13,12 @@ const SignIn = () => {
   const navigate = useNavigate(); // Function to navigate to different routes.
   const { refetch } = useUserInfo(); // Function to refetch user information.
   const [showPassword, setShowPassword] = React.useState(false); // Track password visibility
+  const [autoFill, setAutoFill] = React.useState({ email: "", password: "" }); // Autofill function for testing purpose
 
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors },
   } = useForm(); // Form handling utilities.
 
@@ -36,7 +38,7 @@ const SignIn = () => {
             } else if (user?.verify === "approved" && user?.name === "") {
               navigate("/profile-setup");
             } else {
-              navigate('/');
+              navigate("/");
             }
           }, 2000);
         });
@@ -49,8 +51,9 @@ const SignIn = () => {
         let errorMessage = "Something went wrong. Please try again.";
 
         // Customize the error message for invalid credentials.
-        if (error.code === 'auth/invalid-credential') {
-          errorMessage = "We couldn't sign you in. Please double-check your email and password.";
+        if (error.code === "auth/invalid-credential") {
+          errorMessage =
+            "We couldn't sign you in. Please double-check your email and password.";
         }
 
         // Display an error toast notification.
@@ -67,7 +70,6 @@ const SignIn = () => {
       });
   };
 
-
   return (
     <div>
       <>
@@ -80,19 +82,20 @@ const SignIn = () => {
           onMouseLeave={(e) => e.target.start()}
           scrollamount="10"
           loop="infinite"
-
         >
-          Welcome to LinkCamp! Admin Access: admin@admin.admin / admin.admin.admin —
-          Sign up anytime or test directly! Student: student@student.student / student@student.student —
-          Teacher: teacher@teacher.teacher / teacher@teacher.teacher
+          Welcome to LinkCamp — Use the credentials below for instant test
+          access, or sign up to create your own account.
         </marquee>
       </>
 
       <div className="hero min-h-screen">
-
         {/* Logo at the top center */}
         <div className="flex justify-center items-center absolute top-[5px]  left-1/2 transform -translate-x-1/2 z-10 space-x-4">
-          <img className='w-16 md:w-26' src="/Logo/linkCampLogo.png" alt="LinkCamp Logo" />
+          <img
+            className="w-16 md:w-26"
+            src="/Logo/linkCampLogo.png"
+            alt="LinkCamp Logo"
+          />
         </div>
 
         <div className="hero-content flex-col lg:flex-row lg:space-x-28 lg:max-w-4xl pt-12">
@@ -100,7 +103,9 @@ const SignIn = () => {
           <div className="text-center lg:text-left">
             <h1 className="text-3xl font-bold">Welcome to LinkCamp!</h1>
             <p className="py-6 w-auto">
-              Log in to your LinkCamp account to stay updated on campus news, class announcements, official notices, and engage in discussions. Share ideas, report issues, and connect with your peers.
+              Log in to your LinkCamp account to stay updated on campus news,
+              class announcements, official notices, and engage in discussions.
+              Share ideas, report issues, and connect with your peers.
             </p>
           </div>
 
@@ -117,10 +122,12 @@ const SignIn = () => {
                   id="email"
                   className="input w-full pr-12"
                   placeholder="Email"
+                  defaultValue={autoFill.email}
                   {...register("email", {
                     required: "Email is required",
                     pattern: {
-                      value: /^[a-zA-Z0-9._%+-]{3,}@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                      value:
+                        /^[a-zA-Z0-9._%+-]{3,}@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
                       message: "Enter a valid email address",
                     },
                   })}
@@ -141,6 +148,7 @@ const SignIn = () => {
                     id="password"
                     className="input w-full pr-12"
                     placeholder="Password"
+                    defaultValue={autoFill.password}
                     {...register("password", {
                       required: "Password is required",
                       minLength: {
@@ -154,17 +162,23 @@ const SignIn = () => {
                   <div
                     className="absolute inset-y-0 right-3 flex items-center cursor-pointer text-gray-500 z-10"
                     onClick={() => setShowPassword((prev) => !prev)}
-                    aria-label={showPassword ? "Hide password" : "Show password"}
+                    aria-label={
+                      showPassword ? "Hide password" : "Show password"
+                    }
                   >
-                    {showPassword ? <FaEyeSlash size={18} /> : <FaEye size={18} />}
+                    {showPassword ? (
+                      <FaEyeSlash size={18} />
+                    ) : (
+                      <FaEye size={18} />
+                    )}
                   </div>
-
                 </div>
 
                 {errors.password && (
-                  <p className="text-red-500 text-xs mt-1">{errors.password.message}</p>
+                  <p className="text-red-500 text-xs mt-1">
+                    {errors.password.message}
+                  </p>
                 )}
-
 
                 {/* Forgot Password and Sign Up Links */}
                 <div className="flex justify-between">
@@ -172,6 +186,47 @@ const SignIn = () => {
                   <Link to="/sign-up" className="link link-hover mr-4">
                     New here? Create an account
                   </Link>
+                </div>
+
+                {/* Testing shortcuts */}
+                <div className="text-center mt-4 space-y-2 flex justify-between items-center">
+                  <div>
+                    <p className="text-sm text-gray-500 font-semibold">
+                      Quick access for testing:
+                    </p>
+                  </div>
+                  <div className="flex flex-col items-center gap-2">
+                    <button
+                      type="button"
+                      className="text-blue-600 hover:underline"
+                      onClick={() => {
+                        setValue("email", "admin@admin.admin");
+                        setValue("password", "admin.admin.admin");
+                      }}
+                    >
+                      🔑 Admin Credentials
+                    </button>
+                    <button
+                      type="button"
+                      className="text-blue-600 hover:underline"
+                      onClick={() => {
+                        setValue("email", "teacher@teacher.teacher");
+                        setValue("password", "teacher@teacher.teacher");
+                      }}
+                    >
+                      👨‍🏫 Teacher Credentials
+                    </button>
+                    <button
+                      type="button"
+                      className="text-blue-600 hover:underline"
+                      onClick={() => {
+                        setValue("email", "student@student.student");
+                        setValue("password", "student@student.student");
+                      }}
+                    >
+                      🎓 Student Credentials
+                    </button>
+                  </div>
                 </div>
 
                 {/* Login Button */}
@@ -185,7 +240,7 @@ const SignIn = () => {
           </div>
         </div>
       </div>
-    </div >
+    </div>
   );
 };
 
