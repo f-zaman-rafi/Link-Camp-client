@@ -5,7 +5,7 @@ import Loading from "../Loading/Loading"; // Component for displaying a loading 
 
 const PersonalInfo = () => {
   const { userInfo, isLoading } = useUserInfo(); // Getting user information and loading state.
-  const [isModalOpen, setIsModalOpen] = useState(false); // State to control the visibility of a modal (currently not used).
+  const [isImageModalOpen, setIsImageModalOpen] = useState(false); // State to control the visibility of a modal (currently not used).
   const [errorMessage, setErrorMessage] = useState(""); // State to store and display error messages.
 
   const handleEditClick = () => {
@@ -19,8 +19,6 @@ const PersonalInfo = () => {
         "Please contact administration to edit personal information."
       );
     }
-    // While the modal state is being managed, it's not actually opened in this version of the code.
-    setIsModalOpen(true);
   };
 
   if (isLoading) return <Loading />;
@@ -35,7 +33,7 @@ const PersonalInfo = () => {
             src={userInfo.photo}
             alt="Cover"
             className="w-full h-full object-cover cursor-pointer"
-            onClick={() => setIsModalOpen(true)}
+            onClick={() => setIsImageModalOpen(true)}
           />
         </div>
       </div>
@@ -135,17 +133,17 @@ const PersonalInfo = () => {
       </div>
 
       {/* Modal for Full-Size Photo */}
-      {isModalOpen && (
+      {isImageModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50">
           <div className="relative">
             <img
               src={userInfo.photo}
               alt="Full Size"
-              className="max-w-full max-h-screen rounded-lg"
+              className=" h-screen rounded-lg"
             />
             <button
-              className="absolute top-4 right-4 text-white p-2 rounded-full shadow hover:border"
-              onClick={() => setIsModalOpen(false)}
+              className="absolute top-4 right-4 text-red-600 text-3xl p-2 rounded-full shadow hover:border "
+              onClick={() => setIsImageModalOpen(false)}
             >
               <FaTimes />
             </button>
