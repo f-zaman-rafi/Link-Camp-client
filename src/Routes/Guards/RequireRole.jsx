@@ -19,12 +19,3 @@
 // };
 
 // export default RequireRole;
-
-// import { Route } from 'react-router-dom';
-// import ProtectedRoute from './ProtectedRoute';
-
-// <Route path="/admin">
-//   <ProtectedRoute requiredRole="admin">
-//     <AdminPage />
-//   </ProtectedRoute>
-// </Route>
